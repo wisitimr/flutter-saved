@@ -1,0 +1,73 @@
+part of 'product_form_bloc.dart';
+
+@immutable
+sealed class ProductFormEvent extends Equatable {
+  const ProductFormEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class ProductFormStarted extends ProductFormEvent {
+  const ProductFormStarted(this.provider, this.id);
+
+  final AppProvider provider;
+  final String id;
+
+  @override
+  List<Object> get props => [provider, id];
+}
+
+final class ProductFormIdChanged extends ProductFormEvent {
+  const ProductFormIdChanged(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
+}
+
+final class ProductFormCodeChanged extends ProductFormEvent {
+  const ProductFormCodeChanged(this.code);
+
+  final String code;
+
+  @override
+  List<Object> get props => [code];
+}
+
+final class ProductFormNameChanged extends ProductFormEvent {
+  const ProductFormNameChanged(this.name);
+
+  final String name;
+
+  @override
+  List<Object> get props => [name];
+}
+
+final class ProductFormDetailChanged extends ProductFormEvent {
+  const ProductFormDetailChanged(this.detail);
+
+  final String detail;
+
+  @override
+  List<Object> get props => [detail];
+}
+
+final class ProductFormPriceChanged extends ProductFormEvent {
+  const ProductFormPriceChanged(this.price);
+
+  final String price;
+
+  @override
+  List<Object> get props => [price];
+}
+
+final class ProductSubmitted extends ProductFormEvent {
+  const ProductSubmitted(this.provider);
+
+  final AppProvider provider;
+
+  @override
+  List<Object> get props => [provider];
+}

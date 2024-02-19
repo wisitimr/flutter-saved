@@ -1,25 +1,37 @@
 part of 'supplier_list_bloc.dart';
 
+enum Status { loading, success, failure }
+
 @immutable
 final class SupplierState extends Equatable {
   const SupplierState({
+    this.status = Status.loading,
+    this.message = '',
     this.suppliers = const <SupplierModel>[],
-    this.pageSize = 10,
+    this.filter = const <SupplierModel>[],
   });
 
+  final Status status;
+  final String message;
   final List<SupplierModel> suppliers;
-  final int pageSize;
+  final List<SupplierModel> filter;
 
   SupplierState copyWith({
-    int? pageSize,
+    Status? status,
+    String? message,
+    List<SupplierModel>? suppliers,
+    List<SupplierModel>? filter,
   }) {
     return SupplierState(
-      pageSize: pageSize ?? this.pageSize,
+      status: status ?? this.status,
+      message: message ?? this.message,
+      suppliers: suppliers ?? this.suppliers,
+      filter: filter ?? this.filter,
     );
   }
 
   @override
-  List<Object> get props => [pageSize];
+  List<Object> get props => [status, message, suppliers, filter];
 }
 
 final class SupplierLoading extends SupplierState {

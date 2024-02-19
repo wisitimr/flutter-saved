@@ -60,122 +60,167 @@ class Customer extends StatelessWidget {
 
     return BlocBuilder<CustomerBloc, CustomerState>(
       builder: (context, state) {
-        return Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CardHeader(
-                title: lang.customer,
-              ),
-              CardBody(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: kDefaultPadding * 0.5),
-                          child: SizedBox(
-                            height: 40.0,
-                            child: ElevatedButton(
-                              style: themeData
-                                  .extension<AppButtonTheme>()!
-                                  .successElevated,
-                              onPressed: () => GoRouter.of(context)
-                                  .go(RouteUri.customerFrom),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: kDefaultPadding * 0.5),
-                                    child: Icon(
-                                      Icons.add,
-                                      size: (themeData
-                                              .textTheme.labelLarge!.fontSize! +
-                                          4.0),
-                                    ),
-                                  ),
-                                  Text(lang.crudNew),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
+        switch (state.status) {
+          case Status.failure:
+            return const Center(child: Text('Oops something went wrong!'));
+          case Status.loading:
+            return const CircularProgressIndicator();
+          case Status.success:
+            return Card(
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CardHeader(
+                    title: lang.customer,
+                  ),
+                  CardBody(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: kDefaultPadding * 2.0),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                final double dataTableWidth =
-                                    max(kScreenWidthMd, constraints.maxWidth);
-
-                                return Scrollbar(
-                                  controller:
-                                      dataTableHorizontalScrollController,
-                                  thumbVisibility: true,
-                                  trackVisibility: true,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    controller:
-                                        dataTableHorizontalScrollController,
-                                    child: SizedBox(
-                                      width: dataTableWidth,
-                                      child: Theme(
-                                          data: themeData.copyWith(
-                                            cardTheme:
-                                                appDataTableTheme.cardTheme,
-                                            dataTableTheme: appDataTableTheme
-                                                .dataTableThemeData,
-                                          ),
-                                          child: PaginatedDataTable(
-                                            columns: [
-                                              DataColumn(
-                                                  label: Text(lang.code)),
-                                              DataColumn(
-                                                  label: Text(lang.name)),
-                                              DataColumn(
-                                                  label: Text(lang.createdAt)),
-                                              DataColumn(
-                                                  label: Text(lang.updatedAt)),
-                                              const DataColumn(
-                                                  label: Text('...')),
-                                            ],
-                                            source: _DataSource(
-                                              data: state.customers,
-                                              context: context,
-                                              onDetailButtonPressed: (data) =>
-                                                  GoRouter.of(context).go(
-                                                      '${RouteUri.customerFrom}?id=${data.id}'),
-                                              onDeleteButtonPressed: (data) {},
-                                            ),
-                                          )),
+                          padding:
+                              const EdgeInsets.only(bottom: kDefaultPadding),
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            spacing: kTextPadding,
+                            runSpacing: kTextPadding,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        labelText: lang.search,
+                                        hintText: lang.search,
+                                        border: const OutlineInputBorder(),
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.auto,
+                                        isDense: true,
+                                        suffixIcon: const Icon(Icons.search),
+                                      ),
+                                      onChanged: (text) => context
+                                          .read<CustomerBloc>()
+                                          .add(CustomerSearchChanged(text)),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
+                                ],
+                              )
+                            ],
                           ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: kDefaultPadding * 0.5),
+                              child: SizedBox(
+                                height: 40.0,
+                                child: ElevatedButton(
+                                  style: themeData
+                                      .extension<AppButtonTheme>()!
+                                      .successElevated,
+                                  onPressed: () => GoRouter.of(context)
+                                      .go(RouteUri.customerFrom),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: kDefaultPadding * 0.5),
+                                        child: Icon(
+                                          Icons.add,
+                                          size: (themeData.textTheme.labelLarge!
+                                                  .fontSize! +
+                                              4.0),
+                                        ),
+                                      ),
+                                      Text(lang.crudNew),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: kDefaultPadding * 2.0),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final double dataTableWidth = max(
+                                        kScreenWidthMd, constraints.maxWidth);
+
+                                    return Scrollbar(
+                                      controller:
+                                          dataTableHorizontalScrollController,
+                                      thumbVisibility: true,
+                                      trackVisibility: true,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        controller:
+                                            dataTableHorizontalScrollController,
+                                        child: SizedBox(
+                                          width: dataTableWidth,
+                                          child: Theme(
+                                              data: themeData.copyWith(
+                                                cardTheme:
+                                                    appDataTableTheme.cardTheme,
+                                                dataTableTheme:
+                                                    appDataTableTheme
+                                                        .dataTableThemeData,
+                                              ),
+                                              child: PaginatedDataTable(
+                                                columns: [
+                                                  DataColumn(
+                                                      label: Text(lang.code)),
+                                                  DataColumn(
+                                                      label: Text(lang.name)),
+                                                  DataColumn(
+                                                      label:
+                                                          Text(lang.createdAt)),
+                                                  DataColumn(
+                                                      label:
+                                                          Text(lang.updatedAt)),
+                                                  const DataColumn(
+                                                      label: Text('...')),
+                                                ],
+                                                source: _DataSource(
+                                                  data: state.filter,
+                                                  context: context,
+                                                  onDetailButtonPressed: (data) =>
+                                                      GoRouter.of(context).go(
+                                                          '${RouteUri.customerFrom}?id=${data.id}'),
+                                                  onDeleteButtonPressed:
+                                                      (data) {},
+                                                ),
+                                              )),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
+            );
+        }
       },
     );
   }

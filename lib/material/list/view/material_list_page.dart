@@ -72,6 +72,37 @@ class Material extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                      child: Wrap(
+                        direction: Axis.horizontal,
+                        spacing: kTextPadding,
+                        runSpacing: kTextPadding,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    labelText: lang.search,
+                                    hintText: lang.search,
+                                    border: const OutlineInputBorder(),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.auto,
+                                    isDense: true,
+                                    suffixIcon: const Icon(Icons.search),
+                                  ),
+                                  onChanged: (text) => context
+                                      .read<MaterialBloc>()
+                                      .add(MaterialSearchChanged(text)),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -156,7 +187,7 @@ class Material extends StatelessWidget {
                                                   label: Text('...')),
                                             ],
                                             source: _DataSource(
-                                              data: state.materials,
+                                              data: state.filter,
                                               context: context,
                                               onDetailButtonPressed: (data) =>
                                                   GoRouter.of(context).go(

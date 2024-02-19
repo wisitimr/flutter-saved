@@ -16,7 +16,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     on<ProductFormIdChanged>(_onIdChanged);
     on<ProductFormCodeChanged>(_onCodeChanged);
     on<ProductFormNameChanged>(_onNameChanged);
-    on<ProductFormDetailChanged>(_onDetailChanged);
+    on<ProductFormDescriptionChanged>(_onDescriptionChanged);
     on<ProductFormPriceChanged>(_onPriceChanged);
     on<ProductSubmitted>(_onSubmitted);
   }
@@ -37,7 +37,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
           product.id = data.id;
           product.code = data.code;
           product.name = data.name;
-          product.detail = data.detail;
+          product.description = data.description;
           product.price = data.price.toStringAsFixed(2);
         }
       }
@@ -46,7 +46,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
         id: Id.dirty(product.id),
         code: Code.dirty(product.code),
         name: Name.dirty(product.name),
-        detail: Detail.dirty(product.detail),
+        description: Description.dirty(product.description),
         price: Price.dirty(product.price),
         isValid: product.id.isNotEmpty,
       ));
@@ -111,14 +111,14 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     );
   }
 
-  void _onDetailChanged(
-    ProductFormDetailChanged event,
+  void _onDescriptionChanged(
+    ProductFormDescriptionChanged event,
     Emitter<ProductFormState> emit,
   ) {
-    final detail = Detail.dirty(event.detail);
+    final description = Description.dirty(event.description);
     emit(
       state.copyWith(
-        detail: detail,
+        description: description,
         isValid: Formz.validate(
           [
             state.code,
@@ -158,7 +158,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
         data['id'] = state.id.value;
         data['code'] = state.code.value;
         data['name'] = state.name.value;
-        data['detail'] = state.detail.value;
+        data['description'] = state.description.value;
         data['price'] = state.price.value;
         dynamic res = await _productService.save(provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
@@ -181,6 +181,6 @@ class ProductFormTmp {
   String id = '';
   String code = '';
   String name = '';
-  String detail = '';
+  String description = '';
   String price = '';
 }

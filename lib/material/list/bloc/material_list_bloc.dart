@@ -11,14 +11,14 @@ part 'material_list_state.dart';
 class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
   MaterialBloc() : super(MaterialLoading()) {
     on<MaterialStarted>(_onStarted);
-    on<MaterialPageSizeChanged>(_onPageSizeChanged);
+    on<MaterialSearchChanged>(_onSearchChanged);
   }
 
   final MaterialService _materialService = MaterialService();
 
   Future<void> _onStarted(
       MaterialStarted event, Emitter<MaterialXState> emit) async {
-    emit(MaterialLoading());
+    emit(state.copyWith(status: Status.loading));
     try {
       final AppProvider provider = event.provider;
       List<MaterialModel> materials = [];
@@ -31,21 +31,41 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
           materials = data.map((item) => MaterialModel.fromJson(item)).toList();
         }
       }
-      emit(MaterialXState(
-        materials: materials,
-      ));
+      emit(
+        state.copyWith(
+          status: Status.success,
+          materials: materials,
+          filter: materials,
+        ),
+      );
     } catch (e) {
-      emit(MaterialError());
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
     }
   }
 
-  void _onPageSizeChanged(
-    MaterialPageSizeChanged event,
+  void _onSearchChanged(
+    MaterialSearchChanged event,
     Emitter<MaterialXState> emit,
   ) {
+    emit(state.copyWith(status: Status.loading));
+    var filter = event.text.isNotEmpty
+        ? state.materials
+            .where(
+              (item) =>
+                  item.code.toLowerCase().contains(event.text.toLowerCase()) ||
+                  item.name.toLowerCase().contains(event.text.toLowerCase()),
+            )
+            .toList()
+        : state.materials;
+
     emit(
       state.copyWith(
-        pageSize: event.pageSize,
+        status: Status.success,
+        materials: state.materials,
+        filter: filter,
       ),
     );
   }

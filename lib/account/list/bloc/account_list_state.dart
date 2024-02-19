@@ -1,25 +1,37 @@
 part of 'account_list_bloc.dart';
 
+enum Status { loading, success, failure }
+
 @immutable
 final class AccountState extends Equatable {
   const AccountState({
+    this.status = Status.loading,
+    this.message = '',
     this.accounts = const <AccountModel>[],
-    this.pageSize = 10,
+    this.filter = const <AccountModel>[],
   });
 
+  final Status status;
+  final String message;
   final List<AccountModel> accounts;
-  final int pageSize;
+  final List<AccountModel> filter;
 
   AccountState copyWith({
-    int? pageSize,
+    Status? status,
+    String? message,
+    List<AccountModel>? accounts,
+    List<AccountModel>? filter,
   }) {
     return AccountState(
-      pageSize: pageSize ?? this.pageSize,
+      status: status ?? this.status,
+      message: message ?? this.message,
+      accounts: accounts ?? this.accounts,
+      filter: filter ?? this.filter,
     );
   }
 
   @override
-  List<Object> get props => [pageSize];
+  List<Object> get props => [message, status, accounts, filter];
 }
 
 final class AccountLoading extends AccountState {

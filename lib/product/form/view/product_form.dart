@@ -125,19 +125,20 @@ class ProductFormDetail extends StatelessWidget {
                             padding: const EdgeInsets.only(
                                 bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              name: 'detail',
+                              name: 'description',
                               decoration: InputDecoration(
-                                labelText: lang.detail,
-                                hintText: lang.detail,
+                                labelText: lang.description,
+                                hintText: lang.description,
                                 border: const OutlineInputBorder(),
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.always,
                               ),
-                              initialValue: state.detail.value,
+                              initialValue: state.description.value,
                               validator: FormBuilderValidators.required(),
-                              onChanged: (detail) => context
+                              onChanged: (description) => context
                                   .read<ProductFormBloc>()
-                                  .add(ProductFormDetailChanged(detail!)),
+                                  .add(ProductFormDescriptionChanged(
+                                      description!)),
                             ),
                           ),
                           Padding(

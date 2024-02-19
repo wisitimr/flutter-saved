@@ -5,7 +5,7 @@ class ProductFormModel extends Equatable {
     required this.id,
     required this.code,
     required this.name,
-    required this.detail,
+    required this.description,
     required this.price,
     required this.createdBy,
     required this.createdAt,
@@ -16,7 +16,7 @@ class ProductFormModel extends Equatable {
   final String id;
   final String code;
   final String name;
-  final String detail;
+  final String description;
   final double price;
   final String createdBy;
   final String createdAt;
@@ -28,7 +28,7 @@ class ProductFormModel extends Equatable {
         id: json['id'] ?? '',
         code: json['code'] ?? '',
         name: json['name'] ?? '',
-        detail: json['detail'] ?? '',
+        description: json['description'] ?? '',
         price: json['price'] ?? 0,
         createdBy: json['createdBy'] ?? '',
         createdAt: json['createdAt'] ?? '',
@@ -41,7 +41,7 @@ class ProductFormModel extends Equatable {
         id,
         code,
         name,
-        detail,
+        description,
         price,
         createdBy,
         createdAt,

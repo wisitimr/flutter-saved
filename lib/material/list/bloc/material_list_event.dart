@@ -14,11 +14,11 @@ final class MaterialStarted extends MaterialEvent {
   List<Object> get props => [provider];
 }
 
-final class MaterialPageSizeChanged extends MaterialEvent {
-  const MaterialPageSizeChanged(this.pageSize);
+final class MaterialSearchChanged extends MaterialEvent {
+  const MaterialSearchChanged(this.text);
 
-  final int pageSize;
+  final String text;
 
   @override
-  List<Object> get props => [pageSize];
+  List<Object> get props => [text];
 }

@@ -173,7 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "retypePassword":
             MessageLookupByLibrary.simpleMessage("ยืนยันรหัสผ่าน"),
         "save": MessageLookupByLibrary.simpleMessage("บันทึก"),
-        "search": MessageLookupByLibrary.simpleMessage("Search"),
+        "search": MessageLookupByLibrary.simpleMessage("ค้นหา"),
         "submit": MessageLookupByLibrary.simpleMessage("Submit"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
         "textEmphasis": MessageLookupByLibrary.simpleMessage("Text Emphasis"),

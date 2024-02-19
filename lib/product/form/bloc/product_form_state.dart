@@ -8,7 +8,7 @@ final class ProductFormState extends Equatable {
     this.id = const Id.pure(),
     this.code = const Code.pure(),
     this.name = const Name.pure(),
-    this.detail = const Detail.pure(),
+    this.description = const Description.pure(),
     this.price = const Price.pure(),
     this.isValid = false,
   });
@@ -19,7 +19,7 @@ final class ProductFormState extends Equatable {
   final Id id;
   final Code code;
   final Name name;
-  final Detail detail;
+  final Description description;
   final Price price;
   final bool isValid;
 
@@ -30,7 +30,7 @@ final class ProductFormState extends Equatable {
     Id? id,
     Code? code,
     Name? name,
-    Detail? detail,
+    Description? description,
     Price? price,
     bool? isValid,
   }) {
@@ -41,7 +41,7 @@ final class ProductFormState extends Equatable {
       id: id ?? this.id,
       code: code ?? this.code,
       name: name ?? this.name,
-      detail: detail ?? this.detail,
+      description: description ?? this.description,
       price: price ?? this.price,
       isValid: isValid ?? this.isValid,
     );
@@ -49,7 +49,7 @@ final class ProductFormState extends Equatable {
 
   @override
   List<Object> get props =>
-      [isLoading, status, id, code, name, detail, price, isValid];
+      [isLoading, status, id, code, name, description, price, isValid];
 }
 
 final class ProductFormLoading extends ProductFormState {

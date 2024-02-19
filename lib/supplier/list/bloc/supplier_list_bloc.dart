@@ -11,14 +11,14 @@ part 'supplier_list_state.dart';
 class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
   SupplierBloc() : super(SupplierLoading()) {
     on<SupplierStarted>(_onStarted);
-    on<SupplierPageSizeChanged>(_onPageSizeChanged);
+    on<SupplierSearchChanged>(_onSearchChanged);
   }
 
   final SupplierService _supplierService = SupplierService();
 
   Future<void> _onStarted(
       SupplierStarted event, Emitter<SupplierState> emit) async {
-    emit(SupplierLoading());
+    emit(state.copyWith(status: Status.loading));
     try {
       final AppProvider provider = event.provider;
       List<SupplierModel> suppliers = [];
@@ -31,21 +31,41 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
           suppliers = data.map((item) => SupplierModel.fromJson(item)).toList();
         }
       }
-      emit(SupplierState(
-        suppliers: suppliers,
-      ));
+      emit(
+        state.copyWith(
+          status: Status.success,
+          suppliers: suppliers,
+          filter: suppliers,
+        ),
+      );
     } catch (e) {
-      emit(SupplierError());
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
     }
   }
 
-  void _onPageSizeChanged(
-    SupplierPageSizeChanged event,
+  void _onSearchChanged(
+    SupplierSearchChanged event,
     Emitter<SupplierState> emit,
   ) {
+    emit(state.copyWith(status: Status.loading));
+    var filter = event.text.isNotEmpty
+        ? state.suppliers
+            .where(
+              (item) =>
+                  item.code.toLowerCase().contains(event.text.toLowerCase()) ||
+                  item.name.toLowerCase().contains(event.text.toLowerCase()),
+            )
+            .toList()
+        : state.suppliers;
+
     emit(
       state.copyWith(
-        pageSize: event.pageSize,
+        status: Status.success,
+        suppliers: state.suppliers,
+        filter: filter,
       ),
     );
   }

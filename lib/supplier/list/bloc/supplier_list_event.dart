@@ -14,11 +14,11 @@ final class SupplierStarted extends SupplierEvent {
   List<Object> get props => [provider];
 }
 
-final class SupplierPageSizeChanged extends SupplierEvent {
-  const SupplierPageSizeChanged(this.pageSize);
+final class SupplierSearchChanged extends SupplierEvent {
+  const SupplierSearchChanged(this.text);
 
-  final int pageSize;
+  final String text;
 
   @override
-  List<Object> get props => [pageSize];
+  List<Object> get props => [text];
 }

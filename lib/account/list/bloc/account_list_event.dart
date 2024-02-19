@@ -14,11 +14,11 @@ final class AccountStarted extends AccountEvent {
   List<Object> get props => [provider];
 }
 
-final class AccountPageSizeChanged extends AccountEvent {
-  const AccountPageSizeChanged(this.pageSize);
+final class AccountSearchChanged extends AccountEvent {
+  const AccountSearchChanged(this.text);
 
-  final int pageSize;
+  final String text;
 
   @override
-  List<Object> get props => [pageSize];
+  List<Object> get props => [text];
 }

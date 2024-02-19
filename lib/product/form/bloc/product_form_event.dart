@@ -45,13 +45,13 @@ final class ProductFormNameChanged extends ProductFormEvent {
   List<Object> get props => [name];
 }
 
-final class ProductFormDetailChanged extends ProductFormEvent {
-  const ProductFormDetailChanged(this.detail);
+final class ProductFormDescriptionChanged extends ProductFormEvent {
+  const ProductFormDescriptionChanged(this.description);
 
-  final String detail;
+  final String description;
 
   @override
-  List<Object> get props => [detail];
+  List<Object> get props => [description];
 }
 
 final class ProductFormPriceChanged extends ProductFormEvent {

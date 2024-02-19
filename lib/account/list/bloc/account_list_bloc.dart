@@ -11,14 +11,14 @@ part 'account_list_state.dart';
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
   AccountBloc() : super(AccountLoading()) {
     on<AccountStarted>(_onStarted);
-    on<AccountPageSizeChanged>(_onPageSizeChanged);
+    on<AccountSearchChanged>(_onSearchChanged);
   }
 
   final AccountService _accountService = AccountService();
 
   Future<void> _onStarted(
       AccountStarted event, Emitter<AccountState> emit) async {
-    emit(AccountLoading());
+    emit(state.copyWith(status: Status.loading));
     try {
       final AppProvider provider = event.provider;
       List<AccountModel> accounts = [];
@@ -31,21 +31,40 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           accounts = data.map((item) => AccountModel.fromJson(item)).toList();
         }
       }
-      emit(AccountState(
-        accounts: accounts,
-      ));
+      emit(
+        state.copyWith(
+          status: Status.success,
+          accounts: accounts,
+          filter: accounts,
+        ),
+      );
     } catch (e) {
-      emit(AccountError());
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
     }
   }
 
-  void _onPageSizeChanged(
-    AccountPageSizeChanged event,
+  void _onSearchChanged(
+    AccountSearchChanged event,
     Emitter<AccountState> emit,
   ) {
+    emit(state.copyWith(status: Status.loading));
+    var filter = event.text.isNotEmpty
+        ? state.accounts
+            .where(
+              (item) =>
+                  item.code.toLowerCase().contains(event.text.toLowerCase()) ||
+                  item.name.toLowerCase().contains(event.text.toLowerCase()),
+            )
+            .toList()
+        : state.accounts;
     emit(
       state.copyWith(
-        pageSize: event.pageSize,
+        status: Status.success,
+        accounts: state.accounts,
+        filter: filter,
       ),
     );
   }

@@ -72,6 +72,37 @@ class Product extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                      child: Wrap(
+                        direction: Axis.horizontal,
+                        spacing: kTextPadding,
+                        runSpacing: kTextPadding,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    labelText: lang.search,
+                                    hintText: lang.search,
+                                    border: const OutlineInputBorder(),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.auto,
+                                    isDense: true,
+                                    suffixIcon: const Icon(Icons.search),
+                                  ),
+                                  onChanged: (text) => context
+                                      .read<ProductBloc>()
+                                      .add(ProductSearchChanged(text)),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -146,8 +177,6 @@ class Product extends StatelessWidget {
                                               DataColumn(
                                                   label: Text(lang.name)),
                                               DataColumn(
-                                                  label: Text(lang.detail)),
-                                              DataColumn(
                                                   label: Text(lang.price)),
                                               DataColumn(
                                                   label: Text(lang.createdAt)),
@@ -157,55 +186,14 @@ class Product extends StatelessWidget {
                                                   label: Text('...')),
                                             ],
                                             source: _DataSource(
-                                              data: state.products,
+                                              data: state.filter,
                                               context: context,
                                               onDetailButtonPressed: (data) =>
                                                   GoRouter.of(context).go(
                                                       '${RouteUri.productFrom}?id=${data.id}'),
                                               onDeleteButtonPressed: (data) {},
                                             ),
-                                          )
-
-                                          // DataTable(
-                                          //   showCheckboxColumn: false,
-                                          //   showBottomBorder: true,
-                                          //   columns: [
-                                          //     DataColumn(label: Text(lang.code)),
-                                          //     DataColumn(label: Text(lang.name)),
-                                          //     DataColumn(
-                                          //         label: Text(lang.description)),
-                                          //     DataColumn(
-                                          //         label: Text(lang.createdAt)),
-                                          //     DataColumn(
-                                          //         label: Text(lang.updatedAt)),
-                                          //   ],
-                                          //   rows: List.generate(
-                                          //       state.products.length, (index) {
-                                          //     ProductModel row =
-                                          //         state.products[index];
-                                          //     var createdAt = inputFormat
-                                          //         .parse(row.createdAt);
-                                          //     var updatedAt = inputFormat
-                                          //         .parse(row.updatedAt);
-                                          //     return DataRow(
-                                          //         cells: [
-                                          //           DataCell(Text(row.code)),
-                                          //           DataCell(Text(row.name)),
-                                          //           DataCell(
-                                          //               Text(row.description)),
-                                          //           DataCell(Text(outputFormat
-                                          //               .format(createdAt))),
-                                          //           DataCell(Text(outputFormat
-                                          //               .format(updatedAt))),
-                                          //         ],
-                                          //         onSelectChanged: (value) {
-                                          //           final query = '?id=${row.id}';
-                                          //           GoRouter.of(context).go(
-                                          //               '${RouteUri.userForm}$query');
-                                          //         });
-                                          //   }).toList(),
-                                          // ),
-                                          ),
+                                          )),
                                     ),
                                   ),
                                 );
@@ -261,7 +249,6 @@ class _DataSource extends DataTableSource {
       cells: [
         DataCell(Text(row.code)),
         DataCell(Text(row.name)),
-        DataCell(Text(row.detail)),
         DataCell(Text(row.price.toStringAsFixed(2))),
         DataCell(Text(outputFormat.format(createdAt))),
         DataCell(Text(outputFormat.format(updatedAt))),

@@ -14,11 +14,11 @@ final class ProductStarted extends ProductEvent {
   List<Object> get props => [provider];
 }
 
-final class ProductPageSizeChanged extends ProductEvent {
-  const ProductPageSizeChanged(this.pageSize);
+final class ProductSearchChanged extends ProductEvent {
+  const ProductSearchChanged(this.text);
 
-  final int pageSize;
+  final String text;
 
   @override
-  List<Object> get props => [pageSize];
+  List<Object> get props => [text];
 }

@@ -34,7 +34,7 @@ class _DaybookListPageState extends State<DaybookListPage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return DaybookListBloc()..add(DaybookListStarted(provider));
+          return DaybookListBloc(provider)..add(const DaybookListStarted());
         },
         child: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),

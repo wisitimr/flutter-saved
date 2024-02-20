@@ -6,9 +6,7 @@ sealed class DashboardEvent extends Equatable {
 }
 
 final class DashboardStarted extends DashboardEvent {
-  const DashboardStarted(this.provider);
-
-  final AppProvider provider;
+  const DashboardStarted();
 
   @override
   List<Object> get props => [];

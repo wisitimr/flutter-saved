@@ -13,7 +13,9 @@ part 'daybook_detail_form_state.dart';
 
 class DaybookDetailFormBloc
     extends Bloc<DaybookDetailFormEvent, DaybookDetailFormState> {
-  DaybookDetailFormBloc() : super(DaybookDetailFormLoading()) {
+  DaybookDetailFormBloc(AppProvider provider)
+      : _provider = provider,
+        super(DaybookDetailFormLoading()) {
     on<DaybookDetailFormStarted>(_onStarted);
     on<DaybookDetailFormIdChanged>(_onIdChanged);
     on<DaybookDetailFormNameChanged>(_onNameChanged);
@@ -23,6 +25,7 @@ class DaybookDetailFormBloc
     on<DaybookDetailSubmitted>(_onSubmitted);
   }
 
+  final AppProvider _provider;
   final DaybookDetailService _daybookDetailService = DaybookDetailService();
   final AccountService _accountService = AccountService();
 
@@ -30,13 +33,13 @@ class DaybookDetailFormBloc
       Emitter<DaybookDetailFormState> emit) async {
     emit(DaybookDetailFormLoading());
     try {
-      final AppProvider provider = event.provider;
-      final acctRes = await _accountService.findAll(provider, {});
+      final acctRes = await _accountService.findAll(_provider, {});
       List<MsAccount> accounts = [];
       final daybook = DaybookDetailFormTmp();
       daybook.daybook = event.daybook;
       if (event.id.isNotEmpty) {
-        final invRes = await _daybookDetailService.findById(provider, event.id);
+        final invRes =
+            await _daybookDetailService.findById(_provider, event.id);
         if (invRes != null && invRes['statusCode'] == 200) {
           DaybookDetailFormModel data =
               DaybookDetailFormModel.fromJson(invRes['data']);
@@ -183,7 +186,6 @@ class DaybookDetailFormBloc
     DaybookDetailSubmitted event,
     Emitter<DaybookDetailFormState> emit,
   ) async {
-    final AppProvider provider = event.provider;
     try {
       final Map<String, dynamic> data = {};
       if (state.id.isValid) {
@@ -199,7 +201,7 @@ class DaybookDetailFormBloc
       }
       data['daybook'] = state.daybook.value;
 
-      dynamic res = await _daybookDetailService.save(provider, data);
+      dynamic res = await _daybookDetailService.save(_provider, data);
 
       if (res['statusCode'] == 200 || res['statusCode'] == 201) {
         emit(state.copyWith(

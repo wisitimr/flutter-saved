@@ -27,8 +27,7 @@ class _DaybookFormPageState extends State<DaybookFormPage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return DaybookFormBloc()
-            ..add(DaybookFormStarted(provider, widget.id));
+          return DaybookFormBloc(provider)..add(DaybookFormStarted(widget.id));
         },
         child:
             ListView(padding: const EdgeInsets.all(kDefaultPadding), children: [

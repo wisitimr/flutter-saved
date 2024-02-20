@@ -8,10 +8,13 @@ part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  DashboardBloc() : super(DashboardLoading()) {
+  DashboardBloc(AppProvider provider)
+      : _provider = provider,
+        super(DashboardLoading()) {
     on<DashboardStarted>(_onStarted);
   }
 
+  final AppProvider _provider;
   final UserService _userService = UserService();
   final DayBookService _daybookService = DayBookService();
   final AccountService _accountService = AccountService();
@@ -23,11 +26,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   Future<void> _onStarted(
       DashboardStarted event, Emitter<DashboardState> emit) async {
     emit(DashboardLoading());
-    final AppProvider provider = event.provider;
     try {
-      if (provider.companyId.isNotEmpty) {
+      if (_provider.companyId.isNotEmpty) {
         Map<String, dynamic> param = {};
-        param['company'] = provider.companyId;
+        param['company'] = _provider.companyId;
         final [
           userRes,
           daybookRes,
@@ -37,13 +39,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           productRes,
           materialRes,
         ] = await Future.wait([
-          _userService.count(provider),
-          _daybookService.count(provider, param),
-          _accountService.count(provider, param),
-          _supplierService.count(provider, param),
-          _customerService.count(provider, param),
-          _productService.count(provider, param),
-          _materialService.count(provider, param),
+          _userService.count(_provider),
+          _daybookService.count(_provider, param),
+          _accountService.count(_provider, param),
+          _supplierService.count(_provider, param),
+          _customerService.count(_provider, param),
+          _productService.count(_provider, param),
+          _materialService.count(_provider, param),
         ]);
         int userCount = 0;
         int daybookCount = 0;

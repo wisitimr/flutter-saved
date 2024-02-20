@@ -10,10 +10,13 @@ part 'daybook_list_event.dart';
 part 'daybook_list_state.dart';
 
 class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
-  DaybookListBloc() : super(DaybookListLoading()) {
+  DaybookListBloc(AppProvider provider)
+      : _provider = provider,
+        super(DaybookListLoading()) {
     on<DaybookListStarted>(_onStarted);
   }
 
+  final AppProvider _provider;
   final DayBookService _daybookService = DayBookService();
   final DocumentService _documentService = DocumentService();
 
@@ -22,13 +25,12 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
     emit(DaybookListLoading());
     try {
       Map<String, dynamic> param = {};
-      final AppProvider provider = event.provider;
-      if (provider.companyId.isNotEmpty) {
-        param['company'] = provider.companyId;
+      if (_provider.companyId.isNotEmpty) {
+        param['company'] = _provider.companyId;
 
         final [daybookRes, docRes] = await Future.wait([
-          _daybookService.findAll(provider, param),
-          _documentService.findAll(provider, {})
+          _daybookService.findAll(_provider, param),
+          _documentService.findAll(_provider, {})
         ]);
         List<DaybookListModel> daybooks = [];
         List<Document> document = [];

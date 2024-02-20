@@ -9,14 +9,13 @@ sealed class DaybookDetailFormEvent extends Equatable {
 }
 
 final class DaybookDetailFormStarted extends DaybookDetailFormEvent {
-  const DaybookDetailFormStarted(this.provider, this.id, this.daybook);
+  const DaybookDetailFormStarted(this.id, this.daybook);
 
-  final AppProvider provider;
   final String id;
   final String daybook;
 
   @override
-  List<Object> get props => [provider, id, daybook];
+  List<Object> get props => [id, daybook];
 }
 
 final class DaybookDetailFormIdChanged extends DaybookDetailFormEvent {

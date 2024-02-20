@@ -6,10 +6,8 @@ sealed class DaybookListEvent extends Equatable {
 }
 
 final class DaybookListStarted extends DaybookListEvent {
-  const DaybookListStarted(this.provider);
-
-  final AppProvider provider;
+  const DaybookListStarted();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
 }

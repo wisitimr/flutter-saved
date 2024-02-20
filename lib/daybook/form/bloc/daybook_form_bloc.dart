@@ -17,7 +17,9 @@ part 'daybook_form_event.dart';
 part 'daybook_form_state.dart';
 
 class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
-  DaybookFormBloc() : super(DaybookFormLoading()) {
+  DaybookFormBloc(AppProvider provider)
+      : _provider = provider,
+        super(DaybookFormLoading()) {
     on<DaybookFormStarted>(_onStarted);
     on<DaybookFormIdChanged>(_onIdChanged);
     on<DaybookFormNumberChanged>(_onNumberChanged);
@@ -30,6 +32,7 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
     on<DaybookSubmitted>(_onSubmitted);
   }
 
+  final AppProvider _provider;
   final DayBookService _daybookService = DayBookService();
   final DocumentService _documentService = DocumentService();
   final SupplierService _supplierService = SupplierService();
@@ -40,19 +43,18 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
     // emit(DaybookFormLoading());
     // emit(state.copyWith(isLoading: true));
     try {
-      final AppProvider provider = event.provider;
       final [docRes, supRes, cusRes] = await Future.wait([
-        _documentService.findAll(provider, {}),
-        _supplierService.findAll(provider, {}),
-        _customerService.findAll(provider, {}),
+        _documentService.findAll(_provider, {}),
+        _supplierService.findAll(_provider, {}),
+        _customerService.findAll(_provider, {}),
       ]);
       List<MsDocument> documents = [];
       List<MsSupplier> suppliers = [];
       List<MsCustomer> customers = [];
       final daybook = DaybookFormTmp();
-      daybook.company = provider.companyId;
+      daybook.company = _provider.companyId;
       if (event.id.isNotEmpty) {
-        final invRes = await _daybookService.findById(provider, event.id);
+        final invRes = await _daybookService.findById(_provider, event.id);
         if (invRes != null && invRes['statusCode'] == 200) {
           DaybookFormModel data = DaybookFormModel.fromJson(invRes['data']);
           daybook.id = data.id;
@@ -335,7 +337,6 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
     DaybookSubmitted event,
     Emitter<DaybookFormState> emit,
   ) async {
-    final AppProvider provider = event.provider;
     if (state.isValid) {
       try {
         final Map<String, dynamic> data = {};
@@ -363,7 +364,7 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
           }
         }
         data['daybookDetails'] = daybookDetail;
-        dynamic res = await _daybookService.save(provider, data);
+        dynamic res = await _daybookService.save(_provider, data);
 
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(

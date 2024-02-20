@@ -26,7 +26,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return DashboardBloc()..add(DashboardStarted(provider));
+          return DashboardBloc(provider)..add(const DashboardStarted());
         },
         child: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),

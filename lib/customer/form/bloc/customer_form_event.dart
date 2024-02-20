@@ -9,13 +9,12 @@ sealed class CustomerFormEvent extends Equatable {
 }
 
 final class CustomerFormStarted extends CustomerFormEvent {
-  const CustomerFormStarted(this.provider, this.id);
+  const CustomerFormStarted(this.id);
 
-  final AppProvider provider;
   final String id;
 
   @override
-  List<Object> get props => [provider, id];
+  List<Object> get props => [id];
 }
 
 final class CustomerFormIdChanged extends CustomerFormEvent {

@@ -93,10 +93,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "colorScheme": MessageLookupByLibrary.simpleMessage("Color Scheme"),
         "colors": m1,
         "confirmDeleteRecord":
-            MessageLookupByLibrary.simpleMessage("Confirm delete this record?"),
+            MessageLookupByLibrary.simpleMessage("ยินยันการลบ?"),
         "confirmSubmitRecord":
             MessageLookupByLibrary.simpleMessage("Confirm submit this record?"),
-        "confirm": MessageLookupByLibrary.simpleMessage("ยืนยัน"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "creditCardErrorText": MessageLookupByLibrary.simpleMessage(
             "This field requires a valid credit card number."),
@@ -174,7 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ยืนยันรหัสผ่าน"),
         "save": MessageLookupByLibrary.simpleMessage("บันทึก"),
         "search": MessageLookupByLibrary.simpleMessage("ค้นหา"),
-        "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+        "ok": MessageLookupByLibrary.simpleMessage("ตกลง"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
         "textEmphasis": MessageLookupByLibrary.simpleMessage("Text Emphasis"),
         "textTheme": MessageLookupByLibrary.simpleMessage("Text Theme"),

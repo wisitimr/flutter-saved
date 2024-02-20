@@ -6,12 +6,10 @@ sealed class CustomerEvent extends Equatable {
 }
 
 final class CustomerStarted extends CustomerEvent {
-  const CustomerStarted(this.provider);
-
-  final AppProvider provider;
+  const CustomerStarted();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
 }
 
 final class CustomerSearchChanged extends CustomerEvent {
@@ -21,4 +19,22 @@ final class CustomerSearchChanged extends CustomerEvent {
 
   @override
   List<Object> get props => [text];
+}
+
+final class CustomerConfirm extends CustomerEvent {
+  const CustomerConfirm(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
+}
+
+final class CustomerDelete extends CustomerEvent {
+  const CustomerDelete(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
 }

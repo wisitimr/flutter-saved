@@ -9,13 +9,12 @@ sealed class AccountFormEvent extends Equatable {
 }
 
 final class AccountFormStarted extends AccountFormEvent {
-  const AccountFormStarted(this.provider, this.id);
+  const AccountFormStarted(this.id);
 
-  final AppProvider provider;
   final String id;
 
   @override
-  List<Object> get props => [provider, id];
+  List<Object> get props => [id];
 }
 
 final class AccountFormIdChanged extends AccountFormEvent {
@@ -64,10 +63,8 @@ final class AccountFormTypeChanged extends AccountFormEvent {
 }
 
 final class AccountSubmitted extends AccountFormEvent {
-  const AccountSubmitted(this.provider);
-
-  final AppProvider provider;
+  const AccountSubmitted();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
 }

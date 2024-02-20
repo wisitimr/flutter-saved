@@ -53,7 +53,7 @@ class DashboardCardList extends StatelessWidget {
   Widget build(BuildContext context) {
     final lang = Lang.of(context);
     final themeData = Theme.of(context);
-    final appColorScheme = Theme.of(context).extension<AppColorScheme>()!;
+    final appColorScheme = themeData.extension<AppColorScheme>()!;
     final size = MediaQuery.of(context).size;
     final summaryCardCrossAxisCount = (size.width >= kScreenWidthLg ? 4 : 2);
     final provider = context.read<AppProvider>();
@@ -61,7 +61,8 @@ class DashboardCardList extends StatelessWidget {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (context, state) {
         return switch (state) {
-          DashboardLoading() => const CircularProgressIndicator(),
+          DashboardLoading() =>
+            const Center(child: CircularProgressIndicator()),
           DashboardError() => const Text('Something went wrong!'),
           DashboardLoaded() => LayoutBuilder(
               builder: (context, constraints) {
@@ -85,16 +86,6 @@ class DashboardCardList extends StatelessWidget {
                       width: summaryCardWidth,
                       route: RouteUri.daybook,
                     ),
-                    // SummaryCard(
-                    //   title: lang.todaySales,
-                    //   value: '+12%',
-                    //   icon: Icons.ssid_chart_rounded,
-                    //   backgroundColor: appColorScheme.success,
-                    //   textColor: themeData.colorScheme.onPrimary,
-                    //   iconColor: Colors.black12,
-                    //   width: summaryCardWidth,
-                    //   route: RouteUri.home,
-                    // ),
                     if (provider.role == 'admin') ...[
                       SummaryCard(
                         title: lang.user(num.parse(state.userCount.toString())),
@@ -107,16 +98,6 @@ class DashboardCardList extends StatelessWidget {
                         route: RouteUri.user,
                       ),
                     ],
-                    // SummaryCard(
-                    //   title: lang.pendingIssues(2),
-                    //   value: '0',
-                    //   icon: Icons.report_gmailerrorred_rounded,
-                    //   backgroundColor: appColorScheme.error,
-                    //   textColor: themeData.colorScheme.onPrimary,
-                    //   iconColor: Colors.black12,
-                    //   width: summaryCardWidth,
-                    //   route: RouteUri.home,
-                    // ),
                   ],
                 );
               },

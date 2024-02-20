@@ -11,7 +11,9 @@ part 'material_form_event.dart';
 part 'material_form_state.dart';
 
 class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
-  MaterialFormBloc() : super(MaterialFormLoading()) {
+  MaterialFormBloc(AppProvider provider)
+      : _provider = provider,
+        super(MaterialFormLoading()) {
     on<MaterialFormStarted>(_onStarted);
     on<MaterialFormIdChanged>(_onIdChanged);
     on<MaterialFormCodeChanged>(_onCodeChanged);
@@ -20,6 +22,7 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
     on<MaterialSubmitted>(_onSubmitted);
   }
 
+  final AppProvider _provider;
   final MaterialService _materialService = MaterialService();
 
   Future<void> _onStarted(
@@ -27,10 +30,9 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
     // emit(MaterialFormLoading());
     emit(state.copyWith(isLoading: true));
     try {
-      final AppProvider provider = event.provider;
       final material = MaterialFormTmp();
       if (event.id.isNotEmpty) {
-        final res = await _materialService.findById(provider, event.id);
+        final res = await _materialService.findById(_provider, event.id);
         if (res != null && res['statusCode'] == 200) {
           MaterialFormModel data = MaterialFormModel.fromJson(res['data']);
           material.id = data.id;
@@ -131,7 +133,6 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
     MaterialSubmitted event,
     Emitter<MaterialFormState> emit,
   ) async {
-    final AppProvider provider = event.provider;
     if (state.isValid) {
       try {
         final Map<String, dynamic> data = {};
@@ -139,7 +140,7 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
         data['code'] = state.code.value;
         data['name'] = state.name.value;
         data['description'] = state.description.value;
-        dynamic res = await _materialService.save(provider, data);
+        dynamic res = await _materialService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
               status: FormzSubmissionStatus.success,

@@ -22,20 +22,23 @@ class _AccountFormPageState extends State<AccountFormPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<AppProvider>();
+    final themeData = Theme.of(context);
 
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return AccountFormBloc()
-            ..add(AccountFormStarted(provider, widget.id));
+          return AccountFormBloc(provider)..add(AccountFormStarted(widget.id));
         },
-        child: ListView(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            children: const [
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-                  child: AccountForm()),
-            ]),
+        child:
+            ListView(padding: const EdgeInsets.all(kDefaultPadding), children: [
+          Text(
+            provider.companyName,
+            style: themeData.textTheme.headlineMedium,
+          ),
+          const Padding(
+              padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: AccountForm()),
+        ]),
       ),
     );
   }

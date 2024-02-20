@@ -9,23 +9,27 @@ part 'customer_list_event.dart';
 part 'customer_list_state.dart';
 
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
-  CustomerBloc() : super(CustomerLoading()) {
+  CustomerBloc(AppProvider provider)
+      : _provider = provider,
+        super(CustomerLoading()) {
     on<CustomerStarted>(_onStarted);
     on<CustomerSearchChanged>(_onSearchChanged);
+    on<CustomerConfirm>(_onConfirm);
+    on<CustomerDelete>(_onDelete);
   }
 
+  final AppProvider _provider;
   final CustomerService _customerService = CustomerService();
 
   Future<void> _onStarted(
       CustomerStarted event, Emitter<CustomerState> emit) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      final AppProvider provider = event.provider;
       List<CustomerModel> customers = [];
-      if (provider.companyId.isNotEmpty) {
+      if (_provider.companyId.isNotEmpty) {
         Map<String, dynamic> param = {};
-        param['company'] = provider.companyId;
-        final res = await _customerService.findAll(provider, param);
+        param['company'] = _provider.companyId;
+        final res = await _customerService.findAll(_provider, param);
         if (res['statusCode'] == 200) {
           List data = res['data'];
           customers = data.map((item) => CustomerModel.fromJson(item)).toList();
@@ -67,5 +71,62 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
         filter: filter,
       ),
     );
+  }
+
+  Future<void> _onConfirm(
+    CustomerConfirm event,
+    Emitter<CustomerState> emit,
+  ) async {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: Status.confirmation,
+          selectedRowId: event.id,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDelete(
+    CustomerDelete event,
+    Emitter<CustomerState> emit,
+  ) async {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      if (event.id.isNotEmpty) {
+        final res = await _customerService.delete(_provider, event.id);
+        if (res['statusCode'] == 200) {
+          emit(
+            state.copyWith(
+              status: Status.deleted,
+              message: res['statusMessage'],
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: Status.failure,
+              message: res['statusMessage'],
+            ),
+          );
+        }
+      } else {
+        emit(state.copyWith(
+          status: Status.failure,
+          message: "Invalid parameter",
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
+    }
   }
 }

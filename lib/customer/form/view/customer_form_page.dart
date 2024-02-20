@@ -22,20 +22,24 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<AppProvider>();
+    final themeData = Theme.of(context);
 
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return CustomerFormBloc()
-            ..add(CustomerFormStarted(provider, widget.id));
+          return CustomerFormBloc(provider)
+            ..add(CustomerFormStarted(widget.id));
         },
-        child: ListView(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            children: const [
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-                  child: CustomerForm()),
-            ]),
+        child:
+            ListView(padding: const EdgeInsets.all(kDefaultPadding), children: [
+          Text(
+            provider.companyName,
+            style: themeData.textTheme.headlineMedium,
+          ),
+          const Padding(
+              padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: CustomerForm()),
+        ]),
       ),
     );
   }

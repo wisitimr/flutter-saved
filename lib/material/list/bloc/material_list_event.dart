@@ -6,12 +6,10 @@ sealed class MaterialEvent extends Equatable {
 }
 
 final class MaterialStarted extends MaterialEvent {
-  const MaterialStarted(this.provider);
-
-  final AppProvider provider;
+  const MaterialStarted();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
 }
 
 final class MaterialSearchChanged extends MaterialEvent {
@@ -21,4 +19,22 @@ final class MaterialSearchChanged extends MaterialEvent {
 
   @override
   List<Object> get props => [text];
+}
+
+final class MaterialConfirm extends MaterialEvent {
+  const MaterialConfirm(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
+}
+
+final class MaterialDelete extends MaterialEvent {
+  const MaterialDelete(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
 }

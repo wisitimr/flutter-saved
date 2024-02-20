@@ -7,7 +7,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saved/app_provider.dart';
-import 'package:saved/app_router.dart';
 import 'package:saved/constants/dimens.dart';
 import 'package:saved/generated/l10n.dart';
 import 'package:saved/daybook/detail/form/bloc/daybook_detail_form_bloc.dart';
@@ -44,8 +43,7 @@ class DaybookDetailForm extends StatelessWidget {
               width: kDialogWidth,
               btnOkText: 'OK',
               btnOkOnPress: () async {
-                GoRouter.of(context).go(
-                    '${RouteUri.daybookForm}${await provider.getQueryParameter(RouteUri.daybookForm)}');
+                GoRouter.of(context).go(provider.previous);
               },
             );
 
@@ -70,7 +68,7 @@ class DaybookDetailFormDetail extends StatelessWidget {
       builder: (context, state) {
         switch (state.isLoading) {
           case true:
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           case false:
             return Card(
               clipBehavior: Clip.antiAlias,
@@ -193,8 +191,8 @@ class DaybookDetailFormDetail extends StatelessWidget {
                                   style: themeData
                                       .extension<AppButtonTheme>()!
                                       .secondaryElevated,
-                                  onPressed: () async => GoRouter.of(context).go(
-                                      '${RouteUri.daybookForm}${await provider.getQueryParameter(RouteUri.daybookForm)}'),
+                                  onPressed: () async => GoRouter.of(context)
+                                      .go(provider.previous),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment:

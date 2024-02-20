@@ -259,17 +259,27 @@ GoRouter appRouter(AppProvider provider) {
     ],
     redirect: (context, state) async {
       // final provider = context.read<AppProvider>();
-      var queryParam = "";
-      state.queryParameters.forEach((key, value) {
-        if (queryParam == "") {
-          queryParam += '?';
-        } else {
-          queryParam += '&';
-        }
-        queryParam += '$key=$value';
-      });
-      await provider.setQueryParameter(
-          prefix: state.matchedLocation, query: queryParam);
+      if (state.matchedLocation == RouteUri.dashboard) {
+        await Future.wait([
+          provider.clearPrevious(),
+          provider.setCurrent(state.matchedLocation),
+        ]);
+      } else {
+        var query = "";
+        state.queryParameters.forEach((key, value) {
+          if (query == "") {
+            query += '?';
+          } else {
+            query += '&';
+          }
+          query += '$key=$value';
+        });
+        String current = state.matchedLocation + query;
+        String previous = provider.current;
+        // print("provider.previous ${provider.previous}");
+        await provider.setCurrent(current);
+        await provider.setPrevious(previous);
+      }
       if (unrestrictedRoutes.contains(state.matchedLocation)) {
         return null;
       } else if (publicRoutes.contains(state.matchedLocation)) {

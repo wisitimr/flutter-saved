@@ -9,13 +9,12 @@ sealed class ProductFormEvent extends Equatable {
 }
 
 final class ProductFormStarted extends ProductFormEvent {
-  const ProductFormStarted(this.provider, this.id);
+  const ProductFormStarted(this.id);
 
-  final AppProvider provider;
   final String id;
 
   @override
-  List<Object> get props => [provider, id];
+  List<Object> get props => [id];
 }
 
 final class ProductFormIdChanged extends ProductFormEvent {
@@ -64,10 +63,8 @@ final class ProductFormPriceChanged extends ProductFormEvent {
 }
 
 final class ProductSubmitted extends ProductFormEvent {
-  const ProductSubmitted(this.provider);
-
-  final AppProvider provider;
+  const ProductSubmitted();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
 }

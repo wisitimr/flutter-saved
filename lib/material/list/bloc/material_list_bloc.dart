@@ -9,23 +9,27 @@ part 'material_list_event.dart';
 part 'material_list_state.dart';
 
 class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
-  MaterialBloc() : super(MaterialLoading()) {
+  MaterialBloc(AppProvider provider)
+      : _provider = provider,
+        super(MaterialLoading()) {
     on<MaterialStarted>(_onStarted);
     on<MaterialSearchChanged>(_onSearchChanged);
+    on<MaterialConfirm>(_onConfirm);
+    on<MaterialDelete>(_onDelete);
   }
 
+  final AppProvider _provider;
   final MaterialService _materialService = MaterialService();
 
   Future<void> _onStarted(
       MaterialStarted event, Emitter<MaterialXState> emit) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      final AppProvider provider = event.provider;
       List<MaterialModel> materials = [];
-      if (provider.companyId.isNotEmpty) {
+      if (_provider.companyId.isNotEmpty) {
         Map<String, dynamic> param = {};
-        param['company'] = provider.companyId;
-        final res = await _materialService.findAll(provider, param);
+        param['company'] = _provider.companyId;
+        final res = await _materialService.findAll(_provider, param);
         if (res['statusCode'] == 200) {
           List data = res['data'];
           materials = data.map((item) => MaterialModel.fromJson(item)).toList();
@@ -60,7 +64,6 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
             )
             .toList()
         : state.materials;
-
     emit(
       state.copyWith(
         status: Status.success,
@@ -68,5 +71,62 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
         filter: filter,
       ),
     );
+  }
+
+  Future<void> _onConfirm(
+    MaterialConfirm event,
+    Emitter<MaterialXState> emit,
+  ) async {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: Status.confirmation,
+          selectedRowId: event.id,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDelete(
+    MaterialDelete event,
+    Emitter<MaterialXState> emit,
+  ) async {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      if (event.id.isNotEmpty) {
+        final res = await _materialService.delete(_provider, event.id);
+        if (res['statusCode'] == 200) {
+          emit(
+            state.copyWith(
+              status: Status.deleted,
+              message: res['statusMessage'],
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: Status.failure,
+              message: res['statusMessage'],
+            ),
+          );
+        }
+      } else {
+        emit(state.copyWith(
+          status: Status.failure,
+          message: "Invalid parameter",
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
+    }
   }
 }

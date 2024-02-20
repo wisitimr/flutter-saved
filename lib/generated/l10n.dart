@@ -856,10 +856,10 @@ class Lang {
   }
 
   /// `Submit`
-  String get submit {
+  String get ok {
     return Intl.message(
-      'Submit',
-      name: 'submit',
+      'Ok',
+      name: 'ok',
       desc: '',
       args: [],
     );

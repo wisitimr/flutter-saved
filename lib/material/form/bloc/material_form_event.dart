@@ -9,13 +9,12 @@ sealed class MaterialFormEvent extends Equatable {
 }
 
 final class MaterialFormStarted extends MaterialFormEvent {
-  const MaterialFormStarted(this.provider, this.id);
+  const MaterialFormStarted(this.id);
 
-  final AppProvider provider;
   final String id;
 
   @override
-  List<Object> get props => [provider, id];
+  List<Object> get props => [id];
 }
 
 final class MaterialFormIdChanged extends MaterialFormEvent {
@@ -55,10 +54,8 @@ final class MaterialFormDescriptionChanged extends MaterialFormEvent {
 }
 
 final class MaterialSubmitted extends MaterialFormEvent {
-  const MaterialSubmitted(this.provider);
-
-  final AppProvider provider;
+  const MaterialSubmitted();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
 }

@@ -55,7 +55,7 @@ class CompanyForm extends StatelessWidget {
         builder: (context, state) {
           switch (state.isLoading) {
             case true:
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             case false:
               return Card(
                 clipBehavior: Clip.antiAlias,
@@ -177,8 +177,8 @@ class CompanyForm extends StatelessWidget {
                                     style: themeData
                                         .extension<AppButtonTheme>()!
                                         .secondaryElevated,
-                                    onPressed: () async => GoRouter.of(context).go(
-                                        '${RouteUri.myProfile}${await provider.getQueryParameter(RouteUri.myProfile)}'),
+                                    onPressed: () => GoRouter.of(context)
+                                        .go(provider.previous),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:

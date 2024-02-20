@@ -176,7 +176,7 @@ class _LoginButton extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return state.isLoading
-            ? const CircularProgressIndicator()
+            ? const Center(child: CircularProgressIndicator())
             : SizedBox(
                 height: 40.0,
                 width: double.infinity,
@@ -275,7 +275,7 @@ class _ConfirmButton extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return state.isLoading
-            ? const CircularProgressIndicator()
+            ? const Center(child: CircularProgressIndicator())
             : SizedBox(
                 height: 40.0,
                 width: double.infinity,

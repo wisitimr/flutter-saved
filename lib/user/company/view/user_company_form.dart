@@ -6,7 +6,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saved/app_provider.dart';
-import 'package:saved/app_router.dart';
 import 'package:saved/user/company/bloc/user_company_bloc.dart';
 import 'package:saved/constants/dimens.dart';
 import 'package:saved/generated/l10n.dart';
@@ -45,8 +44,7 @@ class UserCompanyForm extends StatelessWidget {
             width: kDialogWidth,
             btnOkText: 'OK',
             btnOkOnPress: () async {
-              GoRouter.of(context).go(
-                  '${RouteUri.userForm}${await provider.getQueryParameter(RouteUri.userForm)}');
+              GoRouter.of(context).go(provider.previous);
             },
           );
 
@@ -57,7 +55,7 @@ class UserCompanyForm extends StatelessWidget {
         builder: (context, state) {
           switch (state.isLoading) {
             case true:
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             case false:
               return Card(
                 clipBehavior: Clip.antiAlias,
@@ -179,8 +177,8 @@ class UserCompanyForm extends StatelessWidget {
                                     style: themeData
                                         .extension<AppButtonTheme>()!
                                         .secondaryElevated,
-                                    onPressed: () async => GoRouter.of(context).go(
-                                        '${RouteUri.userForm}${await provider.getQueryParameter(RouteUri.userForm)}'),
+                                    onPressed: () async => GoRouter.of(context)
+                                        .go(provider.previous),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:

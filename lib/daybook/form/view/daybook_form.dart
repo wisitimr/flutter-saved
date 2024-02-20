@@ -74,7 +74,7 @@ class DaybookFormDetail extends StatelessWidget {
       builder: (context, state) {
         switch (state.isLoading) {
           case true:
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           case false:
             return Card(
               clipBehavior: Clip.antiAlias,
@@ -176,7 +176,8 @@ class DaybookFormDetail extends StatelessWidget {
                           ),
                           if (state.documentType == 'PAY') ...[
                             state.isLoading
-                                ? const CircularProgressIndicator()
+                                ? const Center(
+                                    child: CircularProgressIndicator())
                                 : Padding(
                                     padding: const EdgeInsets.only(
                                         bottom: kDefaultPadding * 2.0),
@@ -207,7 +208,8 @@ class DaybookFormDetail extends StatelessWidget {
                           ],
                           if (state.documentType == 'REC') ...[
                             state.isLoading
-                                ? const CircularProgressIndicator()
+                                ? const Center(
+                                    child: CircularProgressIndicator())
                                 : Padding(
                                     padding: const EdgeInsets.only(
                                         bottom: kDefaultPadding * 2.0),

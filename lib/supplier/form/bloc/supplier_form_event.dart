@@ -9,13 +9,12 @@ sealed class SupplierFormEvent extends Equatable {
 }
 
 final class SupplierFormStarted extends SupplierFormEvent {
-  const SupplierFormStarted(this.provider, this.id);
+  const SupplierFormStarted(this.id);
 
-  final AppProvider provider;
   final String id;
 
   @override
-  List<Object> get props => [provider, id];
+  List<Object> get props => [id];
 }
 
 final class SupplierFormIdChanged extends SupplierFormEvent {

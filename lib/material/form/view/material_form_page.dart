@@ -22,20 +22,24 @@ class _MaterialFormPageState extends State<MaterialFormPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<AppProvider>();
+    final themeData = Theme.of(context);
 
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return MaterialFormBloc()
-            ..add(MaterialFormStarted(provider, widget.id));
+          return MaterialFormBloc(provider)
+            ..add(MaterialFormStarted(widget.id));
         },
-        child: ListView(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            children: const [
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-                  child: MaterialForm()),
-            ]),
+        child:
+            ListView(padding: const EdgeInsets.all(kDefaultPadding), children: [
+          Text(
+            provider.companyName,
+            style: themeData.textTheme.headlineMedium,
+          ),
+          const Padding(
+              padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: MaterialForm()),
+        ]),
       ),
     );
   }

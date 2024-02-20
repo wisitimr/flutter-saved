@@ -9,23 +9,27 @@ part 'account_list_event.dart';
 part 'account_list_state.dart';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
-  AccountBloc() : super(AccountLoading()) {
+  AccountBloc(AppProvider provider)
+      : _provider = provider,
+        super(AccountLoading()) {
     on<AccountStarted>(_onStarted);
     on<AccountSearchChanged>(_onSearchChanged);
+    on<AccountConfirm>(_onConfirm);
+    on<AccountDelete>(_onDelete);
   }
 
+  final AppProvider _provider;
   final AccountService _accountService = AccountService();
 
   Future<void> _onStarted(
       AccountStarted event, Emitter<AccountState> emit) async {
     emit(state.copyWith(status: Status.loading));
     try {
-      final AppProvider provider = event.provider;
       List<AccountModel> accounts = [];
-      if (provider.companyId.isNotEmpty) {
+      if (_provider.companyId.isNotEmpty) {
         Map<String, dynamic> param = {};
-        param['company'] = provider.companyId;
-        final res = await _accountService.findAll(provider, param);
+        param['company'] = _provider.companyId;
+        final res = await _accountService.findAll(_provider, param);
         if (res['statusCode'] == 200) {
           List data = res['data'];
           accounts = data.map((item) => AccountModel.fromJson(item)).toList();
@@ -60,6 +64,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             )
             .toList()
         : state.accounts;
+
+    // event.key.currentState?.pageTo(0);
+
     emit(
       state.copyWith(
         status: Status.success,
@@ -67,5 +74,62 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         filter: filter,
       ),
     );
+  }
+
+  Future<void> _onConfirm(
+    AccountConfirm event,
+    Emitter<AccountState> emit,
+  ) async {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: Status.confirmation,
+          selectedRowId: event.id,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDelete(
+    AccountDelete event,
+    Emitter<AccountState> emit,
+  ) async {
+    emit(state.copyWith(status: Status.loading));
+    try {
+      if (event.id.isNotEmpty) {
+        final res = await _accountService.delete(_provider, event.id);
+        if (res['statusCode'] == 200) {
+          emit(
+            state.copyWith(
+              status: Status.deleted,
+              message: res['statusMessage'],
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: Status.failure,
+              message: res['statusMessage'],
+            ),
+          );
+        }
+      } else {
+        emit(state.copyWith(
+          status: Status.failure,
+          message: "Invalid parameter",
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: Status.failure,
+        message: e.toString(),
+      ));
+    }
   }
 }

@@ -305,7 +305,7 @@ class _RegisterButton extends StatelessWidget {
     return BlocBuilder<RegisterBloc, RegisterState>(
       builder: (context, state) {
         return state.status.isInProgress
-            ? const CircularProgressIndicator()
+            ? const Center(child: CircularProgressIndicator())
             : SizedBox(
                 height: 40.0,
                 width: double.infinity,

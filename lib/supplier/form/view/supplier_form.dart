@@ -65,7 +65,7 @@ class SupplierFormDetail extends StatelessWidget {
       builder: (context, state) {
         switch (state.isLoading) {
           case true:
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           case false:
             return Card(
               clipBehavior: Clip.antiAlias,

@@ -65,6 +65,22 @@ class AccountService {
     }
   }
 
+  Future<dynamic> delete(AppProvider provider, String id) async {
+    try {
+      Response response = await _dio.delete(
+        '/$id',
+        options: Options(
+          headers: {'Authorization': 'Bearer ${provider.accessToken}'},
+        ),
+      );
+      //returns the successful user data json object
+      return response.data;
+    } on DioException catch (e) {
+      //returns the error object if any
+      return e.response!.data;
+    }
+  }
+
   Future<dynamic> save(AppProvider provider, Map<String, dynamic>? data) async {
     try {
       Response response;

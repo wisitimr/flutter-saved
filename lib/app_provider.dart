@@ -12,6 +12,8 @@ class AppProvider extends ChangeNotifier {
   var _fullName = '';
   var _role = '';
   var _accessToken = '';
+  var _current = '';
+  List<String> _previous = <String>[];
   var _companyId = '';
   var _companyName = '';
 
@@ -22,6 +24,9 @@ class AppProvider extends ChangeNotifier {
   String get accessToken => _accessToken;
   Locale get locale => _locale;
   ThemeMode get themeMode => _themeMode;
+  String get current => _current;
+  List<String> get previouses => _previous;
+  String get previous => _previous.last;
   String get companyId => _companyId;
   String get companyName => _companyName;
   bool get isLogin => _id.isNotEmpty ? true : false;
@@ -52,6 +57,17 @@ class AppProvider extends ChangeNotifier {
     _role = sharedPref.getString(StorageKeys.role) ?? '';
     _userProfileImageUrl =
         sharedPref.getString(StorageKeys.userProfileImageUrl) ?? '';
+    _current = sharedPref.getString(StorageKeys.current) ?? '';
+
+    try {
+      final pre = sharedPref.getString(StorageKeys.previous);
+      if (pre != null) {
+        _previous = pre.split(',');
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
     _companyId = sharedPref.getString(StorageKeys.companyId) ?? '';
     _companyName = sharedPref.getString(StorageKeys.companyName) ?? '';
 
@@ -174,27 +190,52 @@ class AppProvider extends ChangeNotifier {
     return _id.isNotEmpty;
   }
 
-  Future<void> setQueryParameter({
-    required String prefix,
-    required String query,
-  }) async {
-    if (query != "") {
-      final sharedPref = await SharedPreferences.getInstance();
-      String key =
-          '${prefix.replaceFirst('/', '').toUpperCase()}_${StorageKeys.queryParameter}';
-      await sharedPref.setString(key, query);
-
-      notifyListeners();
+  Future<void> setPrevious(String previous) async {
+    final sharedPref = await SharedPreferences.getInstance();
+    bool existedPre = _previous.any((pre) => pre == previous);
+    bool existedCur = _previous.any((pre) => pre == current);
+    if (existedPre) {
+      _previous.removeWhere((pre) => pre == previous);
+    } else if (existedCur) {
+      _previous.removeWhere((pre) => pre == current);
+    } else {
+      _previous.add(previous);
     }
+
+    await sharedPref.setString(StorageKeys.previous, _previous.join(','));
+
+    notifyListeners();
   }
 
-  Future<String> getQueryParameter(String prefix) async {
+  Future<void> clearPrevious() async {
     final sharedPref = await SharedPreferences.getInstance();
-    String key =
-        '${prefix.replaceFirst('/', '').toUpperCase()}_${StorageKeys.queryParameter}';
-    final query = sharedPref.getString(key) ?? '';
 
-    return query;
+    await sharedPref.remove(StorageKeys.previous);
+
+    _previous = [];
+
+    notifyListeners();
+  }
+
+  Future<void> clearCurrent() async {
+    final sharedPref = await SharedPreferences.getInstance();
+
+    await sharedPref.remove(StorageKeys.current);
+
+    _current = "";
+
+    notifyListeners();
+  }
+
+  Future<void> setCurrent(String current) async {
+    final sharedPref = await SharedPreferences.getInstance();
+    if (current != _current) {
+      _current = current;
+
+      await sharedPref.setString(StorageKeys.current, current);
+    }
+
+    notifyListeners();
   }
 
   Future<void> setCompanyAsync({

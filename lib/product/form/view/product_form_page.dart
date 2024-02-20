@@ -22,20 +22,23 @@ class _ProductFormPageState extends State<ProductFormPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<AppProvider>();
+    final themeData = Theme.of(context);
 
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return ProductFormBloc()
-            ..add(ProductFormStarted(provider, widget.id));
+          return ProductFormBloc(provider)..add(ProductFormStarted(widget.id));
         },
-        child: ListView(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            children: const [
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-                  child: ProductForm()),
-            ]),
+        child:
+            ListView(padding: const EdgeInsets.all(kDefaultPadding), children: [
+          Text(
+            provider.companyName,
+            style: themeData.textTheme.headlineMedium,
+          ),
+          const Padding(
+              padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: ProductForm()),
+        ]),
       ),
     );
   }

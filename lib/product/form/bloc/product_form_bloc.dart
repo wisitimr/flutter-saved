@@ -11,7 +11,9 @@ part 'product_form_event.dart';
 part 'product_form_state.dart';
 
 class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
-  ProductFormBloc() : super(ProductFormLoading()) {
+  ProductFormBloc(AppProvider provider)
+      : _provider = provider,
+        super(ProductFormLoading()) {
     on<ProductFormStarted>(_onStarted);
     on<ProductFormIdChanged>(_onIdChanged);
     on<ProductFormCodeChanged>(_onCodeChanged);
@@ -21,6 +23,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     on<ProductSubmitted>(_onSubmitted);
   }
 
+  final AppProvider _provider;
   final ProductService _productService = ProductService();
 
   Future<void> _onStarted(
@@ -28,10 +31,9 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     // emit(ProductFormLoading());
     emit(state.copyWith(isLoading: true));
     try {
-      final AppProvider provider = event.provider;
       final product = ProductFormTmp();
       if (event.id.isNotEmpty) {
-        final res = await _productService.findById(provider, event.id);
+        final res = await _productService.findById(_provider, event.id);
         if (res != null && res['statusCode'] == 200) {
           ProductFormModel data = ProductFormModel.fromJson(res['data']);
           product.id = data.id;
@@ -151,7 +153,6 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     ProductSubmitted event,
     Emitter<ProductFormState> emit,
   ) async {
-    final AppProvider provider = event.provider;
     if (state.isValid) {
       try {
         final Map<String, dynamic> data = {};
@@ -159,8 +160,8 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
         data['code'] = state.code.value;
         data['name'] = state.name.value;
         data['description'] = state.description.value;
-        data['price'] = state.price.value;
-        dynamic res = await _productService.save(provider, data);
+        data['price'] = double.parse(state.price.value);
+        dynamic res = await _productService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
               status: FormzSubmissionStatus.success,

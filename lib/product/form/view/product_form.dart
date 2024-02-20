@@ -6,7 +6,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saved/product/form/product_form.dart';
-import 'package:saved/app_provider.dart';
 import 'package:saved/app_router.dart';
 import 'package:saved/constants/dimens.dart';
 import 'package:saved/generated/l10n.dart';
@@ -65,7 +64,7 @@ class ProductFormDetail extends StatelessWidget {
       builder: (context, state) {
         switch (state.isLoading) {
           case true:
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           case false:
             return Card(
               clipBehavior: Clip.antiAlias,
@@ -206,9 +205,8 @@ class ProductFormDetail extends StatelessWidget {
                                               ? () {
                                                   context
                                                       .read<ProductFormBloc>()
-                                                      .add(ProductSubmitted(
-                                                          context.read<
-                                                              AppProvider>()));
+                                                      .add(
+                                                          const ProductSubmitted());
                                                 }
                                               : null),
                                           child: Row(

@@ -95,7 +95,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Confirm delete this record?"),
         "confirmSubmitRecord":
             MessageLookupByLibrary.simpleMessage("Confirm submit this record?"),
-        "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "creditCardErrorText": MessageLookupByLibrary.simpleMessage(
             "This field requires a valid credit card number."),
@@ -173,7 +172,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Retype Password"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
-        "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+        "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),
         "textEmphasis": MessageLookupByLibrary.simpleMessage("Text Emphasis"),
         "textTheme": MessageLookupByLibrary.simpleMessage("Text Theme"),

@@ -1,7 +1,8 @@
 class StorageKeys {
   static const String appLanguageCode = 'APP_LANGUAGE_CODE';
   static const String appThemeMode = 'APP_THEME_MODE';
-  static const String queryParameter = 'QUERY_PARAMETER';
+  static const String current = 'CURRENT';
+  static const String previous = 'PREVIOUS';
   static const String id = 'ID';
   static const String username = 'USERNAME';
   static const String fullName = 'FULLNAME';

@@ -6,12 +6,10 @@ sealed class AccountEvent extends Equatable {
 }
 
 final class AccountStarted extends AccountEvent {
-  const AccountStarted(this.provider);
-
-  final AppProvider provider;
+  const AccountStarted();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
 }
 
 final class AccountSearchChanged extends AccountEvent {
@@ -21,4 +19,22 @@ final class AccountSearchChanged extends AccountEvent {
 
   @override
   List<Object> get props => [text];
+}
+
+final class AccountConfirm extends AccountEvent {
+  const AccountConfirm(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
+}
+
+final class AccountDelete extends AccountEvent {
+  const AccountDelete(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
 }

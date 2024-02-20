@@ -65,6 +65,7 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
         disabledForegroundColor: appColorScheme.error,
       ).withCommonButtonStyle(
         appColorScheme: appColorScheme,
+        normalButtonTextColor: Colors.white,
       ),
       successElevated: ElevatedButton.styleFrom(
         backgroundColor: appColorScheme.success,

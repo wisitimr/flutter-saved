@@ -161,6 +161,7 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
         data['name'] = state.name.value;
         data['description'] = state.description.value;
         data['type'] = state.type.value;
+        data['company'] = _provider.companyId;
         dynamic res = await _accountService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(

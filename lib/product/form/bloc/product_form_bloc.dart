@@ -161,6 +161,8 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
         data['name'] = state.name.value;
         data['description'] = state.description.value;
         data['price'] = double.parse(state.price.value);
+        data['company'] = _provider.companyId;
+
         dynamic res = await _productService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(

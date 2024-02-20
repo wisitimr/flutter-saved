@@ -205,6 +205,8 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
         data['tax'] = state.tax.value;
         data['phone'] = state.phone.value;
         data['contact'] = state.contact.value;
+        data['company'] = _provider.companyId;
+
         dynamic res = await _supplierService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(

@@ -205,6 +205,8 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
         data['tax'] = state.tax.value;
         data['phone'] = state.phone.value;
         data['contact'] = state.contact.value;
+        data['company'] = _provider.companyId;
+
         dynamic res = await _customerService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(

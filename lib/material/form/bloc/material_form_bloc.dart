@@ -140,6 +140,8 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
         data['code'] = state.code.value;
         data['name'] = state.name.value;
         data['description'] = state.description.value;
+        data['company'] = _provider.companyId;
+
         dynamic res = await _materialService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(

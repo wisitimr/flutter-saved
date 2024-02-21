@@ -13,7 +13,9 @@ part 'user_form_event.dart';
 part 'user_form_state.dart';
 
 class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
-  UserFormBloc() : super(UserFormLoading()) {
+  UserFormBloc(AppProvider provider)
+      : _provider = provider,
+        super(UserFormLoading()) {
     on<UserFormStarted>(_onStarted);
     on<UserFormIdChanged>(_onIdChanged);
     on<UserFormUsernameChanged>(_onUsernameChanged);
@@ -21,19 +23,22 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
     on<UserFormLastNameChanged>(_onLastNameChanged);
     on<UserFormEmailChanged>(_onEmailChanged);
     on<UserFormRoleChanged>(_onRoleChanged);
+    on<UserFormSubmitConfirm>(_onSubmitConfirm);
     on<UserSubmitted>(_onSubmitted);
+    on<UserFormDeleteConfirm>(_onDeleteConfirm);
+    on<UserFormDelete>(_onDelete);
   }
 
+  final AppProvider _provider;
   final UserService _userService = UserService();
   final RoleService _roleService = RoleService();
 
   Future<void> _onStarted(
       UserFormStarted event, Emitter<UserFormState> emit) async {
     // emit(UserFormLoading());
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(status: UserFormStatus.loading));
     try {
-      final AppProvider provider = event.provider;
-      final roleRes = await _roleService.findAll(provider, {});
+      final roleRes = await _roleService.findAll(_provider, {});
       List<String>? roles = [];
       if (roleRes != null && roleRes['statusCode'] == 200) {
         roles = (roleRes['data'] as List)
@@ -43,7 +48,7 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
       }
       final user = UserFormTmp();
       if (event.id.isNotEmpty) {
-        final res = await _userService.findById(provider, event.id);
+        final res = await _userService.findById(_provider);
         if (res != null && res['statusCode'] == 200) {
           UserFormModel data = UserFormModel.fromJson(res['data']);
           user.id = data.id;
@@ -56,7 +61,7 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: UserFormStatus.success,
         id: Id.dirty(user.id),
         username: Username.dirty(user.username),
         firstName: FirstName.dirty(user.firstName),
@@ -68,9 +73,12 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
         isValid: user.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(UserFormError());
+      emit(
+        state.copyWith(
+          status: UserFormStatus.failure,
+          message: e.toString(),
+        ),
+      );
     }
   }
 
@@ -194,11 +202,29 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
     );
   }
 
+  Future<void> _onSubmitConfirm(
+    UserFormSubmitConfirm event,
+    Emitter<UserFormState> emit,
+  ) async {
+    emit(state.copyWith(status: UserFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: UserFormStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: UserFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     UserSubmitted event,
     Emitter<UserFormState> emit,
   ) async {
-    final AppProvider provider = event.provider;
     if (state.isValid) {
       try {
         final Map<String, dynamic> data = {};
@@ -214,20 +240,76 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
           }
         }
         data['companies'] = companies;
-        dynamic res = await _userService.save(provider, data);
+        dynamic res = await _userService.save(_provider, data);
 
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.success,
-              message: res['statusMessage']));
+              status: UserFormStatus.submited, message: res['statusMessage']));
         } else {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
-              message: res['statusMessage']));
+              status: UserFormStatus.failure, message: res['statusMessage']));
         }
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(status: UserFormStatus.failure));
       }
+    }
+  }
+
+  Future<void> _onDeleteConfirm(
+    UserFormDeleteConfirm event,
+    Emitter<UserFormState> emit,
+  ) async {
+    emit(state.copyWith(status: UserFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: UserFormStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: UserFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDelete(
+    UserFormDelete event,
+    Emitter<UserFormState> emit,
+  ) async {
+    emit(state.copyWith(status: UserFormStatus.loading));
+    try {
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res =
+            await _userService.delete(_provider, state.selectedDeleteRowId);
+        if (res['statusCode'] == 200) {
+          emit(
+            state.copyWith(
+              status: UserFormStatus.deleted,
+              message: res['statusMessage'],
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: UserFormStatus.failure,
+              message: res['statusMessage'],
+            ),
+          );
+        }
+      } else {
+        emit(state.copyWith(
+          status: UserFormStatus.failure,
+          message: "Invalid parameter",
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: UserFormStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 }

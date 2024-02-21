@@ -53,6 +53,13 @@ final class MaterialFormDescriptionChanged extends MaterialFormEvent {
   List<Object> get props => [description];
 }
 
+final class MaterialFormSubmitConfirm extends MaterialFormEvent {
+  const MaterialFormSubmitConfirm();
+
+  @override
+  List<Object> get props => [];
+}
+
 final class MaterialSubmitted extends MaterialFormEvent {
   const MaterialSubmitted();
 

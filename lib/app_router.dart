@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saved/account/form/view/account_form_page.dart';
 import 'package:saved/account/list/view/view.dart';
@@ -10,6 +11,7 @@ import 'package:saved/daybook/form/view/daybook_form_page.dart';
 import 'package:saved/daybook/list/view/daybook_list_page.dart';
 import 'package:saved/login/view/login_page.dart';
 import 'package:saved/app_provider.dart';
+import 'package:saved/master_layout_config.dart';
 import 'package:saved/material/form/view/view.dart';
 import 'package:saved/material/list/view/material_list_page.dart';
 import 'package:saved/my_profile/view/my_profile_page.dart';
@@ -23,6 +25,7 @@ import 'package:saved/user/form/user_form.dart';
 import 'package:saved/user/list/user_list.dart';
 import 'package:saved/widgets/error_layout.dart';
 import 'package:saved/widgets/logout_layout.dart';
+import 'package:saved/widgets/portal_master_layout/sidebar.dart';
 
 class RouteUri {
   static const String home = '/';
@@ -42,15 +45,15 @@ class RouteUri {
   static const String crud = '/crud';
   static const String crudDetail = '/crud-detail';
   static const String account = '/account';
-  static const String accountFrom = '/account-form';
+  static const String accountForm = '/account-form';
   static const String supplier = '/supplier';
-  static const String supplierFrom = '/supplier-form';
+  static const String supplierForm = '/supplier-form';
   static const String customer = '/customer';
-  static const String customerFrom = '/customer-form';
+  static const String customerForm = '/customer-form';
   static const String material = '/material';
-  static const String materialFrom = '/material-form';
+  static const String materialForm = '/material-form';
   static const String product = '/product';
-  static const String productFrom = '/product-form';
+  static const String productForm = '/product-form';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -184,7 +187,7 @@ GoRouter appRouter(AppProvider provider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.accountFrom,
+        path: RouteUri.accountForm,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: AccountFormPage(
@@ -200,7 +203,7 @@ GoRouter appRouter(AppProvider provider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.supplierFrom,
+        path: RouteUri.supplierForm,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: SupplierFormPage(
@@ -216,7 +219,7 @@ GoRouter appRouter(AppProvider provider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.customerFrom,
+        path: RouteUri.customerForm,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: CustomerFormPage(
@@ -232,7 +235,7 @@ GoRouter appRouter(AppProvider provider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.materialFrom,
+        path: RouteUri.materialForm,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: MaterialFormPage(
@@ -248,7 +251,7 @@ GoRouter appRouter(AppProvider provider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.productFrom,
+        path: RouteUri.productForm,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: ProductFormPage(
@@ -258,8 +261,15 @@ GoRouter appRouter(AppProvider provider) {
       ),
     ],
     redirect: (context, state) async {
-      // final provider = context.read<AppProvider>();
-      if (state.matchedLocation == RouteUri.dashboard) {
+      final provider = context.read<AppProvider>();
+      List<SidebarMenuConfig> sidebarMenu = [];
+      if (provider.isAdmin) {
+        sidebarMenu = sidebarMenuConfigs + adminSidebarMenuConfigs;
+      }
+      if (sidebarMenu.any((el) {
+        return el.uri == state.matchedLocation ||
+            el.children.any((elc) => elc.uri == state.matchedLocation);
+      })) {
         await Future.wait([
           provider.clearPrevious(),
           provider.setCurrent(state.matchedLocation),
@@ -276,9 +286,11 @@ GoRouter appRouter(AppProvider provider) {
         });
         String current = state.matchedLocation + query;
         String previous = provider.current;
-        // print("provider.previous ${provider.previous}");
-        await provider.setCurrent(current);
-        await provider.setPrevious(previous);
+
+        if (current != provider.current) {
+          await provider.setCurrent(current);
+          await provider.setPrevious(previous);
+        }
       }
       if (unrestrictedRoutes.contains(state.matchedLocation)) {
         return null;

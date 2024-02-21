@@ -16,7 +16,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   final AppProvider _provider;
   final UserService _userService = UserService();
-  final DayBookService _daybookService = DayBookService();
+  final DaybookService _daybookService = DaybookService();
   final AccountService _accountService = AccountService();
   final SupplierService _supplierService = SupplierService();
   final CustomerService _customerService = CustomerService();

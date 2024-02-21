@@ -1,9 +1,25 @@
 part of 'supplier_form_bloc.dart';
 
+enum SupplierFormStatus {
+  loading,
+  success,
+  failure,
+  submitConfirmation,
+  submited,
+}
+
+extension SupplierFormStatusX on SupplierFormStatus {
+  bool get isLoading => this == SupplierFormStatus.loading;
+  bool get isSuccess => this == SupplierFormStatus.success;
+  bool get isFailure => this == SupplierFormStatus.failure;
+  bool get isSubmitConfirmation =>
+      this == SupplierFormStatus.submitConfirmation;
+  bool get isSubmited => this == SupplierFormStatus.submited;
+}
+
 final class SupplierFormState extends Equatable {
   const SupplierFormState({
-    this.isLoading = true,
-    this.status = FormzSubmissionStatus.initial,
+    this.status = SupplierFormStatus.loading,
     this.message = '',
     this.id = const Id.pure(),
     this.code = const Code.pure(),
@@ -15,8 +31,7 @@ final class SupplierFormState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
-  final FormzSubmissionStatus status;
+  final SupplierFormStatus status;
   final String message;
   final Id id;
   final Code code;
@@ -28,8 +43,7 @@ final class SupplierFormState extends Equatable {
   final bool isValid;
 
   SupplierFormState copyWith({
-    bool? isLoading,
-    FormzSubmissionStatus? status,
+    SupplierFormStatus? status,
     String? message,
     Id? id,
     Code? code,
@@ -41,7 +55,6 @@ final class SupplierFormState extends Equatable {
     bool? isValid,
   }) {
     return SupplierFormState(
-      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       message: message ?? this.message,
       id: id ?? this.id,
@@ -57,7 +70,6 @@ final class SupplierFormState extends Equatable {
 
   @override
   List<Object> get props => [
-        isLoading,
         status,
         id,
         code,

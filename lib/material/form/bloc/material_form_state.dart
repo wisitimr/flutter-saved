@@ -1,9 +1,25 @@
 part of 'material_form_bloc.dart';
 
+enum MaterialFormStatus {
+  loading,
+  success,
+  failure,
+  submitConfirmation,
+  submited,
+}
+
+extension MaterialFormStatusX on MaterialFormStatus {
+  bool get isLoading => this == MaterialFormStatus.loading;
+  bool get isSuccess => this == MaterialFormStatus.success;
+  bool get isFailure => this == MaterialFormStatus.failure;
+  bool get isSubmitConfirmation =>
+      this == MaterialFormStatus.submitConfirmation;
+  bool get isSubmited => this == MaterialFormStatus.submited;
+}
+
 final class MaterialFormState extends Equatable {
   const MaterialFormState({
-    this.isLoading = true,
-    this.status = FormzSubmissionStatus.initial,
+    this.status = MaterialFormStatus.loading,
     this.message = '',
     this.id = const Id.pure(),
     this.code = const Code.pure(),
@@ -12,8 +28,7 @@ final class MaterialFormState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
-  final FormzSubmissionStatus status;
+  final MaterialFormStatus status;
   final String message;
   final Id id;
   final Code code;
@@ -22,8 +37,7 @@ final class MaterialFormState extends Equatable {
   final bool isValid;
 
   MaterialFormState copyWith({
-    bool? isLoading,
-    FormzSubmissionStatus? status,
+    MaterialFormStatus? status,
     String? message,
     Id? id,
     Code? code,
@@ -33,7 +47,6 @@ final class MaterialFormState extends Equatable {
     bool? isValid,
   }) {
     return MaterialFormState(
-      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       message: message ?? this.message,
       id: id ?? this.id,
@@ -45,8 +58,14 @@ final class MaterialFormState extends Equatable {
   }
 
   @override
-  List<Object> get props =>
-      [isLoading, status, id, code, name, description, isValid];
+  List<Object> get props => [
+        status,
+        id,
+        code,
+        name,
+        description,
+        isValid,
+      ];
 }
 
 final class MaterialFormLoading extends MaterialFormState {

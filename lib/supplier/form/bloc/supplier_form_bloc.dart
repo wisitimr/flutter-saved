@@ -22,6 +22,7 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
     on<SupplierFormTaxChanged>(_onTaxChanged);
     on<SupplierFormPhoneChanged>(_onPhoneChanged);
     on<SupplierFormContactChanged>(_onContactChanged);
+    on<SupplierFormSubmitConfirm>(_onConfirm);
     on<SupplierSubmitted>(_onSubmitted);
   }
 
@@ -31,7 +32,7 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
   Future<void> _onStarted(
       SupplierFormStarted event, Emitter<SupplierFormState> emit) async {
     // emit(SupplierFormLoading());
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(status: SupplierFormStatus.loading));
     try {
       final supplier = SupplierFormTmp();
       if (event.id.isNotEmpty) {
@@ -48,7 +49,7 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: SupplierFormStatus.success,
         id: Id.dirty(supplier.id),
         code: Code.dirty(supplier.code),
         name: Name.dirty(supplier.name),
@@ -59,9 +60,10 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
         isValid: supplier.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(SupplierFormError());
+      emit(state.copyWith(
+        status: SupplierFormStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 
@@ -191,6 +193,25 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
     );
   }
 
+  Future<void> _onConfirm(
+    SupplierFormSubmitConfirm event,
+    Emitter<SupplierFormState> emit,
+  ) async {
+    emit(state.copyWith(status: SupplierFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: SupplierFormStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: SupplierFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     SupplierSubmitted event,
     Emitter<SupplierFormState> emit,
@@ -210,15 +231,18 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
         dynamic res = await _supplierService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.success,
+              status: SupplierFormStatus.submited,
               message: res['statusMessage']));
         } else {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
+              status: SupplierFormStatus.failure,
               message: res['statusMessage']));
         }
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(
+          status: SupplierFormStatus.failure,
+          message: e.toString(),
+        ));
       }
     }
   }

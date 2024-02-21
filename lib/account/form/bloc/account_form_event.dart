@@ -62,6 +62,13 @@ final class AccountFormTypeChanged extends AccountFormEvent {
   List<Object> get props => [type];
 }
 
+final class AccountFormSubmitConfirm extends AccountFormEvent {
+  const AccountFormSubmitConfirm();
+
+  @override
+  List<Object> get props => [];
+}
+
 final class AccountSubmitted extends AccountFormEvent {
   const AccountSubmitted();
 

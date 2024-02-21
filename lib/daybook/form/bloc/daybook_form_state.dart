@@ -1,13 +1,33 @@
 part of 'daybook_form_bloc.dart';
 
+enum DaybookFormStatus {
+  loading,
+  success,
+  failure,
+  deleteConfirmation,
+  deleted,
+  submitConfirmation,
+  submited,
+}
+
+extension DaybookFormStatusX on DaybookFormStatus {
+  bool get isLoading => this == DaybookFormStatus.loading;
+  bool get isSuccess => this == DaybookFormStatus.success;
+  bool get isFailure => this == DaybookFormStatus.failure;
+  bool get isDeleteConfirmation => this == DaybookFormStatus.deleteConfirmation;
+  bool get isDeleted => this == DaybookFormStatus.deleted;
+  bool get isSubmitConfirmation => this == DaybookFormStatus.submitConfirmation;
+  bool get isSubmited => this == DaybookFormStatus.submited;
+}
+
 final class DaybookFormState extends Equatable {
   const DaybookFormState({
-    this.isLoading = true,
     this.msDocument = const <MsDocument>[],
     this.msSupplier = const <MsSupplier>[],
     this.msCustomer = const <MsCustomer>[],
-    this.status = FormzSubmissionStatus.initial,
+    this.status = DaybookFormStatus.loading,
     this.message = '',
+    this.selectedDeleteRowId = '',
     this.id = const Id.pure(),
     this.number = const Number.pure(),
     this.invoice = const Invoice.pure(),
@@ -21,12 +41,12 @@ final class DaybookFormState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
   final List<MsDocument> msDocument;
   final List<MsSupplier> msSupplier;
   final List<MsCustomer> msCustomer;
-  final FormzSubmissionStatus status;
+  final DaybookFormStatus status;
   final String message;
+  final String selectedDeleteRowId;
   final Id id;
   final Number number;
   final Invoice invoice;
@@ -40,12 +60,12 @@ final class DaybookFormState extends Equatable {
   final bool isValid;
 
   DaybookFormState copyWith({
-    bool? isLoading,
     List<MsDocument>? msDocument,
     List<MsSupplier>? msSupplier,
     List<MsCustomer>? msCustomer,
-    FormzSubmissionStatus? status,
+    DaybookFormStatus? status,
     String? message,
+    String? selectedDeleteRowId,
     Id? id,
     Number? number,
     Invoice? invoice,
@@ -59,12 +79,12 @@ final class DaybookFormState extends Equatable {
     bool? isValid,
   }) {
     return DaybookFormState(
-      isLoading: isLoading ?? this.isLoading,
       msDocument: msDocument ?? this.msDocument,
       msSupplier: msSupplier ?? this.msSupplier,
       msCustomer: msCustomer ?? this.msCustomer,
       status: status ?? this.status,
       message: message ?? this.message,
+      selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
       id: id ?? this.id,
       number: number ?? this.number,
       invoice: invoice ?? this.invoice,
@@ -81,8 +101,9 @@ final class DaybookFormState extends Equatable {
 
   @override
   List<Object> get props => [
-        isLoading,
         status,
+        message,
+        selectedDeleteRowId,
         id,
         number,
         invoice,

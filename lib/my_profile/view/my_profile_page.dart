@@ -23,7 +23,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return MyProfileBloc()..add(MyProfileStarted(provider));
+          return MyProfileBloc(provider)..add(const MyProfileStarted());
         },
         child: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),

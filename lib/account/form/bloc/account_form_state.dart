@@ -1,9 +1,24 @@
 part of 'account_form_bloc.dart';
 
+enum AccountFormStatus {
+  loading,
+  success,
+  failure,
+  submitConfirmation,
+  submited,
+}
+
+extension AccountFormStatusX on AccountFormStatus {
+  bool get isLoading => this == AccountFormStatus.loading;
+  bool get isSuccess => this == AccountFormStatus.success;
+  bool get isFailure => this == AccountFormStatus.failure;
+  bool get isSubmitConfirmation => this == AccountFormStatus.submitConfirmation;
+  bool get isSubmited => this == AccountFormStatus.submited;
+}
+
 final class AccountFormState extends Equatable {
   const AccountFormState({
-    this.isLoading = true,
-    this.status = FormzSubmissionStatus.initial,
+    this.status = AccountFormStatus.loading,
     this.message = '',
     this.id = const Id.pure(),
     this.code = const Code.pure(),
@@ -13,8 +28,7 @@ final class AccountFormState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
-  final FormzSubmissionStatus status;
+  final AccountFormStatus status;
   final String message;
   final Id id;
   final Code code;
@@ -24,8 +38,7 @@ final class AccountFormState extends Equatable {
   final bool isValid;
 
   AccountFormState copyWith({
-    bool? isLoading,
-    FormzSubmissionStatus? status,
+    AccountFormStatus? status,
     String? message,
     Id? id,
     Code? code,
@@ -35,7 +48,6 @@ final class AccountFormState extends Equatable {
     bool? isValid,
   }) {
     return AccountFormState(
-      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       message: message ?? this.message,
       id: id ?? this.id,
@@ -48,8 +60,15 @@ final class AccountFormState extends Equatable {
   }
 
   @override
-  List<Object> get props =>
-      [isLoading, status, id, code, name, description, type, isValid];
+  List<Object> get props => [
+        status,
+        id,
+        code,
+        name,
+        description,
+        type,
+        isValid,
+      ];
 }
 
 final class AccountFormLoading extends AccountFormState {

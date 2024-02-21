@@ -89,11 +89,32 @@ final class DaybookFormCustomerChanged extends DaybookFormEvent {
   List<Object> get props => [customer];
 }
 
-final class DaybookSubmitted extends DaybookFormEvent {
-  const DaybookSubmitted(this.provider);
+final class DaybookFormDeleteConfirm extends DaybookFormEvent {
+  const DaybookFormDeleteConfirm(this.id);
 
-  final AppProvider provider;
+  final String id;
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [id];
+}
+
+final class DaybookFormDelete extends DaybookFormEvent {
+  const DaybookFormDelete();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class DaybookFormSubmitConfirm extends DaybookFormEvent {
+  const DaybookFormSubmitConfirm();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class DaybookSubmitted extends DaybookFormEvent {
+  const DaybookSubmitted();
+
+  @override
+  List<Object> get props => [];
 }

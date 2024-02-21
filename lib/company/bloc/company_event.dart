@@ -71,6 +71,13 @@ final class CompanyContactChanged extends CompanyEvent {
   List<Object> get props => [contact];
 }
 
+final class CompanySubmitConfirm extends CompanyEvent {
+  const CompanySubmitConfirm();
+
+  @override
+  List<Object> get props => [];
+}
+
 final class CompanySubmitted extends CompanyEvent {
   const CompanySubmitted();
 }

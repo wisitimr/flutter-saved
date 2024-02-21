@@ -80,11 +80,16 @@ final class SupplierFormContactChanged extends SupplierFormEvent {
   List<Object> get props => [contact];
 }
 
-final class SupplierSubmitted extends SupplierFormEvent {
-  const SupplierSubmitted(this.provider);
-
-  final AppProvider provider;
+final class SupplierFormSubmitConfirm extends SupplierFormEvent {
+  const SupplierFormSubmitConfirm();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
+}
+
+final class SupplierSubmitted extends SupplierFormEvent {
+  const SupplierSubmitted();
+
+  @override
+  List<Object> get props => [];
 }

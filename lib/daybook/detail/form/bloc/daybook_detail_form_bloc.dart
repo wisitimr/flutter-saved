@@ -22,6 +22,7 @@ class DaybookDetailFormBloc
     on<DaybookDetailFormTypeChanged>(_onTypeChanged);
     on<DaybookDetailFormAmountChanged>(_onAmountChanged);
     on<DaybookDetailFormAccountChanged>(_onAccountChanged);
+    on<DaybookDetailFormSubmitConfirm>(_onConfirm);
     on<DaybookDetailSubmitted>(_onSubmitted);
   }
 
@@ -31,7 +32,7 @@ class DaybookDetailFormBloc
 
   Future<void> _onStarted(DaybookDetailFormStarted event,
       Emitter<DaybookDetailFormState> emit) async {
-    emit(DaybookDetailFormLoading());
+    emit(state.copyWith(status: DaybookDetailFormStatus.loading));
     try {
       final acctRes = await _accountService.findAll(_provider, {});
       List<MsAccount> accounts = [];
@@ -64,7 +65,7 @@ class DaybookDetailFormBloc
         ]);
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: DaybookDetailFormStatus.success,
         msAccount: accounts,
         msAccountType: ['', 'DR', 'CR'],
         id: Id.dirty(daybook.id),
@@ -76,9 +77,10 @@ class DaybookDetailFormBloc
         isValid: daybook.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(DaybookDetailFormError());
+      emit(state.copyWith(
+        status: DaybookDetailFormStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 
@@ -182,6 +184,25 @@ class DaybookDetailFormBloc
     );
   }
 
+  Future<void> _onConfirm(
+    DaybookDetailFormSubmitConfirm event,
+    Emitter<DaybookDetailFormState> emit,
+  ) async {
+    emit(state.copyWith(status: DaybookDetailFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: DaybookDetailFormStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookDetailFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     DaybookDetailSubmitted event,
     Emitter<DaybookDetailFormState> emit,
@@ -205,15 +226,20 @@ class DaybookDetailFormBloc
 
       if (res['statusCode'] == 200 || res['statusCode'] == 201) {
         emit(state.copyWith(
-            status: FormzSubmissionStatus.success,
-            message: res['statusMessage']));
+          status: DaybookDetailFormStatus.submited,
+          message: res['statusMessage'],
+        ));
       } else {
         emit(state.copyWith(
-            status: FormzSubmissionStatus.failure,
-            message: res['statusMessage']));
+          status: DaybookDetailFormStatus.failure,
+          message: res['statusMessage'],
+        ));
       }
-    } catch (_) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookDetailFormStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 }

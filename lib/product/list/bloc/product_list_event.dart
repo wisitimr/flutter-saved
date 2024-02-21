@@ -21,8 +21,8 @@ final class ProductSearchChanged extends ProductEvent {
   List<Object> get props => [text];
 }
 
-final class ProductConfirm extends ProductEvent {
-  const ProductConfirm(this.id);
+final class ProductDeleteConfirm extends ProductEvent {
+  const ProductDeleteConfirm(this.id);
 
   final String id;
 
@@ -31,10 +31,8 @@ final class ProductConfirm extends ProductEvent {
 }
 
 final class ProductDelete extends ProductEvent {
-  const ProductDelete(this.id);
-
-  final String id;
+  const ProductDelete();
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [];
 }

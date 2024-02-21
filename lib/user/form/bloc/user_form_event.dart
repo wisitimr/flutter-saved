@@ -9,13 +9,12 @@ sealed class UserFormEvent extends Equatable {
 }
 
 final class UserFormStarted extends UserFormEvent {
-  const UserFormStarted(this.provider, this.id);
+  const UserFormStarted(this.id);
 
-  final AppProvider provider;
   final String id;
 
   @override
-  List<Object> get props => [provider, id];
+  List<Object> get props => [id];
 }
 
 final class UserFormIdChanged extends UserFormEvent {
@@ -72,11 +71,32 @@ final class UserFormRoleChanged extends UserFormEvent {
   List<Object> get props => [role];
 }
 
-final class UserSubmitted extends UserFormEvent {
-  const UserSubmitted(this.provider);
+final class UserFormDeleteConfirm extends UserFormEvent {
+  const UserFormDeleteConfirm(this.id);
 
-  final AppProvider provider;
+  final String id;
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [id];
+}
+
+final class UserFormDelete extends UserFormEvent {
+  const UserFormDelete();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class UserFormSubmitConfirm extends UserFormEvent {
+  const UserFormSubmitConfirm();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class UserSubmitted extends UserFormEvent {
+  const UserSubmitted();
+
+  @override
+  List<Object> get props => [];
 }

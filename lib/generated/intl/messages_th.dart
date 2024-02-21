@@ -95,7 +95,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmDeleteRecord":
             MessageLookupByLibrary.simpleMessage("ยินยันการลบ?"),
         "confirmSubmitRecord":
-            MessageLookupByLibrary.simpleMessage("Confirm submit this record?"),
+            MessageLookupByLibrary.simpleMessage("ยืนยันการทำรายการ?"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "creditCardErrorText": MessageLookupByLibrary.simpleMessage(
             "This field requires a valid credit card number."),

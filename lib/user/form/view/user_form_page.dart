@@ -26,15 +26,14 @@ class _UserFormPageState extends State<UserFormPage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return UserFormBloc()..add(UserFormStarted(provider, widget.id));
+          return UserFormBloc(provider)..add(UserFormStarted(widget.id));
         },
-        child: ListView(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            children: const [
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-                  child: UserForm()),
-            ]),
+        child:
+            ListView(padding: const EdgeInsets.all(kDefaultPadding), children: [
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: UserForm(id: widget.id)),
+        ]),
       ),
     );
   }

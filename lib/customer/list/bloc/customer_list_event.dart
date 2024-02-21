@@ -21,8 +21,8 @@ final class CustomerSearchChanged extends CustomerEvent {
   List<Object> get props => [text];
 }
 
-final class CustomerConfirm extends CustomerEvent {
-  const CustomerConfirm(this.id);
+final class CustomerDeleteConfirm extends CustomerEvent {
+  const CustomerDeleteConfirm(this.id);
 
   final String id;
 
@@ -31,10 +31,8 @@ final class CustomerConfirm extends CustomerEvent {
 }
 
 final class CustomerDelete extends CustomerEvent {
-  const CustomerDelete(this.id);
-
-  final String id;
+  const CustomerDelete();
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [];
 }

@@ -1,11 +1,27 @@
 part of 'daybook_detail_form_bloc.dart';
 
+enum DaybookDetailFormStatus {
+  loading,
+  success,
+  failure,
+  submitConfirmation,
+  submited,
+}
+
+extension DaybookDetailFormStatusX on DaybookDetailFormStatus {
+  bool get isLoading => this == DaybookDetailFormStatus.loading;
+  bool get isSuccess => this == DaybookDetailFormStatus.success;
+  bool get isFailure => this == DaybookDetailFormStatus.failure;
+  bool get isSubmitConfirmation =>
+      this == DaybookDetailFormStatus.submitConfirmation;
+  bool get isSubmited => this == DaybookDetailFormStatus.submited;
+}
+
 final class DaybookDetailFormState extends Equatable {
   const DaybookDetailFormState({
-    this.isLoading = true,
     this.msAccount = const <MsAccount>[],
     this.msAccountType = const <String>[],
-    this.status = FormzSubmissionStatus.initial,
+    this.status = DaybookDetailFormStatus.loading,
     this.message = '',
     this.id = const Id.pure(),
     this.name = const Name.pure(),
@@ -16,10 +32,9 @@ final class DaybookDetailFormState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
   final List<MsAccount> msAccount;
   final List<String> msAccountType;
-  final FormzSubmissionStatus status;
+  final DaybookDetailFormStatus status;
   final String message;
   final Id id;
   final Name name;
@@ -30,10 +45,9 @@ final class DaybookDetailFormState extends Equatable {
   final bool isValid;
 
   DaybookDetailFormState copyWith({
-    bool? isLoading,
     List<MsAccount>? msAccount,
     List<String>? msAccountType,
-    FormzSubmissionStatus? status,
+    DaybookDetailFormStatus? status,
     String? message,
     Id? id,
     Name? name,
@@ -44,7 +58,6 @@ final class DaybookDetailFormState extends Equatable {
     bool? isValid,
   }) {
     return DaybookDetailFormState(
-      isLoading: isLoading ?? this.isLoading,
       msAccount: msAccount ?? this.msAccount,
       msAccountType: msAccountType ?? this.msAccountType,
       status: status ?? this.status,
@@ -61,7 +74,7 @@ final class DaybookDetailFormState extends Equatable {
 
   @override
   List<Object> get props =>
-      [isLoading, status, id, name, type, amount, account, daybook, isValid];
+      [status, id, name, type, amount, account, daybook, isValid];
 }
 
 final class DaybookDetailFormLoading extends DaybookDetailFormState {

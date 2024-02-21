@@ -36,9 +36,9 @@ class _MaterialFormPageState extends State<MaterialFormPage> {
             provider.companyName,
             style: themeData.textTheme.headlineMedium,
           ),
-          const Padding(
-              padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-              child: MaterialForm()),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: MaterialForm(id: widget.id)),
         ]),
       ),
     );

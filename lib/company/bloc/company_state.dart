@@ -1,9 +1,24 @@
 part of 'company_bloc.dart';
 
+enum CompanyStatus {
+  loading,
+  success,
+  failure,
+  submitConfirmation,
+  submited,
+}
+
+extension CompanyStatusX on CompanyStatus {
+  bool get isLoading => this == CompanyStatus.loading;
+  bool get isSuccess => this == CompanyStatus.success;
+  bool get isFailure => this == CompanyStatus.failure;
+  bool get isSubmitConfirmation => this == CompanyStatus.submitConfirmation;
+  bool get isSubmited => this == CompanyStatus.submited;
+}
+
 final class CompanyState extends Equatable {
   const CompanyState({
-    this.isLoading = true,
-    this.status = FormzSubmissionStatus.initial,
+    this.status = CompanyStatus.loading,
     this.message = '',
     this.id = const Id.pure(),
     this.name = const Name.pure(),
@@ -14,8 +29,7 @@ final class CompanyState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
-  final FormzSubmissionStatus status;
+  final CompanyStatus status;
   final String message;
   final Id id;
   final Name name;
@@ -26,8 +40,7 @@ final class CompanyState extends Equatable {
   final bool isValid;
 
   CompanyState copyWith({
-    bool? isLoading,
-    FormzSubmissionStatus? status,
+    CompanyStatus? status,
     String? message,
     Id? id,
     Name? name,
@@ -38,7 +51,6 @@ final class CompanyState extends Equatable {
     bool? isValid,
   }) {
     return CompanyState(
-      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       message: message ?? this.message,
       id: id ?? this.id,
@@ -52,17 +64,8 @@ final class CompanyState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
-        isLoading,
-        status,
-        id,
-        name,
-        description,
-        address,
-        phone,
-        contact,
-        isValid
-      ];
+  List<Object> get props =>
+      [status, id, name, description, address, phone, contact, isValid];
 }
 
 final class CompanyLoading extends CompanyState {

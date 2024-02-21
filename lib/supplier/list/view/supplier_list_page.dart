@@ -62,7 +62,7 @@ class _SupplierPageState extends State<SupplierPage> {
                     );
 
                     dialog.show();
-                  } else if (state.status.isConfirmation) {
+                  } else if (state.status.isDeleteConfirmation) {
                     final dialog = AwesomeDialog(
                       context: context,
                       dialogType: DialogType.warning,
@@ -73,10 +73,10 @@ class _SupplierPageState extends State<SupplierPage> {
                       btnOkOnPress: () {
                         context
                             .read<SupplierBloc>()
-                            .add(SupplierDelete(state.selectedRowId));
+                            .add(const SupplierDelete());
                       },
                       btnCancelText: lang.cancel,
-                      btnCancelColor: appColorScheme.success,
+                      btnCancelColor: appColorScheme.secondary,
                       btnCancelOnPress: () {},
                     );
 
@@ -116,15 +116,15 @@ class Supplier extends StatelessWidget {
     return BlocBuilder<SupplierBloc, SupplierState>(
       builder: (context, state) {
         switch (state.status) {
-          case Status.loading:
+          case SupplierStatus.loading:
             return const Center(child: CircularProgressIndicator());
-          case Status.failure:
+          case SupplierStatus.failure:
             return const SupplierCard();
-          case Status.deleted:
+          case SupplierStatus.deleted:
             return const SupplierCard();
-          case Status.confirmation:
+          case SupplierStatus.deleteConfirmation:
             return const SupplierCard();
-          case Status.success:
+          case SupplierStatus.success:
             return const SupplierCard();
         }
       },
@@ -202,7 +202,7 @@ class SupplierCard extends StatelessWidget {
                                 .extension<AppButtonTheme>()!
                                 .successElevated,
                             onPressed: () =>
-                                GoRouter.of(context).go(RouteUri.supplierFrom),
+                                GoRouter.of(context).go(RouteUri.supplierForm),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +273,7 @@ class SupplierCard extends StatelessWidget {
                                             context: context,
                                             onDetailButtonPressed: (data) =>
                                                 GoRouter.of(context).go(
-                                                    '${RouteUri.supplierFrom}?id=${data.id}'),
+                                                    '${RouteUri.supplierForm}?id=${data.id}'),
                                             onDeleteButtonPressed: (data) =>
                                                 context
                                                     .read<SupplierBloc>()

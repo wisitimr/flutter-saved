@@ -58,7 +58,7 @@ class _ProductPageState extends State<ProductPage> {
                     );
 
                     dialog.show();
-                  } else if (state.status.isConfirmation) {
+                  } else if (state.status.isDeleteConfirmation) {
                     final dialog = AwesomeDialog(
                       context: context,
                       dialogType: DialogType.warning,
@@ -67,12 +67,10 @@ class _ProductPageState extends State<ProductPage> {
                       btnOkText: lang.ok,
                       btnOkColor: appColorScheme.error,
                       btnOkOnPress: () {
-                        context
-                            .read<ProductBloc>()
-                            .add(ProductDelete(state.selectedRowId));
+                        context.read<ProductBloc>().add(const ProductDelete());
                       },
                       btnCancelText: lang.cancel,
-                      btnCancelColor: appColorScheme.success,
+                      btnCancelColor: appColorScheme.secondary,
                       btnCancelOnPress: () {},
                     );
 
@@ -110,15 +108,15 @@ class Product extends StatelessWidget {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         switch (state.status) {
-          case Status.loading:
+          case ProductListStatus.loading:
             return const Center(child: CircularProgressIndicator());
-          case Status.failure:
+          case ProductListStatus.failure:
             return const ProductCard();
-          case Status.deleted:
+          case ProductListStatus.deleted:
             return const ProductCard();
-          case Status.confirmation:
+          case ProductListStatus.deleteConfirmation:
             return const ProductCard();
-          case Status.success:
+          case ProductListStatus.success:
             return const ProductCard();
         }
       },
@@ -196,7 +194,7 @@ class ProductCard extends StatelessWidget {
                                 .extension<AppButtonTheme>()!
                                 .successElevated,
                             onPressed: () =>
-                                GoRouter.of(context).go(RouteUri.productFrom),
+                                GoRouter.of(context).go(RouteUri.productForm),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,10 +266,11 @@ class ProductCard extends StatelessWidget {
                                             context: context,
                                             onDetailButtonPressed: (data) =>
                                                 GoRouter.of(context).go(
-                                                    '${RouteUri.productFrom}?id=${data.id}'),
+                                                    '${RouteUri.productForm}?id=${data.id}'),
                                             onDeleteButtonPressed: (data) =>
                                                 context.read<ProductBloc>().add(
-                                                    ProductConfirm(data.id)),
+                                                    ProductDeleteConfirm(
+                                                        data.id)),
                                           ),
                                         )),
                                   ),

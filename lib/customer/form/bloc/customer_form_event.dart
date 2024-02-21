@@ -80,11 +80,16 @@ final class CustomerFormContactChanged extends CustomerFormEvent {
   List<Object> get props => [contact];
 }
 
-final class CustomerSubmitted extends CustomerFormEvent {
-  const CustomerSubmitted(this.provider);
-
-  final AppProvider provider;
+final class CustomerFormSubmitConfirm extends CustomerFormEvent {
+  const CustomerFormSubmitConfirm();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
+}
+
+final class CustomerSubmitted extends CustomerFormEvent {
+  const CustomerSubmitted();
+
+  @override
+  List<Object> get props => [];
 }

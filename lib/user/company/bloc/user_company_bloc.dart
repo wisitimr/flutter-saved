@@ -21,6 +21,7 @@ class UserCompanyBloc extends Bloc<UserCompanyEvent, UserCompanyState> {
     on<UserCompanyAddressChanged>(_onAddressChanged);
     on<UserCompanyPhoneChanged>(_onPhoneChanged);
     on<UserCompanyContactChanged>(_onContactChanged);
+    on<UserCompanySubmitConfirm>(_onConfirm);
     on<UserCompanySubmitted>(_onSubmitted);
   }
 
@@ -29,7 +30,7 @@ class UserCompanyBloc extends Bloc<UserCompanyEvent, UserCompanyState> {
 
   Future<void> _onStarted(
       UserCompanyStarted event, Emitter<UserCompanyState> emit) async {
-    emit(UserCompanyLoading());
+    emit(state.copyWith(status: UserCompanyStatus.loading));
     try {
       final company = UserCompanyTmp();
       if (event.id.isNotEmpty) {
@@ -45,7 +46,7 @@ class UserCompanyBloc extends Bloc<UserCompanyEvent, UserCompanyState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: UserCompanyStatus.success,
         id: Id.dirty(company.id),
         name: Name.dirty(company.name),
         description: Description.dirty(company.description),
@@ -55,9 +56,10 @@ class UserCompanyBloc extends Bloc<UserCompanyEvent, UserCompanyState> {
         isValid: company.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(UserCompanyError());
+      emit(state.copyWith(
+        status: UserCompanyStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 
@@ -167,6 +169,25 @@ class UserCompanyBloc extends Bloc<UserCompanyEvent, UserCompanyState> {
     );
   }
 
+  Future<void> _onConfirm(
+    UserCompanySubmitConfirm event,
+    Emitter<UserCompanyState> emit,
+  ) async {
+    emit(state.copyWith(status: UserCompanyStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: UserCompanyStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: UserCompanyStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     UserCompanySubmitted event,
     Emitter<UserCompanyState> emit,
@@ -188,15 +209,16 @@ class UserCompanyBloc extends Bloc<UserCompanyEvent, UserCompanyState> {
 
       if (res['statusCode'] == 200 || res['statusCode'] == 201) {
         emit(state.copyWith(
-            status: FormzSubmissionStatus.success,
-            message: res['statusMessage']));
+            status: UserCompanyStatus.success, message: res['statusMessage']));
       } else {
         emit(state.copyWith(
-            status: FormzSubmissionStatus.failure,
-            message: res['statusMessage']));
+            status: UserCompanyStatus.failure, message: res['statusMessage']));
       }
-    } catch (_) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    } catch (e) {
+      emit(state.copyWith(
+        status: UserCompanyStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 }

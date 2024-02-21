@@ -35,9 +35,9 @@ class _AccountFormPageState extends State<AccountFormPage> {
             provider.companyName,
             style: themeData.textTheme.headlineMedium,
           ),
-          const Padding(
-              padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-              child: AccountForm()),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: AccountForm(id: widget.id)),
         ]),
       ),
     );

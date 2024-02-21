@@ -1,9 +1,24 @@
 part of 'my_profile_bloc.dart';
 
+enum MyProfileStatus {
+  loading,
+  success,
+  failure,
+  submitConfirmation,
+  submited,
+}
+
+extension MyProfileStatusX on MyProfileStatus {
+  bool get isLoading => this == MyProfileStatus.loading;
+  bool get isSuccess => this == MyProfileStatus.success;
+  bool get isFailure => this == MyProfileStatus.failure;
+  bool get isSubmitConfirmation => this == MyProfileStatus.submitConfirmation;
+  bool get isSubmited => this == MyProfileStatus.submited;
+}
+
 final class MyProfileState extends Equatable {
   const MyProfileState({
-    this.isLoading = true,
-    this.status = FormzSubmissionStatus.initial,
+    this.status = MyProfileStatus.loading,
     this.message = '',
     this.imageUrl = '',
     this.id = const Id.pure(),
@@ -17,8 +32,7 @@ final class MyProfileState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
-  final FormzSubmissionStatus status;
+  final MyProfileStatus status;
   final String message;
   final String imageUrl;
   final Id id;
@@ -32,8 +46,7 @@ final class MyProfileState extends Equatable {
   final bool isValid;
 
   MyProfileState copyWith({
-    bool? isLoading,
-    FormzSubmissionStatus? status,
+    MyProfileStatus? status,
     String? message,
     String? imageUrl,
     Id? id,
@@ -47,7 +60,6 @@ final class MyProfileState extends Equatable {
     bool? isValid,
   }) {
     return MyProfileState(
-      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       message: message ?? this.message,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -65,7 +77,6 @@ final class MyProfileState extends Equatable {
 
   @override
   List<Object> get props => [
-        isLoading,
         status,
         imageUrl,
         id,

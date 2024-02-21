@@ -1,6 +1,5 @@
 class CompanyModel {
   final String id;
-  final String code;
   final String name;
   final String description;
   final String address;
@@ -9,7 +8,6 @@ class CompanyModel {
 
   CompanyModel({
     required this.id,
-    required this.code,
     required this.name,
     required this.description,
     required this.address,
@@ -19,7 +17,6 @@ class CompanyModel {
 
   factory CompanyModel.fromJson(Map<String, dynamic> json) => CompanyModel(
         id: json['id'],
-        code: json['code'],
         name: json['name'],
         description: json['description'],
         address: json['address'],

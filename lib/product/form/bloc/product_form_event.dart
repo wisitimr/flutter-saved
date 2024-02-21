@@ -62,6 +62,13 @@ final class ProductFormPriceChanged extends ProductFormEvent {
   List<Object> get props => [price];
 }
 
+final class ProductFormSubmitConfirm extends ProductFormEvent {
+  const ProductFormSubmitConfirm();
+
+  @override
+  List<Object> get props => [];
+}
+
 final class ProductSubmitted extends ProductFormEvent {
   const ProductSubmitted();
 

@@ -19,6 +19,7 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
     on<MaterialFormCodeChanged>(_onCodeChanged);
     on<MaterialFormNameChanged>(_onNameChanged);
     on<MaterialFormDescriptionChanged>(_onDescriptionChanged);
+    on<MaterialFormSubmitConfirm>(_onConfirm);
     on<MaterialSubmitted>(_onSubmitted);
   }
 
@@ -27,8 +28,7 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
 
   Future<void> _onStarted(
       MaterialFormStarted event, Emitter<MaterialFormState> emit) async {
-    // emit(MaterialFormLoading());
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(status: MaterialFormStatus.loading));
     try {
       final material = MaterialFormTmp();
       if (event.id.isNotEmpty) {
@@ -43,7 +43,7 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: MaterialFormStatus.success,
         id: Id.dirty(material.id),
         code: Code.dirty(material.code),
         name: Name.dirty(material.name),
@@ -51,9 +51,12 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
         isValid: material.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(MaterialFormError());
+      emit(
+        state.copyWith(
+          status: MaterialFormStatus.failure,
+          message: e.toString(),
+        ),
+      );
     }
   }
 
@@ -129,6 +132,25 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
     );
   }
 
+  Future<void> _onConfirm(
+    MaterialFormSubmitConfirm event,
+    Emitter<MaterialFormState> emit,
+  ) async {
+    emit(state.copyWith(status: MaterialFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: MaterialFormStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: MaterialFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     MaterialSubmitted event,
     Emitter<MaterialFormState> emit,
@@ -145,15 +167,18 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
         dynamic res = await _materialService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.success,
+              status: MaterialFormStatus.submited,
               message: res['statusMessage']));
         } else {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
+              status: MaterialFormStatus.failure,
               message: res['statusMessage']));
         }
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(
+          status: MaterialFormStatus.failure,
+          message: e.toString(),
+        ));
       }
     }
   }

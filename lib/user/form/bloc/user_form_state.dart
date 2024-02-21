@@ -1,10 +1,30 @@
 part of 'user_form_bloc.dart';
 
+enum UserFormStatus {
+  loading,
+  success,
+  failure,
+  deleteConfirmation,
+  deleted,
+  submitConfirmation,
+  submited,
+}
+
+extension UserFormStatusX on UserFormStatus {
+  bool get isLoading => this == UserFormStatus.loading;
+  bool get isSuccess => this == UserFormStatus.success;
+  bool get isFailure => this == UserFormStatus.failure;
+  bool get isDeleteConfirmation => this == UserFormStatus.deleteConfirmation;
+  bool get isDeleted => this == UserFormStatus.deleted;
+  bool get isSubmitConfirmation => this == UserFormStatus.submitConfirmation;
+  bool get isSubmited => this == UserFormStatus.submited;
+}
+
 final class UserFormState extends Equatable {
   const UserFormState({
-    this.isLoading = true,
-    this.status = FormzSubmissionStatus.initial,
+    this.status = UserFormStatus.loading,
     this.message = '',
+    this.selectedDeleteRowId = '',
     this.id = const Id.pure(),
     this.username = const Username.pure(),
     this.firstName = const FirstName.pure(),
@@ -16,9 +36,9 @@ final class UserFormState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
-  final FormzSubmissionStatus status;
+  final UserFormStatus status;
   final String message;
+  final String selectedDeleteRowId;
   final Id id;
   final Username username;
   final FirstName firstName;
@@ -30,9 +50,9 @@ final class UserFormState extends Equatable {
   final bool isValid;
 
   UserFormState copyWith({
-    bool? isLoading,
-    FormzSubmissionStatus? status,
+    UserFormStatus? status,
     String? message,
+    String? selectedDeleteRowId,
     Id? id,
     Username? username,
     FirstName? firstName,
@@ -44,9 +64,9 @@ final class UserFormState extends Equatable {
     bool? isValid,
   }) {
     return UserFormState(
-      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       message: message ?? this.message,
+      selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
       id: id ?? this.id,
       username: username ?? this.username,
       firstName: firstName ?? this.firstName,
@@ -61,8 +81,9 @@ final class UserFormState extends Equatable {
 
   @override
   List<Object> get props => [
-        isLoading,
         status,
+        message,
+        selectedDeleteRowId,
         id,
         username,
         firstName,

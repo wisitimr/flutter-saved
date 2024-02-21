@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:intl/intl.dart';
 import 'package:saved/core/customer.dart';
+import 'package:saved/core/daybook_detail.dart';
 import 'package:saved/core/document.dart';
 import 'package:saved/core/daybook.dart';
 import 'package:saved/app_provider.dart';
@@ -29,19 +30,22 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
     on<DaybookFormCompanyChanged>(_onCompanyChanged);
     on<DaybookFormSupplierChanged>(_onSupplierChanged);
     on<DaybookFormCustomerChanged>(_onCustomerChanged);
+    on<DaybookFormSubmitConfirm>(_onSubmitConfirm);
     on<DaybookSubmitted>(_onSubmitted);
+    on<DaybookFormDeleteConfirm>(_onDeleteConfirm);
+    on<DaybookFormDelete>(_onDelete);
   }
 
   final AppProvider _provider;
-  final DayBookService _daybookService = DayBookService();
+  final DaybookService _daybookService = DaybookService();
+  final DaybookDetailService _daybookDetailService = DaybookDetailService();
   final DocumentService _documentService = DocumentService();
   final SupplierService _supplierService = SupplierService();
   final CustomerService _customerService = CustomerService();
 
   Future<void> _onStarted(
       DaybookFormStarted event, Emitter<DaybookFormState> emit) async {
-    // emit(DaybookFormLoading());
-    // emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(status: DaybookFormStatus.loading));
     try {
       final [docRes, supRes, cusRes] = await Future.wait([
         _documentService.findAll(_provider, {}),
@@ -114,7 +118,7 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: DaybookFormStatus.success,
         msDocument: documents,
         msSupplier: suppliers,
         msCustomer: customers,
@@ -131,9 +135,10 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
         isValid: daybook.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(DaybookFormError());
+      emit(state.copyWith(
+        status: DaybookFormStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 
@@ -333,6 +338,25 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
     );
   }
 
+  Future<void> _onSubmitConfirm(
+    DaybookFormSubmitConfirm event,
+    Emitter<DaybookFormState> emit,
+  ) async {
+    emit(state.copyWith(status: DaybookFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: DaybookFormStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     DaybookSubmitted event,
     Emitter<DaybookFormState> emit,
@@ -368,15 +392,15 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
 
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.success,
+              status: DaybookFormStatus.submited,
               message: res['statusMessage']));
         } else {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
+              status: DaybookFormStatus.failure,
               message: res['statusMessage']));
         }
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(status: DaybookFormStatus.failure));
       }
     }
   }
@@ -394,6 +418,64 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
       }
     }
     return Formz.validate(validateInput);
+  }
+
+  Future<void> _onDeleteConfirm(
+    DaybookFormDeleteConfirm event,
+    Emitter<DaybookFormState> emit,
+  ) async {
+    emit(state.copyWith(status: DaybookFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: DaybookFormStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDelete(
+    DaybookFormDelete event,
+    Emitter<DaybookFormState> emit,
+  ) async {
+    emit(state.copyWith(status: DaybookFormStatus.loading));
+    try {
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res = await _daybookDetailService.delete(
+            _provider, state.selectedDeleteRowId);
+        if (res['statusCode'] == 200) {
+          emit(
+            state.copyWith(
+              status: DaybookFormStatus.deleted,
+              message: res['statusMessage'],
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: DaybookFormStatus.failure,
+              message: res['statusMessage'],
+            ),
+          );
+        }
+      } else {
+        emit(state.copyWith(
+          status: DaybookFormStatus.failure,
+          message: "Invalid parameter",
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
   }
 }
 

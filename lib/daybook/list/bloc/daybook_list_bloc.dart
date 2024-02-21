@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:saved/core/document.dart';
 import 'package:saved/core/daybook.dart';
 import 'package:saved/app_provider.dart';
 import 'package:saved/daybook/list/models/models.dart';
@@ -14,41 +13,126 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
       : _provider = provider,
         super(DaybookListLoading()) {
     on<DaybookListStarted>(_onStarted);
+    on<DaybookListSearchChanged>(_onSearchChanged);
+    on<DaybookListDeleteConfirm>(_onConfirm);
+    on<DaybookListDelete>(_onDelete);
   }
 
   final AppProvider _provider;
-  final DayBookService _daybookService = DayBookService();
-  final DocumentService _documentService = DocumentService();
+  final DaybookService _daybookService = DaybookService();
 
   Future<void> _onStarted(
       DaybookListStarted event, Emitter<DaybookListState> emit) async {
-    emit(DaybookListLoading());
+    emit(state.copyWith(status: DaybookListStatus.loading));
     try {
       Map<String, dynamic> param = {};
-      if (_provider.companyId.isNotEmpty) {
-        param['company'] = _provider.companyId;
+      param['company'] = _provider.companyId;
 
-        final [daybookRes, docRes] = await Future.wait([
-          _daybookService.findAll(_provider, param),
-          _documentService.findAll(_provider, {})
-        ]);
-        List<DaybookListModel> daybooks = [];
-        List<Document> document = [];
-        if (daybookRes['statusCode'] == 200) {
-          List data = daybookRes['data'];
-          daybooks =
-              data.map((item) => DaybookListModel.fromJson(item)).toList();
+      final res = await _daybookService.findAll(_provider, param);
+      List<DaybookListModel> daybooks = [];
+      if (res['statusCode'] == 200) {
+        List data = res['data'];
+        daybooks = data.map((item) => DaybookListModel.fromJson(item)).toList();
+      }
+      emit(state.copyWith(
+        status: DaybookListStatus.success,
+        daybooks: daybooks,
+        filter: daybooks,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookListStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  void _onSearchChanged(
+    DaybookListSearchChanged event,
+    Emitter<DaybookListState> emit,
+  ) {
+    emit(state.copyWith(status: DaybookListStatus.loading));
+    var filter = event.text.isNotEmpty
+        ? state.daybooks
+            .where(
+              (item) =>
+                  item.number
+                      .toLowerCase()
+                      .contains(event.text.toLowerCase()) ||
+                  item.invoice
+                      .toLowerCase()
+                      .contains(event.text.toLowerCase()) ||
+                  item.document
+                      .toLowerCase()
+                      .contains(event.text.toLowerCase()),
+            )
+            .toList()
+        : state.daybooks;
+
+    emit(
+      state.copyWith(
+        status: DaybookListStatus.success,
+        daybooks: state.daybooks,
+        filter: filter,
+      ),
+    );
+  }
+
+  Future<void> _onConfirm(
+    DaybookListDeleteConfirm event,
+    Emitter<DaybookListState> emit,
+  ) async {
+    emit(state.copyWith(status: DaybookListStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: DaybookListStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookListStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDelete(
+    DaybookListDelete event,
+    Emitter<DaybookListState> emit,
+  ) async {
+    emit(state.copyWith(status: DaybookListStatus.loading));
+    try {
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res =
+            await _daybookService.delete(_provider, state.selectedDeleteRowId);
+        if (res['statusCode'] == 200) {
+          emit(
+            state.copyWith(
+              status: DaybookListStatus.deleted,
+              message: res['statusMessage'],
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: DaybookListStatus.failure,
+              message: res['statusMessage'],
+            ),
+          );
         }
-        if (docRes['statusCode'] == 200) {
-          List data = docRes['data'];
-          document = data.map((item) => Document.fromJson(item)).toList();
-        }
-        emit(DaybookListState(daybooks: daybooks, document: document));
       } else {
-        emit(const DaybookListState());
+        emit(state.copyWith(
+          status: DaybookListStatus.failure,
+          message: "Invalid parameter",
+        ));
       }
     } catch (e) {
-      emit(DaybookListError());
+      emit(state.copyWith(
+        status: DaybookListStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 }

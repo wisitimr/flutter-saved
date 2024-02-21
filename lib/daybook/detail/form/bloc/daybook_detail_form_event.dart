@@ -63,11 +63,16 @@ final class DaybookDetailFormAccountChanged extends DaybookDetailFormEvent {
   List<Object> get props => [account];
 }
 
-final class DaybookDetailSubmitted extends DaybookDetailFormEvent {
-  const DaybookDetailSubmitted(this.provider);
-
-  final AppProvider provider;
+final class DaybookDetailFormSubmitConfirm extends DaybookDetailFormEvent {
+  const DaybookDetailFormSubmitConfirm();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
+}
+
+final class DaybookDetailSubmitted extends DaybookDetailFormEvent {
+  const DaybookDetailSubmitted();
+
+  @override
+  List<Object> get props => [];
 }

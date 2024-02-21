@@ -62,7 +62,7 @@ class _MaterialListPageState extends State<MaterialListPage> {
                     );
 
                     dialog.show();
-                  } else if (state.status.isConfirmation) {
+                  } else if (state.status.isDeleteConfirmation) {
                     final dialog = AwesomeDialog(
                       context: context,
                       dialogType: DialogType.warning,
@@ -73,10 +73,10 @@ class _MaterialListPageState extends State<MaterialListPage> {
                       btnOkOnPress: () {
                         context
                             .read<MaterialBloc>()
-                            .add(MaterialDelete(state.selectedRowId));
+                            .add(const MaterialDelete());
                       },
                       btnCancelText: lang.cancel,
-                      btnCancelColor: appColorScheme.success,
+                      btnCancelColor: appColorScheme.secondary,
                       btnCancelOnPress: () {},
                     );
 
@@ -98,36 +98,27 @@ class _MaterialListPageState extends State<MaterialListPage> {
                     dialog.show();
                   }
                 },
-                child: const Material(),
+                child: BlocBuilder<MaterialBloc, MaterialXState>(
+                  builder: (context, state) {
+                    switch (state.status) {
+                      case MaterialListStatus.loading:
+                        return const Center(child: CircularProgressIndicator());
+                      case MaterialListStatus.failure:
+                        return const MaterialCard();
+                      case MaterialListStatus.deleted:
+                        return const MaterialCard();
+                      case MaterialListStatus.deleteConfirmation:
+                        return const MaterialCard();
+                      case MaterialListStatus.success:
+                        return const MaterialCard();
+                    }
+                  },
+                ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class Material extends StatelessWidget {
-  const Material({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MaterialBloc, MaterialXState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case Status.loading:
-            return const Center(child: CircularProgressIndicator());
-          case Status.failure:
-            return const MaterialCard();
-          case Status.deleted:
-            return const MaterialCard();
-          case Status.confirmation:
-            return const MaterialCard();
-          case Status.success:
-            return const MaterialCard();
-        }
-      },
     );
   }
 }
@@ -202,7 +193,7 @@ class MaterialCard extends StatelessWidget {
                                 .extension<AppButtonTheme>()!
                                 .successElevated,
                             onPressed: () =>
-                                GoRouter.of(context).go(RouteUri.materialFrom),
+                                GoRouter.of(context).go(RouteUri.materialForm),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,11 +266,11 @@ class MaterialCard extends StatelessWidget {
                                             context: context,
                                             onDetailButtonPressed: (data) =>
                                                 GoRouter.of(context).go(
-                                                    '${RouteUri.materialFrom}?id=${data.id}'),
+                                                    '${RouteUri.materialForm}?id=${data.id}'),
                                             onDeleteButtonPressed: (data) =>
                                                 context
                                                     .read<MaterialBloc>()
-                                                    .add(MaterialConfirm(
+                                                    .add(MaterialDeleteConfirm(
                                                         data.id)),
                                           ),
                                         )),

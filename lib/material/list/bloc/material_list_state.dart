@@ -1,44 +1,51 @@
 part of 'material_list_bloc.dart';
 
-enum Status { loading, success, failure, deleted, confirmation }
+enum MaterialListStatus {
+  loading,
+  success,
+  failure,
+  deleteConfirmation,
+  deleted,
+}
 
-extension StatusX on Status {
-  bool get isLoading => this == Status.loading;
-  bool get isSuccess => this == Status.success;
-  bool get isFailure => this == Status.failure;
-  bool get isDeleted => this == Status.deleted;
-  bool get isConfirmation => this == Status.confirmation;
+extension MaterialListStatusX on MaterialListStatus {
+  bool get isLoading => this == MaterialListStatus.loading;
+  bool get isSuccess => this == MaterialListStatus.success;
+  bool get isFailure => this == MaterialListStatus.failure;
+  bool get isDeleteConfirmation =>
+      this == MaterialListStatus.deleteConfirmation;
+  bool get isDeleted => this == MaterialListStatus.deleted;
 }
 
 @immutable
 final class MaterialXState extends Equatable {
   const MaterialXState({
-    this.status = Status.loading,
+    this.status = MaterialListStatus.loading,
     this.message = '',
     this.materials = const <MaterialModel>[],
     this.filter = const <MaterialModel>[],
-    this.selectedRowId = '',
+    this.selectedDeleteRowId = '',
   });
 
-  final Status status;
+  final MaterialListStatus status;
   final String message;
   final List<MaterialModel> materials;
   final List<MaterialModel> filter;
-  final String selectedRowId;
+  final String selectedDeleteRowId;
 
   MaterialXState copyWith({
-    Status? status,
+    MaterialListStatus? status,
     String? message,
     List<MaterialModel>? materials,
     List<MaterialModel>? filter,
-    String? selectedRowId,
+    String? selectedDeleteRowId,
   }) {
     return MaterialXState(
       status: status ?? this.status,
       message: message ?? this.message,
       materials: materials ?? this.materials,
       filter: filter ?? this.filter,
-      selectedRowId: selectedRowId ?? this.selectedRowId,
+      selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
     );
   }
 
@@ -48,7 +55,7 @@ final class MaterialXState extends Equatable {
         message,
         materials,
         filter,
-        selectedRowId,
+        selectedDeleteRowId,
       ];
 }
 

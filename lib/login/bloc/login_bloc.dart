@@ -123,7 +123,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               companies.addAll([
                 CompanyModel(
                   id: '',
-                  code: '',
                   name: '-- Select --',
                   description: '',
                   address: '',

@@ -11,35 +11,32 @@ part 'my_profile_event.dart';
 part 'my_profile_state.dart';
 
 class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
-  MyProfileBloc() : super(MyProfileLoading()) {
+  MyProfileBloc(AppProvider provider)
+      : _provider = provider,
+        super(MyProfileLoading()) {
     on<MyProfileStarted>(_onStarted);
     on<MyProfileUsernameChanged>(_onUsernameChanged);
     on<MyProfileFirstNameChanged>(_onFirstNameChanged);
     on<MyProfileLastNameChanged>(_onLastNameChanged);
     on<MyProfileEmailChanged>(_onEmailChanged);
     on<MyProfileCompanySelected>(_onCompanySelected);
+    on<MyProfileConfirm>(_onConfirm);
     on<MyProfileSubmitted>(_onSubmitted);
   }
 
+  final AppProvider _provider;
   final UserService _userService = UserService();
 
   Future<void> _onStarted(
       MyProfileStarted event, Emitter<MyProfileState> emit) async {
-    emit(MyProfileLoading());
+    emit(state.copyWith(status: MyProfileStatus.loading));
     try {
-      final AppProvider provider = event.provider;
-      final res = await _userService.findById(provider, provider.id);
+      final res = await _userService.findById(_provider);
 
       if (res != null && res['statusCode'] == 200) {
         var data = MyProfile.fromJson(res['data']);
-
-        // if (data.companies.isNotEmpty) {
-        //   await provider.setCompanyAsync(
-        //       companyId: data.companies[0].id,
-        //       companyName: data.companies[0].name);
-        // }
         emit(state.copyWith(
-            isLoading: false,
+            status: MyProfileStatus.success,
             imageUrl: 'https://picsum.photos/id/1005/300/300',
             id: Id.dirty(data.id),
             username: Username.dirty(data.username),
@@ -48,13 +45,16 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
             email: Email.dirty(data.email),
             role: Role.dirty(data.role),
             companies: data.companies,
-            companySelected: provider.companyId,
+            companySelected: _provider.companyId,
             isValid: data.id.isNotEmpty));
       }
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(MyProfileError());
+      emit(
+        state.copyWith(
+          status: MyProfileStatus.failure,
+          message: e.toString(),
+        ),
+      );
     }
   }
 
@@ -142,8 +142,7 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
     MyProfileCompanySelected event,
     Emitter<MyProfileState> emit,
   ) async {
-    final AppProvider provider = event.provider;
-    await provider.setCompanyAsync(
+    await _provider.setCompanyAsync(
         companyId: event.companyId, companyName: event.companyName);
     emit(
       state.copyWith(
@@ -152,11 +151,29 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
     );
   }
 
+  Future<void> _onConfirm(
+    MyProfileConfirm event,
+    Emitter<MyProfileState> emit,
+  ) async {
+    emit(state.copyWith(status: MyProfileStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: MyProfileStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: MyProfileStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     MyProfileSubmitted event,
     Emitter<MyProfileState> emit,
   ) async {
-    final AppProvider provider = event.provider;
     try {
       final Map<String, dynamic> data = {};
       data['id'] = state.id.value;
@@ -164,27 +181,39 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
       data['firstName'] = state.firstName.value;
       data['lastName'] = state.lastName.value;
       data['email'] = state.email.value;
-      // data['role'] = state.role.value;
+      data['companies'] = [];
+      if (state.companies.isNotEmpty) {
+        List<String> list = [];
+        for (var element in state.companies) {
+          list.add(element.id);
+        }
+        data['companies'] = list;
+      }
 
-      dynamic res = await _userService.update(provider, data);
+      dynamic res = await _userService.update(_provider, data);
 
       if (res['statusCode'] == 200) {
         var data = res['data'];
-        await provider.setUserDataAsync(
+        await _provider.setUserDataAsync(
           fullName: data['fullName'],
           role: data['role'] ?? '',
           userProfileImageUrl: 'https://picsum.photos/id/1005/300/300',
         );
         emit(state.copyWith(
-            status: FormzSubmissionStatus.success,
-            message: res['statusMessage']));
+          status: MyProfileStatus.submited,
+          message: res['statusMessage'],
+        ));
       } else {
         emit(state.copyWith(
-            status: FormzSubmissionStatus.failure,
-            message: res['statusMessage']));
+          status: MyProfileStatus.failure,
+          message: res['statusMessage'],
+        ));
       }
-    } catch (_) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    } catch (e) {
+      emit(state.copyWith(
+        status: MyProfileStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 }

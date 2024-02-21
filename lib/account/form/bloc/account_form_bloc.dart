@@ -20,6 +20,7 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
     on<AccountFormNameChanged>(_onNameChanged);
     on<AccountFormDescriptionChanged>(_onDescriptionChanged);
     on<AccountFormTypeChanged>(_onTypeChanged);
+    on<AccountFormSubmitConfirm>(_onConfirm);
     on<AccountSubmitted>(_onSubmitted);
   }
 
@@ -29,7 +30,7 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
   Future<void> _onStarted(
       AccountFormStarted event, Emitter<AccountFormState> emit) async {
     // emit(AccountFormLoading());
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(status: AccountFormStatus.loading));
     try {
       final account = AccountFormTmp();
       if (event.id.isNotEmpty) {
@@ -44,7 +45,7 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: AccountFormStatus.success,
         id: Id.dirty(account.id),
         code: Code.dirty(account.code),
         name: Name.dirty(account.name),
@@ -53,9 +54,10 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
         isValid: account.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(AccountFormError());
+      emit(state.copyWith(
+        status: AccountFormStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 
@@ -149,6 +151,25 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
     );
   }
 
+  Future<void> _onConfirm(
+    AccountFormSubmitConfirm event,
+    Emitter<AccountFormState> emit,
+  ) async {
+    emit(state.copyWith(status: AccountFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: AccountFormStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: AccountFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     AccountSubmitted event,
     Emitter<AccountFormState> emit,
@@ -165,15 +186,20 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
         dynamic res = await _accountService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.success,
-              message: res['statusMessage']));
+            status: AccountFormStatus.submited,
+            message: res['statusMessage'],
+          ));
         } else {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
-              message: res['statusMessage']));
+            status: AccountFormStatus.failure,
+            message: res['statusMessage'],
+          ));
         }
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(
+          status: AccountFormStatus.failure,
+          message: e.toString(),
+        ));
       }
     }
   }

@@ -1,44 +1,50 @@
 part of 'product_list_bloc.dart';
 
-enum Status { loading, success, failure, deleted, confirmation }
+enum ProductListStatus {
+  loading,
+  success,
+  failure,
+  deleted,
+  deleteConfirmation
+}
 
-extension StatusX on Status {
-  bool get isLoading => this == Status.loading;
-  bool get isSuccess => this == Status.success;
-  bool get isFailure => this == Status.failure;
-  bool get isDeleted => this == Status.deleted;
-  bool get isConfirmation => this == Status.confirmation;
+extension ProductListStatusX on ProductListStatus {
+  bool get isLoading => this == ProductListStatus.loading;
+  bool get isSuccess => this == ProductListStatus.success;
+  bool get isFailure => this == ProductListStatus.failure;
+  bool get isDeleted => this == ProductListStatus.deleted;
+  bool get isDeleteConfirmation => this == ProductListStatus.deleteConfirmation;
 }
 
 @immutable
 final class ProductState extends Equatable {
   const ProductState({
-    this.status = Status.loading,
+    this.status = ProductListStatus.loading,
     this.message = '',
     this.products = const <ProductModel>[],
     this.filter = const <ProductModel>[],
-    this.selectedRowId = '',
+    this.selectedDeleteRowId = '',
   });
 
-  final Status status;
+  final ProductListStatus status;
   final String message;
   final List<ProductModel> products;
   final List<ProductModel> filter;
-  final String selectedRowId;
+  final String selectedDeleteRowId;
 
   ProductState copyWith({
-    Status? status,
+    ProductListStatus? status,
     String? message,
     List<ProductModel>? products,
     List<ProductModel>? filter,
-    String? selectedRowId,
+    String? selectedDeleteRowId,
   }) {
     return ProductState(
       status: status ?? this.status,
       message: message ?? this.message,
       products: products ?? this.products,
       filter: filter ?? this.filter,
-      selectedRowId: selectedRowId ?? this.selectedRowId,
+      selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
     );
   }
 
@@ -48,7 +54,7 @@ final class ProductState extends Equatable {
         message,
         products,
         filter,
-        selectedRowId,
+        selectedDeleteRowId,
       ];
 }
 

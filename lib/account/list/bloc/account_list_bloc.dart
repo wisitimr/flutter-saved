@@ -14,7 +14,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         super(AccountLoading()) {
     on<AccountStarted>(_onStarted);
     on<AccountSearchChanged>(_onSearchChanged);
-    on<AccountConfirm>(_onConfirm);
+    on<AccountDeleteConfirm>(_onConfirm);
     on<AccountDelete>(_onDelete);
   }
 
@@ -23,7 +23,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   Future<void> _onStarted(
       AccountStarted event, Emitter<AccountState> emit) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: AccountListStatus.loading));
     try {
       List<AccountModel> accounts = [];
       if (_provider.companyId.isNotEmpty) {
@@ -37,14 +37,14 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       }
       emit(
         state.copyWith(
-          status: Status.success,
+          status: AccountListStatus.success,
           accounts: accounts,
           filter: accounts,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: AccountListStatus.failure,
         message: e.toString(),
       ));
     }
@@ -54,7 +54,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     AccountSearchChanged event,
     Emitter<AccountState> emit,
   ) {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: AccountListStatus.loading));
     var filter = event.text.isNotEmpty
         ? state.accounts
             .where(
@@ -65,11 +65,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             .toList()
         : state.accounts;
 
-    // event.key.currentState?.pageTo(0);
-
     emit(
       state.copyWith(
-        status: Status.success,
+        status: AccountListStatus.success,
         accounts: state.accounts,
         filter: filter,
       ),
@@ -77,20 +75,20 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   }
 
   Future<void> _onConfirm(
-    AccountConfirm event,
+    AccountDeleteConfirm event,
     Emitter<AccountState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: AccountListStatus.loading));
     try {
       emit(
         state.copyWith(
-          status: Status.confirmation,
-          selectedRowId: event.id,
+          status: AccountListStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: AccountListStatus.failure,
         message: e.toString(),
       ));
     }
@@ -100,34 +98,35 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     AccountDelete event,
     Emitter<AccountState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: AccountListStatus.loading));
     try {
-      if (event.id.isNotEmpty) {
-        final res = await _accountService.delete(_provider, event.id);
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res =
+            await _accountService.delete(_provider, state.selectedDeleteRowId);
         if (res['statusCode'] == 200) {
           emit(
             state.copyWith(
-              status: Status.deleted,
+              status: AccountListStatus.deleted,
               message: res['statusMessage'],
             ),
           );
         } else {
           emit(
             state.copyWith(
-              status: Status.failure,
+              status: AccountListStatus.failure,
               message: res['statusMessage'],
             ),
           );
         }
       } else {
         emit(state.copyWith(
-          status: Status.failure,
+          status: AccountListStatus.failure,
           message: "Invalid parameter",
         ));
       }
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: AccountListStatus.failure,
         message: e.toString(),
       ));
     }

@@ -21,8 +21,8 @@ final class MaterialSearchChanged extends MaterialEvent {
   List<Object> get props => [text];
 }
 
-final class MaterialConfirm extends MaterialEvent {
-  const MaterialConfirm(this.id);
+final class MaterialDeleteConfirm extends MaterialEvent {
+  const MaterialDeleteConfirm(this.id);
 
   final String id;
 
@@ -31,10 +31,8 @@ final class MaterialConfirm extends MaterialEvent {
 }
 
 final class MaterialDelete extends MaterialEvent {
-  const MaterialDelete(this.id);
-
-  final String id;
+  const MaterialDelete();
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [];
 }

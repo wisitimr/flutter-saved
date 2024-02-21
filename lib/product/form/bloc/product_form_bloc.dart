@@ -20,6 +20,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     on<ProductFormNameChanged>(_onNameChanged);
     on<ProductFormDescriptionChanged>(_onDescriptionChanged);
     on<ProductFormPriceChanged>(_onPriceChanged);
+    on<ProductFormSubmitConfirm>(_onConfirm);
     on<ProductSubmitted>(_onSubmitted);
   }
 
@@ -29,7 +30,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
   Future<void> _onStarted(
       ProductFormStarted event, Emitter<ProductFormState> emit) async {
     // emit(ProductFormLoading());
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(status: ProductFormStatus.loading));
     try {
       final product = ProductFormTmp();
       if (event.id.isNotEmpty) {
@@ -44,7 +45,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: ProductFormStatus.success,
         id: Id.dirty(product.id),
         code: Code.dirty(product.code),
         name: Name.dirty(product.name),
@@ -53,9 +54,12 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
         isValid: product.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(ProductFormError());
+      emit(
+        state.copyWith(
+          status: ProductFormStatus.failure,
+          message: e.toString(),
+        ),
+      );
     }
   }
 
@@ -149,6 +153,25 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     );
   }
 
+  Future<void> _onConfirm(
+    ProductFormSubmitConfirm event,
+    Emitter<ProductFormState> emit,
+  ) async {
+    emit(state.copyWith(status: ProductFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: ProductFormStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: ProductFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     ProductSubmitted event,
     Emitter<ProductFormState> emit,
@@ -166,15 +189,15 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
         dynamic res = await _productService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.success,
+              status: ProductFormStatus.submited,
               message: res['statusMessage']));
         } else {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
+              status: ProductFormStatus.failure,
               message: res['statusMessage']));
         }
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(status: ProductFormStatus.failure));
       }
     }
   }

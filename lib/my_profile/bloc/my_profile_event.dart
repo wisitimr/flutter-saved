@@ -9,12 +9,10 @@ sealed class MyProfileEvent extends Equatable {
 }
 
 final class MyProfileStarted extends MyProfileEvent {
-  const MyProfileStarted(this.provider);
-
-  final AppProvider provider;
+  const MyProfileStarted();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
 }
 
 final class MyProfileUsernameChanged extends MyProfileEvent {
@@ -74,11 +72,16 @@ final class MyProfileCompanySelected extends MyProfileEvent {
   List<Object> get props => [companyId, companyName];
 }
 
-final class MyProfileSubmitted extends MyProfileEvent {
-  const MyProfileSubmitted(this.provider);
-
-  final AppProvider provider;
+final class MyProfileConfirm extends MyProfileEvent {
+  const MyProfileConfirm();
 
   @override
-  List<Object> get props => [provider];
+  List<Object> get props => [];
+}
+
+final class MyProfileSubmitted extends MyProfileEvent {
+  const MyProfileSubmitted();
+
+  @override
+  List<Object> get props => [];
 }

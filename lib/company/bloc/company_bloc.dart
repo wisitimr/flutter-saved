@@ -21,6 +21,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     on<CompanyAddressChanged>(_onAddressChanged);
     on<CompanyPhoneChanged>(_onPhoneChanged);
     on<CompanyContactChanged>(_onContactChanged);
+    on<CompanySubmitConfirm>(_onConfirm);
     on<CompanySubmitted>(_onSubmitted);
   }
 
@@ -29,7 +30,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
 
   Future<void> _onStarted(
       CompanyStarted event, Emitter<CompanyState> emit) async {
-    emit(CompanyLoading());
+    emit(state.copyWith(status: CompanyStatus.loading));
     try {
       final company = CompanyTmp();
       if (event.id.isNotEmpty) {
@@ -45,7 +46,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: CompanyStatus.success,
         id: Id.dirty(company.id),
         name: Name.dirty(company.name),
         description: Description.dirty(company.description),
@@ -55,9 +56,10 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
         isValid: company.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(CompanyError());
+      emit(state.copyWith(
+        status: CompanyStatus.failure,
+        message: e.toString(),
+      ));
     }
   }
 
@@ -167,6 +169,25 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     );
   }
 
+  Future<void> _onConfirm(
+    CompanySubmitConfirm event,
+    Emitter<CompanyState> emit,
+  ) async {
+    emit(state.copyWith(status: CompanyStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: CompanyStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: CompanyStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     CompanySubmitted event,
     Emitter<CompanyState> emit,
@@ -188,15 +209,22 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
 
       if (res['statusCode'] == 200 || res['statusCode'] == 201) {
         emit(state.copyWith(
-            status: FormzSubmissionStatus.success,
-            message: res['statusMessage']));
+          status: CompanyStatus.submited,
+          message: res['statusMessage'],
+        ));
       } else {
         emit(state.copyWith(
-            status: FormzSubmissionStatus.failure,
-            message: res['statusMessage']));
+          status: CompanyStatus.failure,
+          message: res['statusMessage'],
+        ));
       }
-    } catch (_) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: CompanyStatus.failure,
+          message: e.toString(),
+        ),
+      );
     }
   }
 }

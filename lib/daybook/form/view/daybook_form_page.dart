@@ -35,9 +35,9 @@ class _DaybookFormPageState extends State<DaybookFormPage> {
             provider.companyName,
             style: themeData.textTheme.headlineMedium,
           ),
-          const Padding(
-              padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-              child: DaybookForm()),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: DaybookForm(id: widget.id)),
         ]),
       ),
     );

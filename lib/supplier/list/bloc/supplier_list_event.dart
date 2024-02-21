@@ -31,10 +31,8 @@ final class SupplierConfirm extends SupplierEvent {
 }
 
 final class SupplierDelete extends SupplierEvent {
-  const SupplierDelete(this.id);
-
-  final String id;
+  const SupplierDelete();
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [];
 }

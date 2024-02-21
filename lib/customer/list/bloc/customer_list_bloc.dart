@@ -14,7 +14,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
         super(CustomerLoading()) {
     on<CustomerStarted>(_onStarted);
     on<CustomerSearchChanged>(_onSearchChanged);
-    on<CustomerConfirm>(_onConfirm);
+    on<CustomerDeleteConfirm>(_onConfirm);
     on<CustomerDelete>(_onDelete);
   }
 
@@ -23,7 +23,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   Future<void> _onStarted(
       CustomerStarted event, Emitter<CustomerState> emit) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: CustomerListStatus.loading));
     try {
       List<CustomerModel> customers = [];
       if (_provider.companyId.isNotEmpty) {
@@ -37,14 +37,14 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       }
       emit(
         state.copyWith(
-          status: Status.success,
+          status: CustomerListStatus.success,
           customers: customers,
           filter: customers,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: CustomerListStatus.failure,
         message: e.toString(),
       ));
     }
@@ -54,7 +54,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     CustomerSearchChanged event,
     Emitter<CustomerState> emit,
   ) {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: CustomerListStatus.loading));
     var filter = event.text.isNotEmpty
         ? state.customers
             .where(
@@ -66,7 +66,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
         : state.customers;
     emit(
       state.copyWith(
-        status: Status.success,
+        status: CustomerListStatus.success,
         customers: state.customers,
         filter: filter,
       ),
@@ -74,20 +74,20 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   }
 
   Future<void> _onConfirm(
-    CustomerConfirm event,
+    CustomerDeleteConfirm event,
     Emitter<CustomerState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: CustomerListStatus.loading));
     try {
       emit(
         state.copyWith(
-          status: Status.confirmation,
-          selectedRowId: event.id,
+          status: CustomerListStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: CustomerListStatus.failure,
         message: e.toString(),
       ));
     }
@@ -97,34 +97,35 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     CustomerDelete event,
     Emitter<CustomerState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: CustomerListStatus.loading));
     try {
-      if (event.id.isNotEmpty) {
-        final res = await _customerService.delete(_provider, event.id);
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res =
+            await _customerService.delete(_provider, state.selectedDeleteRowId);
         if (res['statusCode'] == 200) {
           emit(
             state.copyWith(
-              status: Status.deleted,
+              status: CustomerListStatus.deleted,
               message: res['statusMessage'],
             ),
           );
         } else {
           emit(
             state.copyWith(
-              status: Status.failure,
+              status: CustomerListStatus.failure,
               message: res['statusMessage'],
             ),
           );
         }
       } else {
         emit(state.copyWith(
-          status: Status.failure,
+          status: CustomerListStatus.failure,
           message: "Invalid parameter",
         ));
       }
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: CustomerListStatus.failure,
         message: e.toString(),
       ));
     }

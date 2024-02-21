@@ -23,7 +23,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
 
   Future<void> _onStarted(
       SupplierStarted event, Emitter<SupplierState> emit) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: SupplierStatus.loading));
     try {
       List<SupplierModel> suppliers = [];
       if (_provider.companyId.isNotEmpty) {
@@ -37,14 +37,14 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
       }
       emit(
         state.copyWith(
-          status: Status.success,
+          status: SupplierStatus.success,
           suppliers: suppliers,
           filter: suppliers,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: SupplierStatus.failure,
         message: e.toString(),
       ));
     }
@@ -54,7 +54,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
     SupplierSearchChanged event,
     Emitter<SupplierState> emit,
   ) {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: SupplierStatus.loading));
     var filter = event.text.isNotEmpty
         ? state.suppliers
             .where(
@@ -66,7 +66,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
         : state.suppliers;
     emit(
       state.copyWith(
-        status: Status.success,
+        status: SupplierStatus.success,
         suppliers: state.suppliers,
         filter: filter,
       ),
@@ -77,17 +77,17 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
     SupplierConfirm event,
     Emitter<SupplierState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: SupplierStatus.loading));
     try {
       emit(
         state.copyWith(
-          status: Status.confirmation,
-          selectedRowId: event.id,
+          status: SupplierStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: SupplierStatus.failure,
         message: e.toString(),
       ));
     }
@@ -97,34 +97,35 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
     SupplierDelete event,
     Emitter<SupplierState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: SupplierStatus.loading));
     try {
-      if (event.id.isNotEmpty) {
-        final res = await _supplierService.delete(_provider, event.id);
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res =
+            await _supplierService.delete(_provider, state.selectedDeleteRowId);
         if (res['statusCode'] == 200) {
           emit(
             state.copyWith(
-              status: Status.deleted,
+              status: SupplierStatus.deleted,
               message: res['statusMessage'],
             ),
           );
         } else {
           emit(
             state.copyWith(
-              status: Status.failure,
+              status: SupplierStatus.failure,
               message: res['statusMessage'],
             ),
           );
         }
       } else {
         emit(state.copyWith(
-          status: Status.failure,
+          status: SupplierStatus.failure,
           message: "Invalid parameter",
         ));
       }
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: SupplierStatus.failure,
         message: e.toString(),
       ));
     }

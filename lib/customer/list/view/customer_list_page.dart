@@ -63,7 +63,7 @@ class _CustomerPageState extends State<CustomerPage> {
                     );
 
                     dialog.show();
-                  } else if (state.status.isConfirmation) {
+                  } else if (state.status.isDeleteConfirmation) {
                     final dialog = AwesomeDialog(
                       context: context,
                       dialogType: DialogType.warning,
@@ -74,10 +74,10 @@ class _CustomerPageState extends State<CustomerPage> {
                       btnOkOnPress: () {
                         context
                             .read<CustomerBloc>()
-                            .add(CustomerDelete(state.selectedRowId));
+                            .add(const CustomerDelete());
                       },
                       btnCancelText: lang.cancel,
-                      btnCancelColor: appColorScheme.success,
+                      btnCancelColor: appColorScheme.secondary,
                       btnCancelOnPress: () {},
                     );
 
@@ -117,15 +117,15 @@ class Customer extends StatelessWidget {
     return BlocBuilder<CustomerBloc, CustomerState>(
       builder: (context, state) {
         switch (state.status) {
-          case Status.loading:
+          case CustomerListStatus.loading:
             return const Center(child: CircularProgressIndicator());
-          case Status.failure:
+          case CustomerListStatus.failure:
             return const CustomerCard();
-          case Status.deleted:
+          case CustomerListStatus.deleted:
             return const CustomerCard();
-          case Status.confirmation:
+          case CustomerListStatus.deleteConfirmation:
             return const CustomerCard();
-          case Status.success:
+          case CustomerListStatus.success:
             return const CustomerCard();
         }
       },
@@ -203,7 +203,7 @@ class CustomerCard extends StatelessWidget {
                                 .extension<AppButtonTheme>()!
                                 .successElevated,
                             onPressed: () =>
-                                GoRouter.of(context).go(RouteUri.customerFrom),
+                                GoRouter.of(context).go(RouteUri.customerForm),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,11 +274,11 @@ class CustomerCard extends StatelessWidget {
                                             context: context,
                                             onDetailButtonPressed: (data) =>
                                                 GoRouter.of(context).go(
-                                                    '${RouteUri.customerFrom}?id=${data.id}'),
+                                                    '${RouteUri.customerForm}?id=${data.id}'),
                                             onDeleteButtonPressed: (data) =>
                                                 context
                                                     .read<CustomerBloc>()
-                                                    .add(CustomerConfirm(
+                                                    .add(CustomerDeleteConfirm(
                                                         data.id)),
                                           ),
                                         )),

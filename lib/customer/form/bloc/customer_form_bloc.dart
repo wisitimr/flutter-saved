@@ -22,6 +22,7 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
     on<CustomerFormTaxChanged>(_onTaxChanged);
     on<CustomerFormPhoneChanged>(_onPhoneChanged);
     on<CustomerFormContactChanged>(_onContactChanged);
+    on<CustomerFormSubmitConfirm>(_onConfirm);
     on<CustomerSubmitted>(_onSubmitted);
   }
 
@@ -31,7 +32,7 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
   Future<void> _onStarted(
       CustomerFormStarted event, Emitter<CustomerFormState> emit) async {
     // emit(CustomerFormLoading());
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(status: CustomerFormStatus.loading));
     try {
       final customer = CustomerFormTmp();
       if (event.id.isNotEmpty) {
@@ -48,7 +49,7 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
         }
       }
       emit(state.copyWith(
-        isLoading: false,
+        status: CustomerFormStatus.success,
         id: Id.dirty(customer.id),
         code: Code.dirty(customer.code),
         name: Name.dirty(customer.name),
@@ -59,9 +60,12 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
         isValid: customer.id.isNotEmpty,
       ));
     } catch (e) {
-      // ignore: avoid_print
-      print("Exception occured: $e");
-      emit(CustomerFormError());
+      emit(
+        state.copyWith(
+          status: CustomerFormStatus.failure,
+          message: e.toString(),
+        ),
+      );
     }
   }
 
@@ -191,6 +195,25 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
     );
   }
 
+  Future<void> _onConfirm(
+    CustomerFormSubmitConfirm event,
+    Emitter<CustomerFormState> emit,
+  ) async {
+    emit(state.copyWith(status: CustomerFormStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: CustomerFormStatus.submitConfirmation,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: CustomerFormStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
   Future<void> _onSubmitted(
     CustomerSubmitted event,
     Emitter<CustomerFormState> emit,
@@ -210,15 +233,15 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
         dynamic res = await _customerService.save(_provider, data);
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.success,
+              status: CustomerFormStatus.submited,
               message: res['statusMessage']));
         } else {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
+              status: CustomerFormStatus.failure,
               message: res['statusMessage']));
         }
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+        emit(state.copyWith(status: CustomerFormStatus.failure));
       }
     }
   }

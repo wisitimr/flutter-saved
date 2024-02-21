@@ -3,51 +3,91 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saved/app_provider.dart';
 import 'package:saved/material/form/material_form.dart';
 import 'package:saved/app_router.dart';
 import 'package:saved/constants/dimens.dart';
 import 'package:saved/generated/l10n.dart';
 import 'package:saved/theme/theme_extensions/app_button_theme.dart';
-import 'package:saved/widgets/bottom_loader.dart';
+import 'package:saved/theme/theme_extensions/app_color_scheme.dart';
 import 'package:saved/widgets/card_elements.dart';
 
 class MaterialForm extends StatelessWidget {
-  const MaterialForm({super.key});
+  final String id;
+
+  const MaterialForm({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<AppProvider>();
+    final themeData = Theme.of(context);
+    final appColorScheme = themeData.extension<AppColorScheme>()!;
+    final lang = Lang.of(context);
+
     return BlocListener<MaterialFormBloc, MaterialFormState>(
-        listener: (context, state) {
-          // print(state.status);
-          if (state.status.isFailure) {
-            final dialog = AwesomeDialog(
-              context: context,
-              dialogType: DialogType.error,
-              desc: state.message,
-              width: kDialogWidth,
-              btnOkText: 'OK',
-              btnOkOnPress: () {},
-            );
+      listener: (context, state) {
+        if (state.status.isFailure) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: state.message,
+            width: kDialogWidth,
+            btnOkText: lang.ok,
+            btnOkOnPress: () {},
+          );
 
-            dialog.show();
-          } else if (state.status.isSuccess) {
-            final dialog = AwesomeDialog(
-              context: context,
-              dialogType: DialogType.success,
-              desc: state.message,
-              width: kDialogWidth,
-              btnOkText: 'OK',
-              btnOkOnPress: () async {
-                GoRouter.of(context).go(RouteUri.material);
-              },
-            );
+          dialog.show();
+        } else if (state.status.isSubmitConfirmation) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.warning,
+            desc: lang.confirmSubmitRecord,
+            width: kDialogWidth,
+            btnOkText: lang.ok,
+            btnOkColor: appColorScheme.primary,
+            btnOkOnPress: () {
+              context.read<MaterialFormBloc>().add(const MaterialSubmitted());
+            },
+            btnCancelText: lang.cancel,
+            btnCancelColor: appColorScheme.secondary,
+            btnCancelOnPress: () {},
+          );
 
-            dialog.show();
+          dialog.show();
+        } else if (state.status.isSubmited) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.success,
+            desc: state.message,
+            width: kDialogWidth,
+            btnOkText: lang.ok,
+            btnOkOnPress: () => GoRouter.of(context).go(provider.previous),
+          );
+
+          dialog.show();
+        }
+      },
+      child: BlocBuilder<MaterialFormBloc, MaterialFormState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case MaterialFormStatus.loading:
+              return const Center(child: CircularProgressIndicator());
+            case MaterialFormStatus.failure:
+              return const MaterialFormDetail();
+            case MaterialFormStatus.submited:
+              return const MaterialFormDetail();
+            case MaterialFormStatus.submitConfirmation:
+              return const MaterialFormDetail();
+            case MaterialFormStatus.success:
+              return const MaterialFormDetail();
           }
         },
-        child: const MaterialFormDetail());
+      ),
+    );
   }
 }
 
@@ -62,168 +102,151 @@ class MaterialFormDetail extends StatelessWidget {
 
     return BlocBuilder<MaterialFormBloc, MaterialFormState>(
       builder: (context, state) {
-        switch (state.isLoading) {
-          case true:
-            return const Center(child: CircularProgressIndicator());
-          case false:
-            return Card(
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CardHeader(
-                    title: lang.material,
-                  ),
-                  CardBody(
-                    child: FormBuilder(
-                      key: formKey,
-                      autovalidateMode: AutovalidateMode.disabled,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CardHeader(
+                title: lang.material,
+              ),
+              CardBody(
+                child: FormBuilder(
+                  key: formKey,
+                  autovalidateMode: AutovalidateMode.disabled,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: kDefaultPadding * 2.0,
+                            bottom: kDefaultPadding * 2.0),
+                        child: FormBuilderTextField(
+                          name: 'code',
+                          decoration: InputDecoration(
+                            labelText: lang.code,
+                            hintText: lang.code,
+                            border: const OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          initialValue: state.code.value,
+                          validator: FormBuilderValidators.required(),
+                          onChanged: (code) => context
+                              .read<MaterialFormBloc>()
+                              .add(MaterialFormCodeChanged(code!)),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: kDefaultPadding * 2.0),
+                        child: FormBuilderTextField(
+                          name: 'name',
+                          decoration: InputDecoration(
+                            labelText: lang.name,
+                            hintText: lang.name,
+                            border: const OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          initialValue: state.name.value,
+                          validator: FormBuilderValidators.required(),
+                          onChanged: (name) => context
+                              .read<MaterialFormBloc>()
+                              .add(MaterialFormNameChanged(name!)),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: kDefaultPadding * 2.0),
+                        child: FormBuilderTextField(
+                          name: 'description',
+                          decoration: InputDecoration(
+                            labelText: lang.description,
+                            hintText: lang.description,
+                            border: const OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          initialValue: state.description.value,
+                          validator: FormBuilderValidators.required(),
+                          onChanged: (description) => context
+                              .read<MaterialFormBloc>()
+                              .add(
+                                  MaterialFormDescriptionChanged(description!)),
+                        ),
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: kDefaultPadding * 2.0,
-                                bottom: kDefaultPadding * 2.0),
-                            child: FormBuilderTextField(
-                              name: 'code',
-                              decoration: InputDecoration(
-                                labelText: lang.code,
-                                hintText: lang.code,
-                                border: const OutlineInputBorder(),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.always,
-                              ),
-                              initialValue: state.code.value,
-                              validator: FormBuilderValidators.required(),
-                              onChanged: (code) => context
-                                  .read<MaterialFormBloc>()
-                                  .add(MaterialFormCodeChanged(code!)),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: kDefaultPadding * 2.0),
-                            child: FormBuilderTextField(
-                              name: 'name',
-                              decoration: InputDecoration(
-                                labelText: lang.name,
-                                hintText: lang.name,
-                                border: const OutlineInputBorder(),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.always,
-                              ),
-                              initialValue: state.name.value,
-                              validator: FormBuilderValidators.required(),
-                              onChanged: (name) => context
-                                  .read<MaterialFormBloc>()
-                                  .add(MaterialFormNameChanged(name!)),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: kDefaultPadding * 2.0),
-                            child: FormBuilderTextField(
-                              name: 'description',
-                              decoration: InputDecoration(
-                                labelText: lang.description,
-                                hintText: lang.description,
-                                border: const OutlineInputBorder(),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.always,
-                              ),
-                              initialValue: state.description.value,
-                              validator: FormBuilderValidators.required(),
-                              onChanged: (description) => context
-                                  .read<MaterialFormBloc>()
-                                  .add(MaterialFormDescriptionChanged(
-                                      description!)),
-                            ),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: 40.0,
-                                child: ElevatedButton(
-                                  style: themeData
-                                      .extension<AppButtonTheme>()!
-                                      .secondaryElevated,
-                                  onPressed: () async => GoRouter.of(context)
-                                      .go(RouteUri.material),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: kDefaultPadding * 0.5),
-                                        child: Icon(
-                                          Icons.arrow_circle_left_outlined,
-                                          size: (themeData.textTheme.labelLarge!
-                                                  .fontSize! +
-                                              4.0),
-                                        ),
-                                      ),
-                                      Text(lang.crudBack),
-                                    ],
+                          SizedBox(
+                            height: 40.0,
+                            child: ElevatedButton(
+                              style: themeData
+                                  .extension<AppButtonTheme>()!
+                                  .secondaryElevated,
+                              onPressed: () async =>
+                                  GoRouter.of(context).go(RouteUri.material),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: kDefaultPadding * 0.5),
+                                    child: Icon(
+                                      Icons.arrow_circle_left_outlined,
+                                      size: (themeData
+                                              .textTheme.labelLarge!.fontSize! +
+                                          4.0),
+                                    ),
                                   ),
-                                ),
+                                  Text(lang.crudBack),
+                                ],
                               ),
-                              const Spacer(),
-                              state.isLoading
-                                  ? const BottomLoader()
-                                  : Align(
-                                      alignment: Alignment.centerRight,
-                                      child: SizedBox(
-                                        height: 40.0,
-                                        child: ElevatedButton(
-                                          style: themeData
-                                              .extension<AppButtonTheme>()!
-                                              .primaryElevated,
-                                          onPressed: (state.isValid
-                                              ? () {
-                                                  context
-                                                      .read<MaterialFormBloc>()
-                                                      .add(
-                                                          const MaterialSubmitted());
-                                                }
-                                              : null),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right:
-                                                        kDefaultPadding * 0.5),
-                                                child: Icon(
-                                                  Icons.save_rounded,
-                                                  size: (themeData
-                                                          .textTheme
-                                                          .labelLarge!
-                                                          .fontSize! +
-                                                      4.0),
-                                                ),
-                                              ),
-                                              Text(lang.save),
-                                            ],
-                                          ),
-                                        ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              height: 40.0,
+                              child: ElevatedButton(
+                                style: themeData
+                                    .extension<AppButtonTheme>()!
+                                    .primaryElevated,
+                                onPressed: (state.isValid
+                                    ? () {
+                                        context.read<MaterialFormBloc>().add(
+                                            const MaterialFormSubmitConfirm());
+                                      }
+                                    : null),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: kDefaultPadding * 0.5),
+                                      child: Icon(
+                                        Icons.save_rounded,
+                                        size: (themeData.textTheme.labelLarge!
+                                                .fontSize! +
+                                            4.0),
                                       ),
                                     ),
-                            ],
+                                    Text(lang.save),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            );
-        }
+            ],
+          ),
+        );
       },
     );
   }

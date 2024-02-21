@@ -71,6 +71,13 @@ final class UserCompanyContactChanged extends UserCompanyEvent {
   List<Object> get props => [contact];
 }
 
+final class UserCompanySubmitConfirm extends UserCompanyEvent {
+  const UserCompanySubmitConfirm();
+
+  @override
+  List<Object> get props => [];
+}
+
 final class UserCompanySubmitted extends UserCompanyEvent {
   const UserCompanySubmitted();
 }

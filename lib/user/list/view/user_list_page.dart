@@ -1,16 +1,18 @@
 import 'dart:math';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:saved/user/list/user_list.dart';
 import 'package:saved/app_router.dart';
 import 'package:saved/constants/dimens.dart';
 import 'package:saved/generated/l10n.dart';
 import 'package:saved/app_provider.dart';
 import 'package:saved/theme/theme_extensions/app_button_theme.dart';
+import 'package:saved/theme/theme_extensions/app_color_scheme.dart';
 import 'package:saved/theme/theme_extensions/app_data_table_theme.dart';
-import 'package:saved/user/list/user_list.dart';
 import 'package:saved/widgets/card_elements.dart';
 import 'package:saved/widgets/portal_master_layout/portal_master_layout.dart';
 
@@ -29,18 +31,74 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<AppProvider>();
+    final themeData = Theme.of(context);
+    final appColorScheme = themeData.extension<AppColorScheme>()!;
+    final lang = Lang.of(context);
 
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return UserBloc()..add(UserStarted(provider));
+          return UserBloc(provider)..add(const UserStarted());
         },
         child: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),
-          children: const [
+          children: [
+            Text(
+              provider.companyName,
+              style: themeData.textTheme.headlineMedium,
+            ),
             Padding(
-                padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-                child: User()),
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: BlocListener<UserBloc, UserState>(
+                listener: (context, state) {
+                  if (state.status.isFailure) {
+                    final dialog = AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.error,
+                      desc: state.message,
+                      width: kDialogWidth,
+                      btnOkText: lang.ok,
+                      btnOkOnPress: () {},
+                    );
+
+                    dialog.show();
+                  } else if (state.status.isDeleteConfirmation) {
+                    final dialog = AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.warning,
+                      desc: lang.confirmDeleteRecord,
+                      width: kDialogWidth,
+                      btnOkText: lang.ok,
+                      btnOkColor: appColorScheme.error,
+                      btnOkOnPress: () {
+                        context
+                            .read<UserBloc>()
+                            .add(UserDelete(state.selectedDeleteRowId));
+                      },
+                      btnCancelText: lang.cancel,
+                      btnCancelColor: appColorScheme.secondary,
+                      btnCancelOnPress: () {},
+                    );
+
+                    dialog.show();
+                  } else if (state.status.isDeleted) {
+                    final dialog = AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.success,
+                      desc: state.message,
+                      width: kDialogWidth,
+                      btnOkText: lang.ok,
+                      btnOkOnPress: () async {
+                        context.read<UserBloc>().add(const UserStarted());
+                      },
+                    );
+
+                    dialog.show();
+                  }
+                },
+                child: const User(),
+              ),
+            ),
           ],
         ),
       ),
@@ -53,97 +111,151 @@ class User extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case UserListStatus.loading:
+            return const Center(child: CircularProgressIndicator());
+          case UserListStatus.failure:
+            return const UserCard();
+          case UserListStatus.deleted:
+            return const UserCard();
+          case UserListStatus.deleteConfirmation:
+            return const UserCard();
+          case UserListStatus.success:
+            return const UserCard();
+        }
+      },
+    );
+  }
+}
+
+class UserCard extends StatelessWidget {
+  const UserCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     final lang = Lang.of(context);
     final themeData = Theme.of(context);
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
-    final inputFormat = DateFormat('yyyy-MM-ddTHH:mm:ssZ');
-    final outputFormat = DateFormat('dd/MM/yyyy');
     final dataTableHorizontalScrollController = ScrollController();
+    final key = GlobalKey<PaginatedDataTableState>();
 
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) {
-        return Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CardHeader(
-                title: lang.user(2),
-              ),
-              CardBody(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+    return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+      return Card(
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CardHeader(
+              title: lang.user(1),
+            ),
+            CardBody(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                    child: Wrap(
+                      direction: Axis.horizontal,
+                      spacing: kTextPadding,
+                      runSpacing: kTextPadding,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: kDefaultPadding * 0.5),
-                          child: SizedBox(
-                            height: 40.0,
-                            child: ElevatedButton(
-                              style: themeData
-                                  .extension<AppButtonTheme>()!
-                                  .successElevated,
-                              onPressed: () =>
-                                  GoRouter.of(context).go(RouteUri.userForm),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: kDefaultPadding * 0.5),
-                                    child: Icon(
-                                      Icons.add,
-                                      size: (themeData
-                                              .textTheme.labelLarge!.fontSize! +
-                                          4.0),
-                                    ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                  decoration: InputDecoration(
+                                    labelText: lang.search,
+                                    hintText: lang.search,
+                                    border: const OutlineInputBorder(),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.auto,
+                                    isDense: true,
+                                    suffixIcon: const Icon(Icons.search),
                                   ),
-                                  Text(lang.crudNew),
-                                ],
-                              ),
+                                  onChanged: (text) => {
+                                        context
+                                            .read<UserBloc>()
+                                            .add(UserSearchChanged(text)),
+                                        key.currentState?.pageTo(0),
+                                      }),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: kDefaultPadding * 0.5),
+                        child: SizedBox(
+                          height: 40.0,
+                          child: ElevatedButton(
+                            style: themeData
+                                .extension<AppButtonTheme>()!
+                                .successElevated,
+                            onPressed: () =>
+                                GoRouter.of(context).go(RouteUri.userForm),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: kDefaultPadding * 0.5),
+                                  child: Icon(
+                                    Icons.add,
+                                    size: (themeData
+                                            .textTheme.labelLarge!.fontSize! +
+                                        4.0),
+                                  ),
+                                ),
+                                Text(lang.crudNew),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: kDefaultPadding * 2.0),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                final double dataTableWidth =
-                                    max(kScreenWidthMd, constraints.maxWidth);
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: kDefaultPadding * 2.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              final double dataTableWidth =
+                                  max(kScreenWidthMd, constraints.maxWidth);
 
-                                return Scrollbar(
+                              return Scrollbar(
+                                controller: dataTableHorizontalScrollController,
+                                thumbVisibility: true,
+                                trackVisibility: true,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
                                   controller:
                                       dataTableHorizontalScrollController,
-                                  thumbVisibility: true,
-                                  trackVisibility: true,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    controller:
-                                        dataTableHorizontalScrollController,
-                                    child: SizedBox(
-                                      width: dataTableWidth,
-                                      child: Theme(
+                                  child: SizedBox(
+                                    width: dataTableWidth,
+                                    child: Theme(
                                         data: themeData.copyWith(
                                           cardTheme:
                                               appDataTableTheme.cardTheme,
                                           dataTableTheme: appDataTableTheme
                                               .dataTableThemeData,
                                         ),
-                                        child: DataTable(
-                                          showCheckboxColumn: false,
-                                          showBottomBorder: true,
+                                        child: PaginatedDataTable(
+                                          key: key,
+                                          showFirstLastButtons: true,
                                           columns: [
                                             DataColumn(
                                                 label: Text(lang.username)),
@@ -155,49 +267,36 @@ class User extends StatelessWidget {
                                                 label: Text(lang.createdAt)),
                                             DataColumn(
                                                 label: Text(lang.updatedAt)),
+                                            const DataColumn(
+                                                label: Text('...')),
                                           ],
-                                          rows: List.generate(
-                                              state.users.length, (index) {
-                                            UserModel row = state.users[index];
-                                            var createdAt = inputFormat
-                                                .parse(row.createdAt);
-                                            var updatedAt = inputFormat
-                                                .parse(row.updatedAt);
-                                            return DataRow(
-                                                cells: [
-                                                  DataCell(Text(row.username)),
-                                                  DataCell(Text(row.firstName)),
-                                                  DataCell(Text(row.lastName)),
-                                                  DataCell(Text(outputFormat
-                                                      .format(createdAt))),
-                                                  DataCell(Text(outputFormat
-                                                      .format(updatedAt))),
-                                                ],
-                                                onSelectChanged: (value) {
-                                                  final query = '?id=${row.id}';
-                                                  GoRouter.of(context).go(
-                                                      '${RouteUri.userForm}$query');
-                                                });
-                                          }).toList(),
-                                        ),
-                                      ),
-                                    ),
+                                          source: _DataSource(
+                                            data: state.filter,
+                                            context: context,
+                                            onDetailButtonPressed: (data) =>
+                                                GoRouter.of(context).go(
+                                                    '${RouteUri.userForm}?id=${data.id}'),
+                                            onDeleteButtonPressed: (data) =>
+                                                context.read<UserBloc>().add(
+                                                    UserDeleteConfirm(data.id)),
+                                          ),
+                                        )),
                                   ),
-                                );
-                              },
-                            ),
+                                ),
+                              );
+                            },
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      },
-    );
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -206,4 +305,77 @@ class SearchForm {
   String code = '';
   String number = '';
   String type = '';
+}
+
+class _DataSource extends DataTableSource {
+  final List<UserModel> data;
+  final BuildContext context;
+  final void Function(UserModel data) onDetailButtonPressed;
+  final void Function(UserModel data) onDeleteButtonPressed;
+
+  _DataSource({
+    required this.data,
+    required this.context,
+    required this.onDetailButtonPressed,
+    required this.onDeleteButtonPressed,
+  });
+  final inputFormat = DateFormat('yyyy-MM-ddTHH:mm:ssZ');
+  final outputFormat = DateFormat('dd/MM/yyyy');
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) {
+      return null;
+    }
+
+    UserModel row = data[index];
+    var createdAt = inputFormat.parse(row.createdAt);
+    var updatedAt = inputFormat.parse(row.updatedAt);
+    return DataRow(
+      cells: [
+        DataCell(Text(row.username)),
+        DataCell(Text(row.firstName)),
+        DataCell(Text(row.lastName)),
+        DataCell(Text(outputFormat.format(createdAt))),
+        DataCell(Text(outputFormat.format(updatedAt))),
+        DataCell(Builder(
+          builder: (context) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: kDefaultPadding),
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.edit_document),
+                    onPressed: () => onDetailButtonPressed.call(row),
+                    style: Theme.of(context)
+                        .extension<AppButtonTheme>()!
+                        .primaryOutlined,
+                    label: Text(Lang.of(context).crudDetail),
+                  ),
+                ),
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.delete_rounded),
+                  onPressed: () => onDeleteButtonPressed.call(row),
+                  style: Theme.of(context)
+                      .extension<AppButtonTheme>()!
+                      .errorOutlined,
+                  label: Text(Lang.of(context).crudDelete),
+                ),
+              ],
+            );
+          },
+        )),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => data.length;
+
+  @override
+  int get selectedRowCount => 0;
 }

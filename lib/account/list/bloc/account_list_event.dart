@@ -21,8 +21,8 @@ final class AccountSearchChanged extends AccountEvent {
   List<Object> get props => [text];
 }
 
-final class AccountConfirm extends AccountEvent {
-  const AccountConfirm(this.id);
+final class AccountDeleteConfirm extends AccountEvent {
+  const AccountDeleteConfirm(this.id);
 
   final String id;
 
@@ -31,10 +31,8 @@ final class AccountConfirm extends AccountEvent {
 }
 
 final class AccountDelete extends AccountEvent {
-  const AccountDelete(this.id);
-
-  final String id;
+  const AccountDelete();
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [];
 }

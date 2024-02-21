@@ -14,7 +14,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         super(ProductLoading()) {
     on<ProductStarted>(_onStarted);
     on<ProductSearchChanged>(_onSearchChanged);
-    on<ProductConfirm>(_onConfirm);
+    on<ProductDeleteConfirm>(_onConfirm);
     on<ProductDelete>(_onDelete);
   }
 
@@ -23,7 +23,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   Future<void> _onStarted(
       ProductStarted event, Emitter<ProductState> emit) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: ProductListStatus.loading));
     try {
       List<ProductModel> products = [];
       if (_provider.companyId.isNotEmpty) {
@@ -37,14 +37,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       }
       emit(
         state.copyWith(
-          status: Status.success,
+          status: ProductListStatus.success,
           products: products,
           filter: products,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: ProductListStatus.failure,
         message: e.toString(),
       ));
     }
@@ -54,7 +54,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     ProductSearchChanged event,
     Emitter<ProductState> emit,
   ) {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: ProductListStatus.loading));
     var filter = event.text.isNotEmpty
         ? state.products
             .where(
@@ -66,7 +66,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         : state.products;
     emit(
       state.copyWith(
-        status: Status.success,
+        status: ProductListStatus.success,
         products: state.products,
         filter: filter,
       ),
@@ -74,20 +74,20 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   }
 
   Future<void> _onConfirm(
-    ProductConfirm event,
+    ProductDeleteConfirm event,
     Emitter<ProductState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: ProductListStatus.loading));
     try {
       emit(
         state.copyWith(
-          status: Status.confirmation,
-          selectedRowId: event.id,
+          status: ProductListStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: ProductListStatus.failure,
         message: e.toString(),
       ));
     }
@@ -97,34 +97,35 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     ProductDelete event,
     Emitter<ProductState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: ProductListStatus.loading));
     try {
-      if (event.id.isNotEmpty) {
-        final res = await _productService.delete(_provider, event.id);
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res =
+            await _productService.delete(_provider, state.selectedDeleteRowId);
         if (res['statusCode'] == 200) {
           emit(
             state.copyWith(
-              status: Status.deleted,
+              status: ProductListStatus.deleted,
               message: res['statusMessage'],
             ),
           );
         } else {
           emit(
             state.copyWith(
-              status: Status.failure,
+              status: ProductListStatus.failure,
               message: res['statusMessage'],
             ),
           );
         }
       } else {
         emit(state.copyWith(
-          status: Status.failure,
+          status: ProductListStatus.failure,
           message: "Invalid parameter",
         ));
       }
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: ProductListStatus.failure,
         message: e.toString(),
       ));
     }

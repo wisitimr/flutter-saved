@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +11,7 @@ import 'package:saved/generated/l10n.dart';
 import 'package:saved/app_provider.dart';
 import 'package:saved/daybook/list/daybook_list.dart';
 import 'package:saved/theme/theme_extensions/app_button_theme.dart';
+import 'package:saved/theme/theme_extensions/app_color_scheme.dart';
 import 'package:saved/theme/theme_extensions/app_data_table_theme.dart';
 import 'package:saved/widgets/card_elements.dart';
 import 'package:saved/widgets/portal_master_layout/portal_master_layout.dart';
@@ -30,6 +32,8 @@ class _DaybookListPageState extends State<DaybookListPage> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final provider = context.read<AppProvider>();
+    final appColorScheme = themeData.extension<AppColorScheme>()!;
+    final lang = Lang.of(context);
 
     return PortalMasterLayout(
       body: BlocProvider(
@@ -43,9 +47,76 @@ class _DaybookListPageState extends State<DaybookListPage> {
               provider.companyName,
               style: themeData.textTheme.headlineMedium,
             ),
-            const Padding(
-                padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-                child: DaybookList()),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: BlocListener<DaybookListBloc, DaybookListState>(
+                listener: (context, state) {
+                  // print(state.status);
+                  if (state.status.isFailure) {
+                    final dialog = AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.error,
+                      desc: state.message,
+                      width: kDialogWidth,
+                      btnOkText: lang.ok,
+                      btnOkOnPress: () {},
+                    );
+
+                    dialog.show();
+                  } else if (state.status.isDeleteConfirmation) {
+                    final dialog = AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.warning,
+                      desc: lang.confirmDeleteRecord,
+                      width: kDialogWidth,
+                      btnOkText: lang.ok,
+                      btnOkColor: appColorScheme.error,
+                      btnOkOnPress: () {
+                        context
+                            .read<DaybookListBloc>()
+                            .add(const DaybookListDelete());
+                      },
+                      btnCancelText: lang.cancel,
+                      btnCancelColor: appColorScheme.secondary,
+                      btnCancelOnPress: () {},
+                    );
+
+                    dialog.show();
+                  } else if (state.status.isDeleted) {
+                    final dialog = AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.success,
+                      desc: state.message,
+                      width: kDialogWidth,
+                      btnOkText: lang.ok,
+                      btnOkOnPress: () async {
+                        context
+                            .read<DaybookListBloc>()
+                            .add(const DaybookListStarted());
+                      },
+                    );
+
+                    dialog.show();
+                  }
+                },
+                child: BlocBuilder<DaybookListBloc, DaybookListState>(
+                  builder: (context, state) {
+                    switch (state.status) {
+                      case DaybookListStatus.loading:
+                        return const Center(child: CircularProgressIndicator());
+                      case DaybookListStatus.failure:
+                        return const DaybookList();
+                      case DaybookListStatus.deleted:
+                        return const DaybookList();
+                      case DaybookListStatus.deleteConfirmation:
+                        return const DaybookList();
+                      case DaybookListStatus.success:
+                        return const DaybookList();
+                    }
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -61,9 +132,8 @@ class DaybookList extends StatelessWidget {
     final lang = Lang.of(context);
     final themeData = Theme.of(context);
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
-    final inputFormat = DateFormat('yyyy-MM-ddTHH:mm:ssZ');
-    final outputFormat = DateFormat('dd/MM/yyyy');
     final dataTableHorizontalScrollController = ScrollController();
+    final key = GlobalKey<PaginatedDataTableState>();
 
     return BlocBuilder<DaybookListBloc, DaybookListState>(
       builder: (context, state) {
@@ -79,6 +149,40 @@ class DaybookList extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                      child: Wrap(
+                        direction: Axis.horizontal,
+                        spacing: kTextPadding,
+                        runSpacing: kTextPadding,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    labelText: lang.search,
+                                    hintText: lang.search,
+                                    border: const OutlineInputBorder(),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.auto,
+                                    isDense: true,
+                                    suffixIcon: const Icon(Icons.search),
+                                  ),
+                                  onChanged: (text) => {
+                                    context
+                                        .read<DaybookListBloc>()
+                                        .add(DaybookListSearchChanged(text)),
+                                    key.currentState?.pageTo(0)
+                                  },
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -140,47 +244,45 @@ class DaybookList extends StatelessWidget {
                                     child: SizedBox(
                                       width: dataTableWidth,
                                       child: Theme(
-                                        data: themeData.copyWith(
-                                          cardTheme:
-                                              appDataTableTheme.cardTheme,
-                                          dataTableTheme: appDataTableTheme
-                                              .dataTableThemeData,
-                                        ),
-                                        child: DataTable(
-                                          showCheckboxColumn: false,
-                                          showBottomBorder: true,
-                                          columns: [
-                                            DataColumn(
-                                                label: Text(lang.number)),
-                                            DataColumn(
-                                                label: Text(lang.invoice)),
-                                            DataColumn(label: Text(lang.type)),
-                                            DataColumn(
-                                                label:
-                                                    Text(lang.transactionDate)),
-                                          ],
-                                          rows: List.generate(
-                                              state.daybooks.length, (index) {
-                                            DaybookListModel row =
-                                                state.daybooks[index];
-                                            var inputDate = inputFormat
-                                                .parse(row.transactionDate);
-                                            return DataRow(
-                                                cells: [
-                                                  DataCell(Text(row.number)),
-                                                  DataCell(Text(row.invoice)),
-                                                  DataCell(Text(row.document)),
-                                                  DataCell(Text(outputFormat
-                                                      .format(inputDate))),
-                                                ],
-                                                onSelectChanged: (value) {
-                                                  final query = '?id=${row.id}';
+                                          data: themeData.copyWith(
+                                            cardTheme:
+                                                appDataTableTheme.cardTheme,
+                                            dataTableTheme: appDataTableTheme
+                                                .dataTableThemeData,
+                                          ),
+                                          child: PaginatedDataTable(
+                                            key: key,
+                                            showFirstLastButtons: true,
+                                            columns: [
+                                              DataColumn(
+                                                  label: Text(lang.number)),
+                                              DataColumn(
+                                                  label: Text(lang.invoice)),
+                                              DataColumn(
+                                                  label: Text(lang.document)),
+                                              DataColumn(
+                                                  label: Text(
+                                                      lang.transactionDate)),
+                                              const DataColumn(
+                                                  label: Text(
+                                                '...',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                            ],
+                                            source: _DataSource(
+                                              data: state.filter,
+                                              context: context,
+                                              onDetailButtonPressed: (data) =>
                                                   GoRouter.of(context).go(
-                                                      '${RouteUri.daybookForm}$query');
-                                                });
-                                          }).toList(),
-                                        ),
-                                      ),
+                                                      '${RouteUri.daybookForm}?id=${data.id}'),
+                                              onDeleteButtonPressed: (data) =>
+                                                  context
+                                                      .read<DaybookListBloc>()
+                                                      .add(
+                                                          DaybookListDeleteConfirm(
+                                                              data.id)),
+                                            ),
+                                          )),
                                     ),
                                   ),
                                 );
@@ -206,4 +308,75 @@ class SearchForm {
   String code = '';
   String number = '';
   String type = '';
+}
+
+class _DataSource extends DataTableSource {
+  final List<DaybookListModel> data;
+  final BuildContext context;
+  final void Function(DaybookListModel data) onDetailButtonPressed;
+  final void Function(DaybookListModel data) onDeleteButtonPressed;
+
+  _DataSource({
+    required this.data,
+    required this.context,
+    required this.onDetailButtonPressed,
+    required this.onDeleteButtonPressed,
+  });
+  final inputFormat = DateFormat('yyyy-MM-ddTHH:mm:ssZ');
+  final outputFormat = DateFormat('dd/MM/yyyy');
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) {
+      return null;
+    }
+
+    DaybookListModel row = data[index];
+    var createdAt = inputFormat.parse(row.transactionDate);
+    return DataRow(
+      cells: [
+        DataCell(Text(row.number)),
+        DataCell(Text(row.invoice)),
+        DataCell(Text(row.document)),
+        DataCell(Text(outputFormat.format(createdAt))),
+        DataCell(Builder(
+          builder: (context) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: kDefaultPadding),
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.edit_document),
+                    onPressed: () => onDetailButtonPressed.call(row),
+                    style: Theme.of(context)
+                        .extension<AppButtonTheme>()!
+                        .primaryOutlined,
+                    label: Text(Lang.of(context).crudDetail),
+                  ),
+                ),
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.delete_rounded),
+                  onPressed: () => onDeleteButtonPressed.call(row),
+                  style: Theme.of(context)
+                      .extension<AppButtonTheme>()!
+                      .errorOutlined,
+                  label: Text(Lang.of(context).crudDelete),
+                ),
+              ],
+            );
+          },
+        )),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => data.length;
+
+  @override
+  int get selectedRowCount => 0;
 }

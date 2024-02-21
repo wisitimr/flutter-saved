@@ -63,7 +63,7 @@ class _AccountPageState extends State<AccountPage> {
                     );
 
                     dialog.show();
-                  } else if (state.status.isConfirmation) {
+                  } else if (state.status.isDeleteConfirmation) {
                     final dialog = AwesomeDialog(
                       context: context,
                       dialogType: DialogType.warning,
@@ -72,12 +72,10 @@ class _AccountPageState extends State<AccountPage> {
                       btnOkText: lang.ok,
                       btnOkColor: appColorScheme.error,
                       btnOkOnPress: () {
-                        context
-                            .read<AccountBloc>()
-                            .add(AccountDelete(state.selectedRowId));
+                        context.read<AccountBloc>().add(const AccountDelete());
                       },
                       btnCancelText: lang.cancel,
-                      btnCancelColor: appColorScheme.success,
+                      btnCancelColor: appColorScheme.secondary,
                       btnCancelOnPress: () {},
                     );
 
@@ -97,36 +95,27 @@ class _AccountPageState extends State<AccountPage> {
                     dialog.show();
                   }
                 },
-                child: const Account(),
+                child: BlocBuilder<AccountBloc, AccountState>(
+                  builder: (context, state) {
+                    switch (state.status) {
+                      case AccountListStatus.loading:
+                        return const Center(child: CircularProgressIndicator());
+                      case AccountListStatus.failure:
+                        return const AccountCard();
+                      case AccountListStatus.deleted:
+                        return const AccountCard();
+                      case AccountListStatus.deleteConfirmation:
+                        return const AccountCard();
+                      case AccountListStatus.success:
+                        return const AccountCard();
+                    }
+                  },
+                ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class Account extends StatelessWidget {
-  const Account({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AccountBloc, AccountState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case Status.loading:
-            return const Center(child: CircularProgressIndicator());
-          case Status.failure:
-            return const AccountCard();
-          case Status.deleted:
-            return const AccountCard();
-          case Status.confirmation:
-            return const AccountCard();
-          case Status.success:
-            return const AccountCard();
-        }
-      },
     );
   }
 }
@@ -202,7 +191,7 @@ class AccountCard extends StatelessWidget {
                                 .extension<AppButtonTheme>()!
                                 .successElevated,
                             onPressed: () =>
-                                GoRouter.of(context).go(RouteUri.accountFrom),
+                                GoRouter.of(context).go(RouteUri.accountForm),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,10 +265,11 @@ class AccountCard extends StatelessWidget {
                                             context: context,
                                             onDetailButtonPressed: (data) =>
                                                 GoRouter.of(context).go(
-                                                    '${RouteUri.accountFrom}?id=${data.id}'),
+                                                    '${RouteUri.accountForm}?id=${data.id}'),
                                             onDeleteButtonPressed: (data) =>
                                                 context.read<AccountBloc>().add(
-                                                    AccountConfirm(data.id)),
+                                                    AccountDeleteConfirm(
+                                                        data.id)),
                                           ),
                                         )),
                                   ),

@@ -1,9 +1,24 @@
 part of 'product_form_bloc.dart';
 
+enum ProductFormStatus {
+  loading,
+  success,
+  failure,
+  submited,
+  submitConfirmation
+}
+
+extension ProductFormStatusX on ProductFormStatus {
+  bool get isLoading => this == ProductFormStatus.loading;
+  bool get isSuccess => this == ProductFormStatus.success;
+  bool get isFailure => this == ProductFormStatus.failure;
+  bool get isSubmited => this == ProductFormStatus.submited;
+  bool get isSubmitConfirmation => this == ProductFormStatus.submitConfirmation;
+}
+
 final class ProductFormState extends Equatable {
   const ProductFormState({
-    this.isLoading = true,
-    this.status = FormzSubmissionStatus.initial,
+    this.status = ProductFormStatus.loading,
     this.message = '',
     this.id = const Id.pure(),
     this.code = const Code.pure(),
@@ -13,8 +28,7 @@ final class ProductFormState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
-  final FormzSubmissionStatus status;
+  final ProductFormStatus status;
   final String message;
   final Id id;
   final Code code;
@@ -24,8 +38,7 @@ final class ProductFormState extends Equatable {
   final bool isValid;
 
   ProductFormState copyWith({
-    bool? isLoading,
-    FormzSubmissionStatus? status,
+    ProductFormStatus? status,
     String? message,
     Id? id,
     Code? code,
@@ -35,7 +48,6 @@ final class ProductFormState extends Equatable {
     bool? isValid,
   }) {
     return ProductFormState(
-      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       message: message ?? this.message,
       id: id ?? this.id,
@@ -48,8 +60,15 @@ final class ProductFormState extends Equatable {
   }
 
   @override
-  List<Object> get props =>
-      [isLoading, status, id, code, name, description, price, isValid];
+  List<Object> get props => [
+        status,
+        id,
+        code,
+        name,
+        description,
+        price,
+        isValid,
+      ];
 }
 
 final class ProductFormLoading extends ProductFormState {

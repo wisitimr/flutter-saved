@@ -44,10 +44,10 @@ class UserService {
     }
   }
 
-  Future<dynamic> findById(AppProvider provider, String id) async {
+  Future<dynamic> findById(AppProvider provider) async {
     try {
       Response response = await _dio.get(
-        '/$id',
+        '/${provider.id}',
         options: Options(
           headers: {'Authorization': 'Bearer ${provider.accessToken}'},
         ),
@@ -129,6 +129,22 @@ class UserService {
       return response.data;
     } on DioException catch (e) {
       //returns the error object if there is
+      return e.response!.data;
+    }
+  }
+
+  Future<dynamic> delete(AppProvider provider, String id) async {
+    try {
+      Response response = await _dio.get(
+        '/$id',
+        options: Options(
+          headers: {'Authorization': 'Bearer ${provider.accessToken}'},
+        ),
+      );
+      //returns the successful user data json object
+      return response.data;
+    } on DioException catch (e) {
+      //returns the error object if any
       return e.response!.data;
     }
   }

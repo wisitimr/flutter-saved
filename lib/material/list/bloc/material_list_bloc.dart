@@ -14,7 +14,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
         super(MaterialLoading()) {
     on<MaterialStarted>(_onStarted);
     on<MaterialSearchChanged>(_onSearchChanged);
-    on<MaterialConfirm>(_onConfirm);
+    on<MaterialDeleteConfirm>(_onConfirm);
     on<MaterialDelete>(_onDelete);
   }
 
@@ -23,7 +23,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
 
   Future<void> _onStarted(
       MaterialStarted event, Emitter<MaterialXState> emit) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: MaterialListStatus.loading));
     try {
       List<MaterialModel> materials = [];
       if (_provider.companyId.isNotEmpty) {
@@ -37,14 +37,14 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
       }
       emit(
         state.copyWith(
-          status: Status.success,
+          status: MaterialListStatus.success,
           materials: materials,
           filter: materials,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: MaterialListStatus.failure,
         message: e.toString(),
       ));
     }
@@ -54,7 +54,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
     MaterialSearchChanged event,
     Emitter<MaterialXState> emit,
   ) {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: MaterialListStatus.loading));
     var filter = event.text.isNotEmpty
         ? state.materials
             .where(
@@ -66,7 +66,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
         : state.materials;
     emit(
       state.copyWith(
-        status: Status.success,
+        status: MaterialListStatus.success,
         materials: state.materials,
         filter: filter,
       ),
@@ -74,20 +74,20 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
   }
 
   Future<void> _onConfirm(
-    MaterialConfirm event,
+    MaterialDeleteConfirm event,
     Emitter<MaterialXState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: MaterialListStatus.loading));
     try {
       emit(
         state.copyWith(
-          status: Status.confirmation,
-          selectedRowId: event.id,
+          status: MaterialListStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: MaterialListStatus.failure,
         message: e.toString(),
       ));
     }
@@ -97,34 +97,35 @@ class MaterialBloc extends Bloc<MaterialEvent, MaterialXState> {
     MaterialDelete event,
     Emitter<MaterialXState> emit,
   ) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(status: MaterialListStatus.loading));
     try {
-      if (event.id.isNotEmpty) {
-        final res = await _materialService.delete(_provider, event.id);
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res =
+            await _materialService.delete(_provider, state.selectedDeleteRowId);
         if (res['statusCode'] == 200) {
           emit(
             state.copyWith(
-              status: Status.deleted,
+              status: MaterialListStatus.deleted,
               message: res['statusMessage'],
             ),
           );
         } else {
           emit(
             state.copyWith(
-              status: Status.failure,
+              status: MaterialListStatus.failure,
               message: res['statusMessage'],
             ),
           );
         }
       } else {
         emit(state.copyWith(
-          status: Status.failure,
+          status: MaterialListStatus.failure,
           message: "Invalid parameter",
         ));
       }
     } catch (e) {
       emit(state.copyWith(
-        status: Status.failure,
+        status: MaterialListStatus.failure,
         message: e.toString(),
       ));
     }

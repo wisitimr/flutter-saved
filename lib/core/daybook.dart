@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:saved/app_provider.dart';
 
-class DayBookService {
+class DaybookService {
   static BaseOptions options = BaseOptions(
     baseUrl: "http://localhost:8080/api/daybook",
   );

@@ -1,9 +1,24 @@
 part of 'user_company_bloc.dart';
 
+enum UserCompanyStatus {
+  loading,
+  success,
+  failure,
+  submitConfirmation,
+  submited,
+}
+
+extension UserCompanyStatusX on UserCompanyStatus {
+  bool get isLoading => this == UserCompanyStatus.loading;
+  bool get isSuccess => this == UserCompanyStatus.success;
+  bool get isFailure => this == UserCompanyStatus.failure;
+  bool get isSubmitConfirmation => this == UserCompanyStatus.submitConfirmation;
+  bool get isSubmited => this == UserCompanyStatus.submited;
+}
+
 final class UserCompanyState extends Equatable {
   const UserCompanyState({
-    this.isLoading = true,
-    this.status = FormzSubmissionStatus.initial,
+    this.status = UserCompanyStatus.loading,
     this.message = '',
     this.id = const Id.pure(),
     this.name = const Name.pure(),
@@ -14,8 +29,7 @@ final class UserCompanyState extends Equatable {
     this.isValid = false,
   });
 
-  final bool isLoading;
-  final FormzSubmissionStatus status;
+  final UserCompanyStatus status;
   final String message;
   final Id id;
   final Name name;
@@ -26,8 +40,7 @@ final class UserCompanyState extends Equatable {
   final bool isValid;
 
   UserCompanyState copyWith({
-    bool? isLoading,
-    FormzSubmissionStatus? status,
+    UserCompanyStatus? status,
     String? message,
     Id? id,
     Name? name,
@@ -38,7 +51,6 @@ final class UserCompanyState extends Equatable {
     bool? isValid,
   }) {
     return UserCompanyState(
-      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
       message: message ?? this.message,
       id: id ?? this.id,
@@ -52,17 +64,8 @@ final class UserCompanyState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
-        isLoading,
-        status,
-        id,
-        name,
-        description,
-        address,
-        phone,
-        contact,
-        isValid
-      ];
+  List<Object> get props =>
+      [status, id, name, description, address, phone, contact, isValid];
 }
 
 final class UserCompanyLoading extends UserCompanyState {

@@ -86,6 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Button Emphasis"),
         "buttons": m0,
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "successSelect":
+            MessageLookupByLibrary.simpleMessage("Successfully selected"),
         "closeNavigationMenu":
             MessageLookupByLibrary.simpleMessage("Close Navigation Menu"),
         "colorPalette": MessageLookupByLibrary.simpleMessage("Color Palette"),

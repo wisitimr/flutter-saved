@@ -149,6 +149,15 @@ class Lang {
     );
   }
 
+  String get successSelect {
+    return Intl.message(
+      'Successfully selected',
+      name: 'successSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Close Navigation Menu`
   String get closeNavigationMenu {
     return Intl.message(

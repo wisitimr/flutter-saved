@@ -61,19 +61,33 @@ final class MyProfileAccountChanged extends MyProfileEvent {
 }
 
 final class MyProfileCompanySelected extends MyProfileEvent {
-  const MyProfileCompanySelected(
-      this.provider, this.companyId, this.companyName);
+  const MyProfileCompanySelected(this.id, this.name);
 
-  final AppProvider provider;
-  final String companyId;
-  final String companyName;
+  final String id;
+  final String name;
 
   @override
-  List<Object> get props => [companyId, companyName];
+  List<Object> get props => [id, name];
 }
 
-final class MyProfileConfirm extends MyProfileEvent {
-  const MyProfileConfirm();
+final class MyProfileDeleteConfirm extends MyProfileEvent {
+  const MyProfileDeleteConfirm(this.id);
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
+}
+
+final class MyProfileDelete extends MyProfileEvent {
+  const MyProfileDelete();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class MyProfileSubmitConfirm extends MyProfileEvent {
+  const MyProfileSubmitConfirm();
 
   @override
   List<Object> get props => [];

@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:saved/app_provider.dart';
 import 'package:saved/app_router.dart';
+import 'package:saved/company/company.dart';
 import 'package:saved/constants/dimens.dart';
 import 'package:saved/generated/l10n.dart';
 import 'package:saved/my_profile/bloc/my_profile_bloc.dart';
@@ -35,6 +35,36 @@ class MyProfileForm extends StatelessWidget {
             width: kDialogWidth,
             btnOkText: lang.ok,
             btnOkOnPress: () {},
+          );
+
+          dialog.show();
+        } else if (state.status.isDeleteConfirmation) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.warning,
+            desc: lang.confirmDeleteRecord,
+            width: kDialogWidth,
+            btnOkText: lang.ok,
+            btnOkColor: appColorScheme.error,
+            btnOkOnPress: () {
+              context.read<MyProfileBloc>().add(const MyProfileDelete());
+            },
+            btnCancelText: lang.cancel,
+            btnCancelColor: appColorScheme.secondary,
+            btnCancelOnPress: () {},
+          );
+
+          dialog.show();
+        } else if (state.status.isDeleted) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.success,
+            desc: state.message,
+            width: kDialogWidth,
+            btnOkText: lang.ok,
+            btnOkOnPress: () async {
+              context.read<MyProfileBloc>().add(const MyProfileStarted());
+            },
           );
 
           dialog.show();
@@ -66,6 +96,17 @@ class MyProfileForm extends StatelessWidget {
           );
 
           dialog.show();
+        } else if (state.status.isSelected) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.success,
+            desc: lang.successSelect,
+            width: kDialogWidth,
+            btnOkText: lang.ok,
+            btnOkOnPress: () {},
+          );
+
+          dialog.show();
         }
       },
       child: BlocBuilder<MyProfileBloc, MyProfileState>(
@@ -75,9 +116,15 @@ class MyProfileForm extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             case MyProfileStatus.failure:
               return const MyProfileDetail();
+            case MyProfileStatus.deleted:
+              return const MyProfileDetail();
+            case MyProfileStatus.deleteConfirmation:
+              return const MyProfileDetail();
             case MyProfileStatus.submited:
               return const MyProfileDetail();
             case MyProfileStatus.submitConfirmation:
+              return const MyProfileDetail();
+            case MyProfileStatus.selected:
               return const MyProfileDetail();
             case MyProfileStatus.success:
               return const MyProfileDetail();
@@ -290,48 +337,29 @@ class MyProfileDetail extends StatelessWidget {
                                         dataTableTheme: appDataTableTheme
                                             .dataTableThemeData,
                                       ),
-                                      child: DataTable(
-                                        showCheckboxColumn: false,
-                                        showBottomBorder: true,
+                                      child: PaginatedDataTable(
+                                        key: key,
+                                        showFirstLastButtons: true,
+                                        rowsPerPage: 5,
                                         columns: [
                                           DataColumn(label: Text(lang.select)),
                                           DataColumn(label: Text(lang.name)),
+                                          const DataColumn(label: Text('...')),
                                         ],
-                                        rows: List.generate(
-                                            state.companies.length, (index) {
-                                          var row = state.companies[index];
-                                          return DataRow(
-                                              cells: [
-                                                DataCell(
-                                                  ListTile(
-                                                    leading: Radio(
-                                                      value: row.id,
-                                                      groupValue:
-                                                          state.companySelected,
-                                                      onChanged: (enable) {
-                                                        context
-                                                            .read<
-                                                                MyProfileBloc>()
-                                                            .add(
-                                                              MyProfileCompanySelected(
-                                                                context.read<
-                                                                    AppProvider>(),
-                                                                row.id,
-                                                                row.name,
-                                                              ),
-                                                            );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                                DataCell(Text(row.name)),
-                                              ],
-                                              onSelectChanged: (value) async {
-                                                final query = '?id=${row.id}';
-                                                GoRouter.of(context).go(
-                                                    '${RouteUri.company}$query');
-                                              });
-                                        }).toList(),
+                                        source: _DataSource(
+                                          selected: state.companySelected,
+                                          data: state.companies,
+                                          context: context,
+                                          onDetailButtonPressed: (data) {
+                                            final query = '?id=${data.id}';
+                                            GoRouter.of(context).go(
+                                                '${RouteUri.company}$query');
+                                          },
+                                          onDeleteButtonPressed: (data) =>
+                                              context.read<MyProfileBloc>().add(
+                                                  MyProfileDeleteConfirm(
+                                                      data.id)),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -353,7 +381,7 @@ class MyProfileDetail extends StatelessWidget {
                                 ? () {
                                     context
                                         .read<MyProfileBloc>()
-                                        .add(const MyProfileConfirm());
+                                        .add(const MyProfileSubmitConfirm());
                                   }
                                 : null),
                             child: Row(
@@ -386,4 +414,92 @@ class MyProfileDetail extends StatelessWidget {
       },
     );
   }
+}
+
+class _DataSource extends DataTableSource {
+  final String selected;
+  final List<CompanyModel> data;
+  final BuildContext context;
+  final void Function(CompanyModel data) onDetailButtonPressed;
+  final void Function(CompanyModel data) onDeleteButtonPressed;
+
+  _DataSource({
+    required this.selected,
+    required this.data,
+    required this.context,
+    required this.onDetailButtonPressed,
+    required this.onDeleteButtonPressed,
+  });
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) {
+      return null;
+    }
+
+    CompanyModel row = data[index];
+    return DataRow(
+      cells: [
+        DataCell(
+          ListTile(
+            leading: Radio(
+              value: row.id,
+              groupValue: selected,
+              onChanged: (enable) {
+                context.read<MyProfileBloc>().add(
+                      MyProfileCompanySelected(
+                        row.id,
+                        row.name,
+                      ),
+                    );
+              },
+            ),
+          ),
+        ),
+        DataCell(Text(row.name)),
+        DataCell(Builder(
+          builder: (context) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: kDefaultPadding),
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.edit_document),
+                    onPressed: () => onDetailButtonPressed.call(row),
+                    style: Theme.of(context)
+                        .extension<AppButtonTheme>()!
+                        .primaryOutlined,
+                    label: Text(Lang.of(context).crudDetail),
+                  ),
+                ),
+                selected == row.id
+                    ? OutlinedButton.icon(
+                        icon: const Icon(Icons.delete_rounded),
+                        onPressed: null,
+                        label: Text(Lang.of(context).crudDelete))
+                    : OutlinedButton.icon(
+                        icon: const Icon(Icons.delete_rounded),
+                        onPressed: () => onDeleteButtonPressed.call(row),
+                        style: Theme.of(context)
+                            .extension<AppButtonTheme>()!
+                            .errorOutlined,
+                        label: Text(Lang.of(context).crudDelete),
+                      ),
+              ],
+            );
+          },
+        )),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => data.length;
+
+  @override
+  int get selectedRowCount => 0;
 }

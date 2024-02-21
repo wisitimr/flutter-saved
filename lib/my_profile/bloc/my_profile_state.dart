@@ -4,16 +4,22 @@ enum MyProfileStatus {
   loading,
   success,
   failure,
+  deleteConfirmation,
+  deleted,
   submitConfirmation,
   submited,
+  selected,
 }
 
 extension MyProfileStatusX on MyProfileStatus {
   bool get isLoading => this == MyProfileStatus.loading;
   bool get isSuccess => this == MyProfileStatus.success;
   bool get isFailure => this == MyProfileStatus.failure;
+  bool get isDeleteConfirmation => this == MyProfileStatus.deleteConfirmation;
+  bool get isDeleted => this == MyProfileStatus.deleted;
   bool get isSubmitConfirmation => this == MyProfileStatus.submitConfirmation;
   bool get isSubmited => this == MyProfileStatus.submited;
+  bool get isSelected => this == MyProfileStatus.selected;
 }
 
 final class MyProfileState extends Equatable {
@@ -29,6 +35,8 @@ final class MyProfileState extends Equatable {
     this.role = const Role.pure(),
     this.companies = const <CompanyModel>[],
     this.companySelected = '',
+    this.companyNameSelected = '',
+    this.selectedDeleteRowId = '',
     this.isValid = false,
   });
 
@@ -43,6 +51,8 @@ final class MyProfileState extends Equatable {
   final Role role;
   final List<CompanyModel> companies;
   final String companySelected;
+  final String companyNameSelected;
+  final String selectedDeleteRowId;
   final bool isValid;
 
   MyProfileState copyWith({
@@ -57,6 +67,8 @@ final class MyProfileState extends Equatable {
     Role? role,
     List<CompanyModel>? companies,
     String? companySelected,
+    String? companyNameSelected,
+    String? selectedDeleteRowId,
     bool? isValid,
   }) {
     return MyProfileState(
@@ -71,6 +83,8 @@ final class MyProfileState extends Equatable {
       role: role ?? this.role,
       companies: companies ?? this.companies,
       companySelected: companySelected ?? this.companySelected,
+      companyNameSelected: companyNameSelected ?? this.companyNameSelected,
+      selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
       isValid: isValid ?? this.isValid,
     );
   }
@@ -87,6 +101,8 @@ final class MyProfileState extends Equatable {
         role,
         companies,
         companySelected,
+        companyNameSelected,
+        selectedDeleteRowId,
         isValid
       ];
 }

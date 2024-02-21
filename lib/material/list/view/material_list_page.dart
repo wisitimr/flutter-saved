@@ -240,40 +240,38 @@ class MaterialCard extends StatelessWidget {
                                   child: SizedBox(
                                     width: dataTableWidth,
                                     child: Theme(
-                                        data: themeData.copyWith(
-                                          cardTheme:
-                                              appDataTableTheme.cardTheme,
-                                          dataTableTheme: appDataTableTheme
-                                              .dataTableThemeData,
+                                      data: themeData.copyWith(
+                                        cardTheme: appDataTableTheme.cardTheme,
+                                        dataTableTheme: appDataTableTheme
+                                            .dataTableThemeData,
+                                      ),
+                                      child: PaginatedDataTable(
+                                        key: key,
+                                        showFirstLastButtons: true,
+                                        columns: [
+                                          DataColumn(label: Text(lang.code)),
+                                          DataColumn(label: Text(lang.name)),
+                                          DataColumn(
+                                              label: Text(lang.description)),
+                                          DataColumn(
+                                              label: Text(lang.createdAt)),
+                                          DataColumn(
+                                              label: Text(lang.updatedAt)),
+                                          const DataColumn(label: Text('...')),
+                                        ],
+                                        source: _DataSource(
+                                          data: state.filter,
+                                          context: context,
+                                          onDetailButtonPressed: (data) =>
+                                              GoRouter.of(context).go(
+                                                  '${RouteUri.materialForm}?id=${data.id}'),
+                                          onDeleteButtonPressed: (data) =>
+                                              context.read<MaterialBloc>().add(
+                                                  MaterialDeleteConfirm(
+                                                      data.id)),
                                         ),
-                                        child: PaginatedDataTable(
-                                          key: key,
-                                          showFirstLastButtons: true,
-                                          columns: [
-                                            DataColumn(label: Text(lang.code)),
-                                            DataColumn(label: Text(lang.name)),
-                                            DataColumn(
-                                                label: Text(lang.description)),
-                                            DataColumn(
-                                                label: Text(lang.createdAt)),
-                                            DataColumn(
-                                                label: Text(lang.updatedAt)),
-                                            const DataColumn(
-                                                label: Text('...')),
-                                          ],
-                                          source: _DataSource(
-                                            data: state.filter,
-                                            context: context,
-                                            onDetailButtonPressed: (data) =>
-                                                GoRouter.of(context).go(
-                                                    '${RouteUri.materialForm}?id=${data.id}'),
-                                            onDeleteButtonPressed: (data) =>
-                                                context
-                                                    .read<MaterialBloc>()
-                                                    .add(MaterialDeleteConfirm(
-                                                        data.id)),
-                                          ),
-                                        )),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               );

@@ -20,8 +20,10 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
     on<MyProfileLastNameChanged>(_onLastNameChanged);
     on<MyProfileEmailChanged>(_onEmailChanged);
     on<MyProfileCompanySelected>(_onCompanySelected);
-    on<MyProfileConfirm>(_onConfirm);
+    on<MyProfileSubmitConfirm>(_onSubmitConfirm);
     on<MyProfileSubmitted>(_onSubmitted);
+    on<MyProfileDeleteConfirm>(_onDeleteConfirm);
+    on<MyProfileDelete>(_onDelete);
   }
 
   final AppProvider _provider;
@@ -143,19 +145,22 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
     Emitter<MyProfileState> emit,
   ) async {
     await _provider.setCompanyAsync(
-        companyId: event.companyId, companyName: event.companyName);
+        companyId: event.id, companyName: event.name);
     emit(
       state.copyWith(
-        companySelected: event.companyId,
+        status: MyProfileStatus.selected,
+        companySelected: event.id,
       ),
     );
   }
 
-  Future<void> _onConfirm(
-    MyProfileConfirm event,
+  Future<void> _onSubmitConfirm(
+    MyProfileSubmitConfirm event,
     Emitter<MyProfileState> emit,
   ) async {
-    emit(state.copyWith(status: MyProfileStatus.loading));
+    emit(state.copyWith(
+      status: MyProfileStatus.loading,
+    ));
     try {
       emit(
         state.copyWith(
@@ -207,6 +212,64 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
         emit(state.copyWith(
           status: MyProfileStatus.failure,
           message: res['statusMessage'],
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: MyProfileStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDeleteConfirm(
+    MyProfileDeleteConfirm event,
+    Emitter<MyProfileState> emit,
+  ) async {
+    emit(state.copyWith(status: MyProfileStatus.loading));
+    try {
+      emit(
+        state.copyWith(
+          status: MyProfileStatus.deleteConfirmation,
+          selectedDeleteRowId: event.id,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        status: MyProfileStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDelete(
+    MyProfileDelete event,
+    Emitter<MyProfileState> emit,
+  ) async {
+    emit(state.copyWith(status: MyProfileStatus.loading));
+    try {
+      if (state.selectedDeleteRowId.isNotEmpty) {
+        final res =
+            await _userService.delete(_provider, state.selectedDeleteRowId);
+        if (res['statusCode'] == 200) {
+          emit(
+            state.copyWith(
+              status: MyProfileStatus.deleted,
+              message: res['statusMessage'],
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: MyProfileStatus.failure,
+              message: res['statusMessage'],
+            ),
+          );
+        }
+      } else {
+        emit(state.copyWith(
+          status: MyProfileStatus.failure,
+          message: "Invalid parameter",
         ));
       }
     } catch (e) {

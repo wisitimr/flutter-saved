@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:saved/app_provider.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
@@ -110,37 +112,45 @@ class DaybookService {
     }
   }
 
-  Future<dynamic> downloadExcel(
+  Future<void> downloadExcel(
       AppProvider provider, String id, String fileName) async {
     try {
-      Response response = await _dio.get(
-        '/generate/excel/$id',
-        options: Options(
-          headers: {'Authorization': 'Bearer ${provider.accessToken}'},
-          responseType: ResponseType.bytes,
-          followRedirects: false,
-          receiveTimeout: Duration.zero,
-        ),
-      );
-      final base64 = base64Encode(response.data);
+      if (defaultTargetPlatform == TargetPlatform.macOS ||
+          defaultTargetPlatform == TargetPlatform.windows ||
+          defaultTargetPlatform == TargetPlatform.linux) {
+        Response response = await _dio.get(
+          '/generate/excel/$id',
+          options: Options(
+            headers: {'Authorization': 'Bearer ${provider.accessToken}'},
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            receiveTimeout: Duration.zero,
+          ),
+        );
 
-      // Create the link with the file
-      // AnchorElement comes from the
-      final anchor = html.AnchorElement(
-          href: 'data:application/octet-stream;base64,$base64')
-        ..target = 'blank';
+        final base64 = base64Encode(response.data);
 
-      // add the name and extension
-      anchor.download = fileName;
+        // Create the link with the file
+        // AnchorElement comes from the
+        final anchor = html.AnchorElement(
+            href: 'data:application/octet-stream;base64,$base64')
+          ..target = 'blank';
 
-      // add the anchor to the document body
-      html.document.body?.append(anchor);
+        // add the name and extension
+        anchor.download = fileName;
 
-      // trigger download
-      anchor.click();
+        // add the anchor to the document body
+        html.document.body?.append(anchor);
 
-      // remove the anchor
-      anchor.remove();
+        // trigger download
+        anchor.click();
+
+        // remove the anchor
+        anchor.remove();
+      } else {
+        await _dio.download("/generate/excel/$id",
+            "${(await getDownloadsDirectory())?.path}/$fileName");
+      }
     } on DioException catch (e) {
       //returns the error object if any
       return e.response!.data;

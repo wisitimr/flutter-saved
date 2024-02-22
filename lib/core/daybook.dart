@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:saved/app_provider.dart';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 
 class DaybookService {
   static BaseOptions options = BaseOptions(
@@ -100,6 +104,43 @@ class DaybookService {
       );
       //returns the successful user data json object
       return response.data;
+    } on DioException catch (e) {
+      //returns the error object if any
+      return e.response!.data;
+    }
+  }
+
+  Future<dynamic> downloadExcel(
+      AppProvider provider, String id, String fileName) async {
+    try {
+      Response response = await _dio.get(
+        '/generate/excel/$id',
+        options: Options(
+          headers: {'Authorization': 'Bearer ${provider.accessToken}'},
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          receiveTimeout: Duration.zero,
+        ),
+      );
+      final base64 = base64Encode(response.data);
+
+      // Create the link with the file
+      // AnchorElement comes from the
+      final anchor = html.AnchorElement(
+          href: 'data:application/octet-stream;base64,$base64')
+        ..target = 'blank';
+
+      // add the name and extension
+      anchor.download = fileName;
+
+      // add the anchor to the document body
+      html.document.body?.append(anchor);
+
+      // trigger download
+      anchor.click();
+
+      // remove the anchor
+      anchor.remove();
     } on DioException catch (e) {
       //returns the error object if any
       return e.response!.data;

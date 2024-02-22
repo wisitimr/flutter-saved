@@ -97,6 +97,21 @@ class _DaybookListPageState extends State<DaybookListPage> {
                     );
 
                     dialog.show();
+                  } else if (state.status.isDeleted) {
+                    final dialog = AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.success,
+                      desc: state.message,
+                      width: kDialogWidth,
+                      btnOkText: lang.ok,
+                      btnOkOnPress: () async {
+                        context
+                            .read<DaybookListBloc>()
+                            .add(const DaybookListStarted());
+                      },
+                    );
+
+                    dialog.show();
                   }
                 },
                 child: BlocBuilder<DaybookListBloc, DaybookListState>(
@@ -106,9 +121,11 @@ class _DaybookListPageState extends State<DaybookListPage> {
                         return const Center(child: CircularProgressIndicator());
                       case DaybookListStatus.failure:
                         return const DaybookList();
-                      case DaybookListStatus.deleted:
+                      case DaybookListStatus.downloaded:
                         return const DaybookList();
                       case DaybookListStatus.deleteConfirmation:
+                        return const DaybookList();
+                      case DaybookListStatus.deleted:
                         return const DaybookList();
                       case DaybookListStatus.success:
                         return const DaybookList();
@@ -272,6 +289,11 @@ class DaybookList extends StatelessWidget {
                                             source: _DataSource(
                                               data: state.filter,
                                               context: context,
+                                              onDownloadButtonPressed: (data) =>
+                                                  context
+                                                      .read<DaybookListBloc>()
+                                                      .add(DaybookListDownload(
+                                                          data)),
                                               onDetailButtonPressed: (data) =>
                                                   GoRouter.of(context).go(
                                                       '${RouteUri.daybookForm}?id=${data.id}'),
@@ -313,12 +335,14 @@ class SearchForm {
 class _DataSource extends DataTableSource {
   final List<DaybookListModel> data;
   final BuildContext context;
+  final void Function(DaybookListModel data) onDownloadButtonPressed;
   final void Function(DaybookListModel data) onDetailButtonPressed;
   final void Function(DaybookListModel data) onDeleteButtonPressed;
 
   _DataSource({
     required this.data,
     required this.context,
+    required this.onDownloadButtonPressed,
     required this.onDetailButtonPressed,
     required this.onDeleteButtonPressed,
   });
@@ -344,6 +368,17 @@ class _DataSource extends DataTableSource {
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: kDefaultPadding),
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.file_download),
+                    onPressed: () => onDownloadButtonPressed.call(row),
+                    style: Theme.of(context)
+                        .extension<AppButtonTheme>()!
+                        .successOutlined,
+                    label: Text(Lang.of(context).download),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(right: kDefaultPadding),
                   child: OutlinedButton.icon(

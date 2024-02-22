@@ -103,6 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "crudBack": MessageLookupByLibrary.simpleMessage("กลับ"),
         "crudDelete": MessageLookupByLibrary.simpleMessage("ลบ"),
         "crudDetail": MessageLookupByLibrary.simpleMessage("รายละเอียด"),
+        "download": MessageLookupByLibrary.simpleMessage("ดาวน์โหลด"),
         "crudNew": MessageLookupByLibrary.simpleMessage("เพิ่ม"),
         "darkTheme": MessageLookupByLibrary.simpleMessage("Dark Theme"),
         "dashboard": MessageLookupByLibrary.simpleMessage("แผงควบคุม"),

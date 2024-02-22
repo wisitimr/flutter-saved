@@ -21,6 +21,15 @@ final class DaybookListSearchChanged extends DaybookListEvent {
   List<Object> get props => [text];
 }
 
+final class DaybookListDownload extends DaybookListEvent {
+  const DaybookListDownload(this.data);
+
+  final DaybookListModel data;
+
+  @override
+  List<Object> get props => [data];
+}
+
 final class DaybookListDeleteConfirm extends DaybookListEvent {
   const DaybookListDeleteConfirm(this.id);
 

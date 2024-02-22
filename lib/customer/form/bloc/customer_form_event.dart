@@ -53,15 +53,6 @@ final class CustomerFormAddressChanged extends CustomerFormEvent {
   List<Object> get props => [address];
 }
 
-final class CustomerFormTaxChanged extends CustomerFormEvent {
-  const CustomerFormTaxChanged(this.tax);
-
-  final String tax;
-
-  @override
-  List<Object> get props => [tax];
-}
-
 final class CustomerFormPhoneChanged extends CustomerFormEvent {
   const CustomerFormPhoneChanged(this.phone);
 

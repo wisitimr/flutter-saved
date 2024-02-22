@@ -171,24 +171,6 @@ class SupplierFormDetail extends StatelessWidget {
                         padding: const EdgeInsets.only(
                             bottom: kDefaultPadding * 2.0),
                         child: FormBuilderTextField(
-                          name: 'tax',
-                          decoration: InputDecoration(
-                            labelText: lang.tax,
-                            hintText: lang.tax,
-                            border: const OutlineInputBorder(),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                          ),
-                          initialValue: state.tax.value,
-                          validator: FormBuilderValidators.required(),
-                          onChanged: (tax) => context
-                              .read<SupplierFormBloc>()
-                              .add(SupplierFormTaxChanged(tax!)),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: kDefaultPadding * 2.0),
-                        child: FormBuilderTextField(
                           name: 'phone',
                           decoration: InputDecoration(
                             labelText: lang.phone,

@@ -25,7 +25,6 @@ final class CustomerFormState extends Equatable {
     this.code = const Code.pure(),
     this.name = const Name.pure(),
     this.address = const Address.pure(),
-    this.tax = const Tax.pure(),
     this.phone = const Phone.pure(),
     this.contact = const Contact.pure(),
     this.isValid = false,
@@ -37,7 +36,6 @@ final class CustomerFormState extends Equatable {
   final Code code;
   final Name name;
   final Address address;
-  final Tax tax;
   final Phone phone;
   final Contact contact;
   final bool isValid;
@@ -49,7 +47,6 @@ final class CustomerFormState extends Equatable {
     Code? code,
     Name? name,
     Address? address,
-    Tax? tax,
     Phone? phone,
     Contact? contact,
     bool? isValid,
@@ -61,7 +58,6 @@ final class CustomerFormState extends Equatable {
       code: code ?? this.code,
       name: name ?? this.name,
       address: address ?? this.address,
-      tax: tax ?? this.tax,
       phone: phone ?? this.phone,
       contact: contact ?? this.contact,
       isValid: isValid ?? this.isValid,
@@ -75,7 +71,6 @@ final class CustomerFormState extends Equatable {
         code,
         name,
         address,
-        tax,
         phone,
         contact,
         isValid,

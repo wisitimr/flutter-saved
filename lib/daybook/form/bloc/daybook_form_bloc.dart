@@ -79,14 +79,13 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
         List data = supRes['data'];
         suppliers.addAll([
           const MsSupplier(
-              id: '',
-              code: '',
-              name: '-- Select --',
-              address: '',
-              tax: '',
-              phone: '',
-              contact: '',
-              company: ''),
+            id: '',
+            code: '',
+            name: '-- Select --',
+            address: '',
+            phone: '',
+            contact: '',
+          ),
           ...data.map((item) => MsSupplier.fromJson(item)).toList(),
         ]);
       }
@@ -94,14 +93,13 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
         List data = cusRes['data'];
         customers.addAll([
           const MsCustomer(
-              id: '',
-              code: '',
-              name: '-- Select --',
-              address: '',
-              tax: '',
-              phone: '',
-              contact: '',
-              company: ''),
+            id: '',
+            code: '',
+            name: '-- Select --',
+            address: '',
+            phone: '',
+            contact: '',
+          ),
           ...data.map((item) => MsCustomer.fromJson(item)).toList(),
         ]);
       }

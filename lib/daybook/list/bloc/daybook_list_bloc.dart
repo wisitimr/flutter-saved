@@ -14,6 +14,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
         super(DaybookListLoading()) {
     on<DaybookListStarted>(_onStarted);
     on<DaybookListSearchChanged>(_onSearchChanged);
+    on<DaybookListDownload>(_onDownload);
     on<DaybookListDeleteConfirm>(_onConfirm);
     on<DaybookListDelete>(_onDelete);
   }
@@ -76,6 +77,40 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
         filter: filter,
       ),
     );
+  }
+
+  Future<void> _onDownload(
+    DaybookListDownload event,
+    Emitter<DaybookListState> emit,
+  ) async {
+    // emit(state.copyWith(status: DaybookListStatus.loading));
+    try {
+      if (event.data.id.isNotEmpty) {
+        String fileName = "${event.data.number}-";
+        if (event.data.supplier != null) {
+          fileName += (event.data.supplier?.name ?? '');
+        } else if (event.data.customer != null) {
+          fileName += (event.data.customer?.name ?? '');
+        }
+        fileName += '.xlsx';
+        await _daybookService.downloadExcel(_provider, event.data.id, fileName);
+        emit(
+          state.copyWith(
+            status: DaybookListStatus.downloaded,
+          ),
+        );
+      } else {
+        emit(state.copyWith(
+          status: DaybookListStatus.failure,
+          message: "Invalid parameter",
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookListStatus.failure,
+        message: e.toString(),
+      ));
+    }
   }
 
   Future<void> _onConfirm(

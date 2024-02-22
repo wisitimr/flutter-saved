@@ -4,6 +4,7 @@ enum DaybookListStatus {
   loading,
   success,
   failure,
+  downloaded,
   deleteConfirmation,
   deleted,
 }
@@ -11,6 +12,7 @@ enum DaybookListStatus {
 extension DaybookListStatusX on DaybookListStatus {
   bool get isLoading => this == DaybookListStatus.loading;
   bool get isSuccess => this == DaybookListStatus.success;
+  bool get isDownloaded => this == DaybookListStatus.downloaded;
   bool get isFailure => this == DaybookListStatus.failure;
   bool get isDeleteConfirmation => this == DaybookListStatus.deleteConfirmation;
   bool get isDeleted => this == DaybookListStatus.deleted;

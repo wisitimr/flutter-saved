@@ -53,15 +53,6 @@ final class SupplierFormAddressChanged extends SupplierFormEvent {
   List<Object> get props => [address];
 }
 
-final class SupplierFormTaxChanged extends SupplierFormEvent {
-  const SupplierFormTaxChanged(this.tax);
-
-  final String tax;
-
-  @override
-  List<Object> get props => [tax];
-}
-
 final class SupplierFormPhoneChanged extends SupplierFormEvent {
   const SupplierFormPhoneChanged(this.phone);
 

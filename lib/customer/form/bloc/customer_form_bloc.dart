@@ -19,7 +19,6 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
     on<CustomerFormCodeChanged>(_onCodeChanged);
     on<CustomerFormNameChanged>(_onNameChanged);
     on<CustomerFormAddressChanged>(_onAddressChanged);
-    on<CustomerFormTaxChanged>(_onTaxChanged);
     on<CustomerFormPhoneChanged>(_onPhoneChanged);
     on<CustomerFormContactChanged>(_onContactChanged);
     on<CustomerFormSubmitConfirm>(_onConfirm);
@@ -43,7 +42,6 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
           customer.code = data.code;
           customer.name = data.name;
           customer.address = data.address;
-          customer.tax = data.tax;
           customer.phone = data.phone;
           customer.contact = data.contact;
         }
@@ -54,7 +52,6 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
         code: Code.dirty(customer.code),
         name: Name.dirty(customer.name),
         address: Address.dirty(customer.address),
-        tax: Tax.dirty(customer.tax),
         phone: Phone.dirty(customer.phone),
         contact: Contact.dirty(customer.contact),
         isValid: customer.id.isNotEmpty,
@@ -141,24 +138,6 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
     );
   }
 
-  void _onTaxChanged(
-    CustomerFormTaxChanged event,
-    Emitter<CustomerFormState> emit,
-  ) {
-    final tax = Tax.dirty(event.tax);
-    emit(
-      state.copyWith(
-        tax: tax,
-        isValid: Formz.validate(
-          [
-            state.code,
-            state.name,
-          ],
-        ),
-      ),
-    );
-  }
-
   void _onPhoneChanged(
     CustomerFormPhoneChanged event,
     Emitter<CustomerFormState> emit,
@@ -225,7 +204,6 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
         data['code'] = state.code.value;
         data['name'] = state.name.value;
         data['address'] = state.address.value;
-        data['tax'] = state.tax.value;
         data['phone'] = state.phone.value;
         data['contact'] = state.contact.value;
         data['company'] = _provider.companyId;
@@ -252,7 +230,6 @@ class CustomerFormTmp {
   String code = '';
   String name = '';
   String address = '';
-  String tax = '';
   String phone = '';
   String contact = '';
 }

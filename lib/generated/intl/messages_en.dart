@@ -103,6 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "crudBack": MessageLookupByLibrary.simpleMessage("Back"),
         "crudDelete": MessageLookupByLibrary.simpleMessage("Delete"),
         "crudDetail": MessageLookupByLibrary.simpleMessage("Detail"),
+        "download": MessageLookupByLibrary.simpleMessage("Download"),
         "crudNew": MessageLookupByLibrary.simpleMessage("New"),
         "darkTheme": MessageLookupByLibrary.simpleMessage("Dark Theme"),
         "dashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),

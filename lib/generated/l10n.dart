@@ -279,6 +279,15 @@ class Lang {
     );
   }
 
+  String get download {
+    return Intl.message(
+      'Download',
+      name: 'download',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `New`
   String get crudNew {
     return Intl.message(

@@ -19,7 +19,6 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
     on<SupplierFormCodeChanged>(_onCodeChanged);
     on<SupplierFormNameChanged>(_onNameChanged);
     on<SupplierFormAddressChanged>(_onAddressChanged);
-    on<SupplierFormTaxChanged>(_onTaxChanged);
     on<SupplierFormPhoneChanged>(_onPhoneChanged);
     on<SupplierFormContactChanged>(_onContactChanged);
     on<SupplierFormSubmitConfirm>(_onConfirm);
@@ -43,7 +42,6 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
           supplier.code = data.code;
           supplier.name = data.name;
           supplier.address = data.address;
-          supplier.tax = data.tax;
           supplier.phone = data.phone;
           supplier.contact = data.contact;
         }
@@ -54,7 +52,6 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
         code: Code.dirty(supplier.code),
         name: Name.dirty(supplier.name),
         address: Address.dirty(supplier.address),
-        tax: Tax.dirty(supplier.tax),
         phone: Phone.dirty(supplier.phone),
         contact: Contact.dirty(supplier.contact),
         isValid: supplier.id.isNotEmpty,
@@ -139,24 +136,6 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
     );
   }
 
-  void _onTaxChanged(
-    SupplierFormTaxChanged event,
-    Emitter<SupplierFormState> emit,
-  ) {
-    final tax = Tax.dirty(event.tax);
-    emit(
-      state.copyWith(
-        tax: tax,
-        isValid: Formz.validate(
-          [
-            state.code,
-            state.name,
-          ],
-        ),
-      ),
-    );
-  }
-
   void _onPhoneChanged(
     SupplierFormPhoneChanged event,
     Emitter<SupplierFormState> emit,
@@ -223,7 +202,6 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
         data['code'] = state.code.value;
         data['name'] = state.name.value;
         data['address'] = state.address.value;
-        data['tax'] = state.tax.value;
         data['phone'] = state.phone.value;
         data['contact'] = state.contact.value;
         data['company'] = _provider.companyId;

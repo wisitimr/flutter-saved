@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:saved/customer/list/models/models.dart';
-import 'package:saved/core/core.dart';
-import 'package:saved/app_provider.dart';
+import 'package:findigitalservice/customer/list/models/models.dart';
+import 'package:findigitalservice/core/core.dart';
+import 'package:findigitalservice/app_provider.dart';
 
 part 'customer_list_event.dart';
 part 'customer_list_state.dart';

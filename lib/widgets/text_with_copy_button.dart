@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:saved/constants/dimens.dart';
-import 'package:saved/generated/l10n.dart';
+import 'package:findigitalservice/constants/dimens.dart';
+import 'package:findigitalservice/generated/l10n.dart';
 
 class TextWithCopyButton extends StatelessWidget {
   final Widget textWidget;

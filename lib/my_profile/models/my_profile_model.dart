@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:saved/company/company.dart';
+import 'package:findigitalservice/company/company.dart';
 
 class MyProfile extends Equatable {
   const MyProfile({

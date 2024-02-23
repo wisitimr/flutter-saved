@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:saved/company/models/company_model.dart';
+import 'package:findigitalservice/company/models/company_model.dart';
 
 class UserFormModel extends Equatable {
   const UserFormModel({

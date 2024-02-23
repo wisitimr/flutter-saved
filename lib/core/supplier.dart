@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:saved/app_provider.dart';
+import 'package:findigitalservice/app_provider.dart';
 
 class SupplierService {
   static BaseOptions options = BaseOptions(

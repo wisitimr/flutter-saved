@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:saved/models/models.dart';
+import 'package:findigitalservice/models/models.dart';
 
 class DaybookDetailListModel extends Equatable {
   const DaybookDetailListModel({

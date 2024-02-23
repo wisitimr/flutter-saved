@@ -2,10 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:saved/core/core.dart';
-import 'package:saved/app_provider.dart';
-import 'package:saved/account/form/models/account_form_model.dart';
-import 'package:saved/account/form/models/models.dart';
+import 'package:findigitalservice/core/core.dart';
+import 'package:findigitalservice/app_provider.dart';
+import 'package:findigitalservice/account/form/models/account_form_model.dart';
+import 'package:findigitalservice/account/form/models/models.dart';
 
 part 'account_form_event.dart';
 part 'account_form_state.dart';

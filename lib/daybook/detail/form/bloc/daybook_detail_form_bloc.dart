@@ -2,11 +2,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:saved/core/account.dart';
-import 'package:saved/app_provider.dart';
-import 'package:saved/core/daybook_detail.dart';
-import 'package:saved/daybook/detail/form/models/models.dart';
-import 'package:saved/models/master/ms_account.dart';
+import 'package:findigitalservice/core/account.dart';
+import 'package:findigitalservice/app_provider.dart';
+import 'package:findigitalservice/core/daybook_detail.dart';
+import 'package:findigitalservice/daybook/detail/form/models/models.dart';
+import 'package:findigitalservice/models/master/ms_account.dart';
 
 part 'daybook_detail_form_event.dart';
 part 'daybook_detail_form_state.dart';

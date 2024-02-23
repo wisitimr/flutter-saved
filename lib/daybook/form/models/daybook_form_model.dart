@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:saved/daybook/form/models/models.dart';
+import 'package:findigitalservice/daybook/form/models/models.dart';
 
 class DaybookFormModel extends Equatable {
   const DaybookFormModel({

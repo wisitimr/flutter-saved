@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:saved/models/master/ms_customer.dart';
-import 'package:saved/models/master/ms_supplier.dart';
+import 'package:findigitalservice/models/master/ms_customer.dart';
+import 'package:findigitalservice/models/master/ms_supplier.dart';
 
 class DaybookListModel extends Equatable {
   const DaybookListModel({

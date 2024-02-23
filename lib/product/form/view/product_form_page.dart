@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:saved/app_provider.dart';
-import 'package:saved/constants/dimens.dart';
-import 'package:saved/product/form/product_form.dart';
-import 'package:saved/product/form/view/product_form.dart';
-import 'package:saved/widgets/portal_master_layout/portal_master_layout.dart';
+import 'package:findigitalservice/app_provider.dart';
+import 'package:findigitalservice/constants/dimens.dart';
+import 'package:findigitalservice/product/form/product_form.dart';
+import 'package:findigitalservice/product/form/view/product_form.dart';
+import 'package:findigitalservice/widgets/portal_master_layout/portal_master_layout.dart';
 
 class ProductFormPage extends StatefulWidget {
   final String id;

@@ -783,10 +783,10 @@ class Lang {
     );
   }
 
-  /// `Record saved successfully.`
+  /// `Record findigitalservice successfully.`
   String get recordSavedSuccessfully {
     return Intl.message(
-      'Record saved successfully.',
+      'Record findigitalservice successfully.',
       name: 'recordSavedSuccessfully',
       desc: '',
       args: [],

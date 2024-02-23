@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:saved/constants/values.dart';
-import 'package:saved/environment.dart';
+import 'package:findigitalservice/constants/values.dart';
+import 'package:findigitalservice/environment.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AppProvider extends ChangeNotifier {

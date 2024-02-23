@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "saved" "\0"
+            VALUE "FileDescription", "findigitalservice" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "saved" "\0"
+            VALUE "InternalName", "findigitalservice" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "saved.exe" "\0"
-            VALUE "ProductName", "saved" "\0"
+            VALUE "OriginalFilename", "findigitalservice.exe" "\0"
+            VALUE "ProductName", "findigitalservice" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

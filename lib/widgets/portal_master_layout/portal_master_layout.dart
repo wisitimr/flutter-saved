@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:saved/app_router.dart';
-import 'package:saved/constants/dimens.dart';
-import 'package:saved/generated/l10n.dart';
-import 'package:saved/master_layout_config.dart';
-import 'package:saved/app_provider.dart';
-import 'package:saved/theme/theme_extensions/app_color_scheme.dart';
-import 'package:saved/theme/theme_extensions/app_sidebar_theme.dart';
-import 'package:saved/widgets/portal_master_layout/sidebar.dart';
+import 'package:findigitalservice/app_router.dart';
+import 'package:findigitalservice/constants/dimens.dart';
+import 'package:findigitalservice/generated/l10n.dart';
+import 'package:findigitalservice/master_layout_config.dart';
+import 'package:findigitalservice/app_provider.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_color_scheme.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_sidebar_theme.dart';
+import 'package:findigitalservice/widgets/portal_master_layout/sidebar.dart';
 
 class LocaleMenuConfig {
   final String languageCode;
@@ -107,6 +107,8 @@ class PortalMasterLayout extends StatelessWidget {
     List<SidebarMenuConfig> sidebarMenu = [];
     if (provider.isAdmin) {
       sidebarMenu = sidebarMenuConfigs + adminSidebarMenuConfigs;
+    } else {
+      sidebarMenu = sidebarMenuConfigs;
     }
     return Sidebar(
       autoSelectMenu: autoSelectMenu,

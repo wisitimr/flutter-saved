@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:saved/company/models/company_model.dart';
-import 'package:saved/core/auth.dart';
-import 'package:saved/core/user.dart';
-import 'package:saved/login/models/models.dart';
-import 'package:saved/models/access_token.dart';
-import 'package:saved/models/user_profile.dart';
-import 'package:saved/app_provider.dart';
+import 'package:findigitalservice/company/models/company_model.dart';
+import 'package:findigitalservice/core/auth.dart';
+import 'package:findigitalservice/core/user.dart';
+import 'package:findigitalservice/login/models/models.dart';
+import 'package:findigitalservice/models/access_token.dart';
+import 'package:findigitalservice/models/user_profile.dart';
+import 'package:findigitalservice/app_provider.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';

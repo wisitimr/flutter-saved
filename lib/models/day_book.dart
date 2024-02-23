@@ -1,4 +1,4 @@
-import 'package:saved/company/models/models.dart';
+import 'package:findigitalservice/company/models/models.dart';
 
 class Daybook {
   final String id;

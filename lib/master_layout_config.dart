@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:saved/app_router.dart';
-import 'package:saved/generated/l10n.dart';
-import 'package:saved/widgets/portal_master_layout/portal_master_layout.dart';
-import 'package:saved/widgets/portal_master_layout/sidebar.dart';
+import 'package:findigitalservice/app_router.dart';
+import 'package:findigitalservice/generated/l10n.dart';
+import 'package:findigitalservice/widgets/portal_master_layout/portal_master_layout.dart';
+import 'package:findigitalservice/widgets/portal_master_layout/sidebar.dart';
 
 final sidebarMenuConfigs = [
   SidebarMenuConfig(

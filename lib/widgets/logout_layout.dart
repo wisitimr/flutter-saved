@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:saved/app_router.dart';
-import 'package:saved/app_provider.dart';
+import 'package:findigitalservice/app_router.dart';
+import 'package:findigitalservice/app_provider.dart';
 
 class LogoutLayout extends StatefulWidget {
   const LogoutLayout({Key? key}) : super(key: key);

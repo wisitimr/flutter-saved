@@ -161,8 +161,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recentOrders": m15,
         "recordDeletedSuccessfully": MessageLookupByLibrary.simpleMessage(
             "Record deleted successfully."),
-        "recordSavedSuccessfully":
-            MessageLookupByLibrary.simpleMessage("Record saved successfully."),
+        "recordSavedSuccessfully": MessageLookupByLibrary.simpleMessage(
+            "Record findigitalservice successfully."),
         "recordSubmittedSuccessfully": MessageLookupByLibrary.simpleMessage(
             "Record submitted successfully."),
         "register": MessageLookupByLibrary.simpleMessage("Register"),

@@ -74,7 +74,7 @@
    <ProfileAction
       buildConfiguration = "Profile"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = ""
+      findigitalserviceToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
       <BuildableProductRunnable

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:saved/core/auth.dart';
-import 'package:saved/register/models/models.dart';
+import 'package:findigitalservice/core/auth.dart';
+import 'package:findigitalservice/register/models/models.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';

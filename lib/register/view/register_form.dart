@@ -5,11 +5,11 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
-import 'package:saved/app_router.dart';
-import 'package:saved/constants/dimens.dart';
-import 'package:saved/generated/l10n.dart';
-import 'package:saved/register/bloc/register_bloc.dart';
-import 'package:saved/theme/theme_extensions/app_button_theme.dart';
+import 'package:findigitalservice/app_router.dart';
+import 'package:findigitalservice/constants/dimens.dart';
+import 'package:findigitalservice/generated/l10n.dart';
+import 'package:findigitalservice/register/bloc/register_bloc.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_button_theme.dart';
 
 class RegisterForm extends StatelessWidget {
   const RegisterForm({Key? key}) : super(key: key);

@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:saved/core/daybook.dart';
-import 'package:saved/app_provider.dart';
-import 'package:saved/daybook/list/models/models.dart';
+import 'package:findigitalservice/core/daybook.dart';
+import 'package:findigitalservice/app_provider.dart';
+import 'package:findigitalservice/daybook/list/models/models.dart';
 
 part 'daybook_list_event.dart';
 part 'daybook_list_state.dart';

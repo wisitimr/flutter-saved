@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:saved/widgets/public_master_layout/public_master_layout.dart';
-import 'package:saved/register/register.dart';
+import 'package:findigitalservice/widgets/public_master_layout/public_master_layout.dart';
+import 'package:findigitalservice/register/register.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});

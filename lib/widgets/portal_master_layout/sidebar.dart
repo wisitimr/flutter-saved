@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:saved/constants/dimens.dart';
-import 'package:saved/generated/l10n.dart';
-import 'package:saved/master_layout_config.dart';
-import 'package:saved/app_provider.dart';
-import 'package:saved/theme/theme_extensions/app_sidebar_theme.dart';
+import 'package:findigitalservice/constants/dimens.dart';
+import 'package:findigitalservice/generated/l10n.dart';
+import 'package:findigitalservice/master_layout_config.dart';
+import 'package:findigitalservice/app_provider.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_sidebar_theme.dart';
 
 class SidebarMenuConfig {
   final String uri;
@@ -143,6 +143,8 @@ class _SidebarState extends State<Sidebar> {
     List<SidebarMenuConfig> sidebarMenu = [];
     if (provider.isAdmin) {
       sidebarMenu = sidebarMenuConfigs + adminSidebarMenuConfigs;
+    } else {
+      sidebarMenu = sidebarMenuConfigs;
     }
     return Column(
       children: sidebarMenu.map<Widget>((menu) {

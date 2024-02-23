@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:saved/constants/dimens.dart';
-import 'package:saved/generated/l10n.dart';
-import 'package:saved/master_layout_config.dart';
-import 'package:saved/app_provider.dart';
-import 'package:saved/theme/theme_extensions/app_color_scheme.dart';
+import 'package:findigitalservice/constants/dimens.dart';
+import 'package:findigitalservice/generated/l10n.dart';
+import 'package:findigitalservice/master_layout_config.dart';
+import 'package:findigitalservice/app_provider.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_color_scheme.dart';
 
 class PublicMasterLayout extends StatelessWidget {
   final Widget body;

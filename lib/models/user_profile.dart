@@ -1,4 +1,4 @@
-import 'package:saved/company/models/company_model.dart';
+import 'package:findigitalservice/company/models/company_model.dart';
 
 class UserProfile {
   final String? id;

@@ -1,31 +1,31 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:saved/account/form/view/account_form_page.dart';
-import 'package:saved/account/list/view/view.dart';
-import 'package:saved/company/company.dart';
-import 'package:saved/customer/form/customer_form.dart';
-import 'package:saved/customer/list/view/view.dart';
-import 'package:saved/dashboard/dashboard.dart';
-import 'package:saved/daybook/detail/form/view/daybook_detail_form_page.dart';
-import 'package:saved/daybook/form/view/daybook_form_page.dart';
-import 'package:saved/daybook/list/view/daybook_list_page.dart';
-import 'package:saved/login/view/login_page.dart';
-import 'package:saved/app_provider.dart';
-import 'package:saved/master_layout_config.dart';
-import 'package:saved/material/form/view/view.dart';
-import 'package:saved/material/list/view/material_list_page.dart';
-import 'package:saved/my_profile/view/my_profile_page.dart';
-import 'package:saved/product/form/view/view.dart';
-import 'package:saved/product/list/view/product_list_page.dart';
-import 'package:saved/register/register.dart';
-import 'package:saved/supplier/form/view/view.dart';
-import 'package:saved/supplier/list/view/view.dart';
-import 'package:saved/user/company/user_company.dart';
-import 'package:saved/user/form/user_form.dart';
-import 'package:saved/user/list/user_list.dart';
-import 'package:saved/widgets/error_layout.dart';
-import 'package:saved/widgets/logout_layout.dart';
-import 'package:saved/widgets/portal_master_layout/sidebar.dart';
+import 'package:findigitalservice/account/form/view/account_form_page.dart';
+import 'package:findigitalservice/account/list/view/view.dart';
+import 'package:findigitalservice/company/company.dart';
+import 'package:findigitalservice/customer/form/customer_form.dart';
+import 'package:findigitalservice/customer/list/view/view.dart';
+import 'package:findigitalservice/dashboard/dashboard.dart';
+import 'package:findigitalservice/daybook/detail/form/view/daybook_detail_form_page.dart';
+import 'package:findigitalservice/daybook/form/view/daybook_form_page.dart';
+import 'package:findigitalservice/daybook/list/view/daybook_list_page.dart';
+import 'package:findigitalservice/login/view/login_page.dart';
+import 'package:findigitalservice/app_provider.dart';
+import 'package:findigitalservice/master_layout_config.dart';
+import 'package:findigitalservice/material/form/view/view.dart';
+import 'package:findigitalservice/material/list/view/material_list_page.dart';
+import 'package:findigitalservice/my_profile/view/my_profile_page.dart';
+import 'package:findigitalservice/product/form/view/view.dart';
+import 'package:findigitalservice/product/list/view/product_list_page.dart';
+import 'package:findigitalservice/register/register.dart';
+import 'package:findigitalservice/supplier/form/view/view.dart';
+import 'package:findigitalservice/supplier/list/view/view.dart';
+import 'package:findigitalservice/user/company/user_company.dart';
+import 'package:findigitalservice/user/form/user_form.dart';
+import 'package:findigitalservice/user/list/user_list.dart';
+import 'package:findigitalservice/widgets/error_layout.dart';
+import 'package:findigitalservice/widgets/logout_layout.dart';
+import 'package:findigitalservice/widgets/portal_master_layout/sidebar.dart';
 
 class RouteUri {
   static const String home = '/';
@@ -265,6 +265,8 @@ GoRouter appRouter(AppProvider provider) {
       List<SidebarMenuConfig> sidebarMenu = [];
       if (provider.isAdmin) {
         sidebarMenu = sidebarMenuConfigs + adminSidebarMenuConfigs;
+      } else {
+        sidebarMenu = sidebarMenuConfigs;
       }
       if (sidebarMenu.any((el) {
         return el.uri == state.matchedLocation ||

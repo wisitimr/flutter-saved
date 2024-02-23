@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:saved/constants/dimens.dart';
-import 'package:saved/theme/theme_extensions/app_button_theme.dart';
-import 'package:saved/theme/theme_extensions/app_color_scheme.dart';
-import 'package:saved/theme/theme_extensions/app_data_table_theme.dart';
-import 'package:saved/theme/theme_extensions/app_sidebar_theme.dart';
+import 'package:findigitalservice/constants/dimens.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_button_theme.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_color_scheme.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_data_table_theme.dart';
+import 'package:findigitalservice/theme/theme_extensions/app_sidebar_theme.dart';
 
 const Color kPrimaryColor = Color(0xFF347BDE);
 const Color kSecondaryColor = Color(0xFF6C757D);

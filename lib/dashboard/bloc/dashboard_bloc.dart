@@ -29,7 +29,12 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     try {
       if (_provider.companyId.isNotEmpty) {
         Map<String, dynamic> param = {};
+        DateTime now = DateTime.now();
+        int year = now.year;
+        // int year = 2023;
         param['company'] = _provider.companyId;
+        param['transactionDate.gte'] = "${year.toString()}-01-01T00:00:00.000Z";
+        param['transactionDate.lt'] = "${year + 1}-01-01T00:00:00.000Z";
         final [
           userRes,
           daybookRes,

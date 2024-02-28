@@ -9,11 +9,13 @@ import 'package:findigitalservice/widgets/portal_master_layout/portal_master_lay
 class DaybookDetailFormPage extends StatefulWidget {
   final String id;
   final String daybook;
+  final bool isHistory;
 
   const DaybookDetailFormPage({
     Key? key,
     required this.id,
     required this.daybook,
+    required this.isHistory,
   }) : super(key: key);
 
   @override
@@ -30,7 +32,8 @@ class _DaybookDetailFormPageState extends State<DaybookDetailFormPage> {
       body: BlocProvider(
         create: (context) {
           return DaybookDetailFormBloc(provider)
-            ..add(DaybookDetailFormStarted(widget.id, widget.daybook));
+            ..add(DaybookDetailFormStarted(
+                widget.id, widget.daybook, widget.isHistory));
         },
         child:
             ListView(padding: const EdgeInsets.all(kDefaultPadding), children: [
@@ -40,7 +43,11 @@ class _DaybookDetailFormPageState extends State<DaybookDetailFormPage> {
           ),
           Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-              child: DaybookDetailForm(id: widget.id, daybook: widget.daybook)),
+              child: DaybookDetailForm(
+                id: widget.id,
+                daybook: widget.daybook,
+                isHistory: widget.isHistory,
+              )),
         ]),
       ),
     );

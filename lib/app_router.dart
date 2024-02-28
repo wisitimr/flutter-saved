@@ -31,11 +31,14 @@ class RouteUri {
   static const String home = '/';
   static const String dashboard = '/dashboard';
   static const String daybook = '/daybook';
+  static const String daybookForm = '/daybook-form';
+  static const String daybookDetailForm = '/daybook-detail-from';
+  static const String daybookHistory = '/history/daybook';
+  static const String daybookFormHistory = '/history/daybook-form';
+  static const String daybookDetailFormHistory = '/history/daybook-detail-from';
   static const String user = '/user';
   static const String userForm = '/user-form';
   static const String userCompanyForn = '/user-company-form';
-  static const String daybookForm = '/daybook-form';
-  static const String daybookDetailForm = '/daybook-detail-from';
   static const String company = '/company';
   static const String myProfile = '/my-profile';
   static const String logout = '/logout';
@@ -91,7 +94,9 @@ GoRouter appRouter(AppProvider provider) {
         path: RouteUri.daybook,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: const DaybookListPage(),
+          child: const DaybookListPage(
+            isHistory: false,
+          ),
         ),
       ),
       GoRoute(
@@ -100,6 +105,7 @@ GoRouter appRouter(AppProvider provider) {
           key: state.pageKey,
           child: DaybookFormPage(
             id: state.queryParameters['id'] ?? '',
+            isHistory: false,
           ),
         ),
       ),
@@ -110,6 +116,7 @@ GoRouter appRouter(AppProvider provider) {
           child: DaybookDetailFormPage(
             id: state.queryParameters['id'] ?? '',
             daybook: state.queryParameters['daybook'] ?? '',
+            isHistory: false,
           ),
         ),
       ),
@@ -256,6 +263,36 @@ GoRouter appRouter(AppProvider provider) {
           key: state.pageKey,
           child: ProductFormPage(
             id: state.queryParameters['id'] ?? '',
+          ),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.daybookHistory,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const DaybookListPage(
+            isHistory: true,
+          ),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.daybookFormHistory,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: DaybookFormPage(
+            id: state.queryParameters['id'] ?? '',
+            isHistory: true,
+          ),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.daybookDetailFormHistory,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: DaybookDetailFormPage(
+            id: state.queryParameters['id'] ?? '',
+            daybook: state.queryParameters['daybook'] ?? '',
+            isHistory: true,
           ),
         ),
       ),

@@ -80,7 +80,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "material": MessageLookupByLibrary.simpleMessage("วัสดุ"),
         "adminPortalLogin":
             MessageLookupByLibrary.simpleMessage("Admin Portal Login"),
-        "appTitle": MessageLookupByLibrary.simpleMessage("Saved"),
+        "appTitle":
+            MessageLookupByLibrary.simpleMessage("Financial Digital Service"),
         "backToLogin":
             MessageLookupByLibrary.simpleMessage("กลับไปหน้าเข้าสู่ระบบ"),
         "buttonEmphasis":
@@ -161,8 +162,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "recentOrders": m15,
         "recordDeletedSuccessfully": MessageLookupByLibrary.simpleMessage(
             "Record deleted successfully."),
-        "recordSavedSuccessfully": MessageLookupByLibrary.simpleMessage(
-            "Record findigitalservice successfully."),
+        "recordFinancial Digital ServiceSuccessfully":
+            MessageLookupByLibrary.simpleMessage(
+                "Record findigitalservice successfully."),
         "recordSubmittedSuccessfully": MessageLookupByLibrary.simpleMessage(
             "Record submitted successfully."),
         "register": MessageLookupByLibrary.simpleMessage("ลงทะเบียน"),
@@ -197,10 +199,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "contact": MessageLookupByLibrary.simpleMessage("ติดต่อ"),
         "enable": MessageLookupByLibrary.simpleMessage("เปิดการใช้งาน"),
         "daybook": MessageLookupByLibrary.simpleMessage("สมุดรายวัน"),
+        "daybookHistory":
+            MessageLookupByLibrary.simpleMessage("ประวัติสมุดรายวัน"),
+        "task": MessageLookupByLibrary.simpleMessage("งานรอดำเนินการ"),
+        "history": MessageLookupByLibrary.simpleMessage("ประวัติ"),
         "dDaybook": m17,
         "dUser": m18,
         "daybookDetail":
             MessageLookupByLibrary.simpleMessage("รายละเอียดสมุดรายวัน"),
+        "daybookDetailHistory":
+            MessageLookupByLibrary.simpleMessage("ประวัติรายละเอียดสมุดรายวัน"),
         "detail": MessageLookupByLibrary.simpleMessage("รายละเอียด"),
         "price": MessageLookupByLibrary.simpleMessage("ราคา"),
         "number": MessageLookupByLibrary.simpleMessage("เลขที่"),

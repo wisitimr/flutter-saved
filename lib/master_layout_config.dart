@@ -11,9 +11,21 @@ final sidebarMenuConfigs = [
     title: (context) => Lang.of(context).dashboard,
   ),
   SidebarMenuConfig(
-    uri: RouteUri.daybook,
+    uri: '',
     icon: Icons.library_books_rounded,
     title: (context) => Lang.of(context).daybook,
+    children: [
+      SidebarChildMenuConfig(
+        uri: RouteUri.daybook,
+        icon: Icons.pending_actions,
+        title: (context) => Lang.of(context).task,
+      ),
+      SidebarChildMenuConfig(
+        uri: RouteUri.daybookHistory,
+        icon: Icons.history_rounded,
+        title: (context) => Lang.of(context).history,
+      ),
+    ],
   ),
   SidebarMenuConfig(
     uri: '',

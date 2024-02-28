@@ -80,7 +80,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "material": MessageLookupByLibrary.simpleMessage("Material"),
         "adminPortalLogin":
             MessageLookupByLibrary.simpleMessage("Admin Portal Login"),
-        "appTitle": MessageLookupByLibrary.simpleMessage("Saved"),
+        "appTitle":
+            MessageLookupByLibrary.simpleMessage("Financial Digital Service"),
         "backToLogin": MessageLookupByLibrary.simpleMessage("Back to Login"),
         "buttonEmphasis":
             MessageLookupByLibrary.simpleMessage("Button Emphasis"),
@@ -161,8 +162,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "recentOrders": m15,
         "recordDeletedSuccessfully": MessageLookupByLibrary.simpleMessage(
             "Record deleted successfully."),
-        "recordSavedSuccessfully": MessageLookupByLibrary.simpleMessage(
-            "Record findigitalservice successfully."),
+        "recordFinancial Digital ServiceSuccessfully":
+            MessageLookupByLibrary.simpleMessage(
+                "Record findigitalservice successfully."),
         "recordSubmittedSuccessfully": MessageLookupByLibrary.simpleMessage(
             "Record submitted successfully."),
         "register": MessageLookupByLibrary.simpleMessage("Register"),
@@ -200,10 +202,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive":
             MessageLookupByLibrary.simpleMessage("Money received journal"),
         "daybook": MessageLookupByLibrary.simpleMessage("Day Book"),
+        "daybookHistory":
+            MessageLookupByLibrary.simpleMessage("Day Book History"),
+        "task": MessageLookupByLibrary.simpleMessage("Task"),
+        "history": MessageLookupByLibrary.simpleMessage("History"),
         "dDaybook": m17,
         "dUser": m18,
         "daybookDetail":
             MessageLookupByLibrary.simpleMessage("Day Book Detail"),
+        "daybookDetailHistory":
+            MessageLookupByLibrary.simpleMessage("Day Book Detail History"),
         "detail": MessageLookupByLibrary.simpleMessage("Detail"),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),

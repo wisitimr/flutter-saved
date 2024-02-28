@@ -17,14 +17,15 @@ import 'package:findigitalservice/widgets/card_elements.dart';
 import 'package:findigitalservice/widgets/portal_master_layout/portal_master_layout.dart';
 
 class DaybookListPage extends StatefulWidget {
-  const DaybookListPage({Key? key}) : super(key: key);
+  final bool isHistory;
+
+  const DaybookListPage({
+    Key? key,
+    required this.isHistory,
+  }) : super(key: key);
 
   @override
   State<DaybookListPage> createState() => _DaybookListPageState();
-
-  static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const DaybookListPage());
-  }
 }
 
 class _DaybookListPageState extends State<DaybookListPage> {
@@ -38,7 +39,8 @@ class _DaybookListPageState extends State<DaybookListPage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return DaybookListBloc(provider)..add(const DaybookListStarted());
+          return DaybookListBloc(provider)
+            ..add(DaybookListStarted(widget.isHistory));
         },
         child: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),
@@ -92,7 +94,7 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkOnPress: () async {
                         context
                             .read<DaybookListBloc>()
-                            .add(const DaybookListStarted());
+                            .add(DaybookListStarted(widget.isHistory));
                       },
                     );
 
@@ -107,7 +109,7 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkOnPress: () async {
                         context
                             .read<DaybookListBloc>()
-                            .add(const DaybookListStarted());
+                            .add(DaybookListStarted(widget.isHistory));
                       },
                     );
 
@@ -142,7 +144,9 @@ class _DaybookListPageState extends State<DaybookListPage> {
 }
 
 class DaybookList extends StatelessWidget {
-  const DaybookList({super.key});
+  const DaybookList({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +164,7 @@ class DaybookList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CardHeader(
-                title: lang.daybook,
+                title: state.isHistory ? lang.daybookHistory : lang.daybook,
               ),
               CardBody(
                 child: Column(
@@ -200,42 +204,46 @@ class DaybookList extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: kDefaultPadding * 0.5),
-                          child: SizedBox(
-                            height: 40.0,
-                            child: ElevatedButton(
-                              style: themeData
-                                  .extension<AppButtonTheme>()!
-                                  .successElevated,
-                              onPressed: () =>
-                                  GoRouter.of(context).go(RouteUri.daybookForm),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: kDefaultPadding * 0.5),
-                                    child: Icon(
-                                      Icons.add,
-                                      size: (themeData
-                                              .textTheme.labelLarge!.fontSize! +
-                                          4.0),
+                    if (!state.isHistory) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 0.5),
+                            child: SizedBox(
+                              height: 40.0,
+                              child: ElevatedButton(
+                                style: themeData
+                                    .extension<AppButtonTheme>()!
+                                    .successElevated,
+                                onPressed: () => GoRouter.of(context).go(
+                                    state.isHistory
+                                        ? RouteUri.daybookFormHistory
+                                        : RouteUri.daybookForm),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: kDefaultPadding * 0.5),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: (themeData.textTheme.labelLarge!
+                                                .fontSize! +
+                                            4.0),
+                                      ),
                                     ),
-                                  ),
-                                  Text(lang.crudNew),
-                                ],
+                                    Text(lang.crudNew),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -287,6 +295,7 @@ class DaybookList extends StatelessWidget {
                                               )),
                                             ],
                                             source: _DataSource(
+                                              isHistory: state.isHistory,
                                               data: state.filter,
                                               context: context,
                                               onDownloadButtonPressed: (data) =>
@@ -296,7 +305,7 @@ class DaybookList extends StatelessWidget {
                                                           data)),
                                               onDetailButtonPressed: (data) =>
                                                   GoRouter.of(context).go(
-                                                      '${RouteUri.daybookForm}?id=${data.id}'),
+                                                      '${state.isHistory ? RouteUri.daybookFormHistory : RouteUri.daybookForm}?id=${data.id}'),
                                               onDeleteButtonPressed: (data) =>
                                                   context
                                                       .read<DaybookListBloc>()
@@ -333,6 +342,7 @@ class SearchForm {
 }
 
 class _DataSource extends DataTableSource {
+  final bool isHistory;
   final List<DaybookListModel> data;
   final BuildContext context;
   final void Function(DaybookListModel data) onDownloadButtonPressed;
@@ -340,6 +350,7 @@ class _DataSource extends DataTableSource {
   final void Function(DaybookListModel data) onDeleteButtonPressed;
 
   _DataSource({
+    required this.isHistory,
     required this.data,
     required this.context,
     required this.onDownloadButtonPressed,
@@ -390,14 +401,16 @@ class _DataSource extends DataTableSource {
                     label: Text(Lang.of(context).crudDetail),
                   ),
                 ),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.delete_rounded),
-                  onPressed: () => onDeleteButtonPressed.call(row),
-                  style: Theme.of(context)
-                      .extension<AppButtonTheme>()!
-                      .errorOutlined,
-                  label: Text(Lang.of(context).crudDelete),
-                ),
+                if (!isHistory) ...[
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.delete_rounded),
+                    onPressed: () => onDeleteButtonPressed.call(row),
+                    style: Theme.of(context)
+                        .extension<AppButtonTheme>()!
+                        .errorOutlined,
+                    label: Text(Lang.of(context).crudDelete),
+                  ),
+                ]
               ],
             );
           },

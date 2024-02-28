@@ -9,12 +9,13 @@ sealed class DaybookFormEvent extends Equatable {
 }
 
 final class DaybookFormStarted extends DaybookFormEvent {
-  const DaybookFormStarted(this.id);
+  const DaybookFormStarted(this.id, this.isHistory);
 
   final String id;
+  final bool isHistory;
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [id, isHistory];
 }
 
 final class DaybookFormIdChanged extends DaybookFormEvent {

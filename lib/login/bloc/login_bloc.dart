@@ -21,6 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginCompanySelected>(_onCompanySelected);
     on<LoginConfirm>(_onConfirm);
+    on<LoginCancel>(_onCancel);
     on<LoginSubmitted>(_onSubmitted);
   }
   final AppProvider _provider;
@@ -89,6 +90,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } catch (_) {
         emit(state.copyWith(status: FormzSubmissionStatus.failure));
       }
+    }
+  }
+
+  Future<void> _onCancel(
+    LoginCancel event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true));
+    try {
+      emit(state.copyWith(
+        isLoggedIn: false,
+        username: const Username.dirty(""),
+        password: const Password.dirty(""),
+        isLoading: false,
+      ));
+    } catch (_) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
     }
   }
 

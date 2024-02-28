@@ -169,7 +169,7 @@ class AccountCard extends StatelessWidget {
                                   context
                                       .read<AccountBloc>()
                                       .add(AccountSearchChanged(text)),
-                                  key.currentState?.pageTo(0)
+                                  key.currentState?.pageTo(0),
                                 },
                               ),
                             ),
@@ -247,6 +247,9 @@ class AccountCard extends StatelessWidget {
                                         child: PaginatedDataTable(
                                           key: key,
                                           showFirstLastButtons: true,
+                                          onPageChanged: (int index) {
+                                            print(index);
+                                          },
                                           columns: [
                                             DataColumn(label: Text(lang.code)),
                                             DataColumn(label: Text(lang.name)),

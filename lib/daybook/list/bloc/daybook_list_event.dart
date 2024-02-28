@@ -6,10 +6,12 @@ sealed class DaybookListEvent extends Equatable {
 }
 
 final class DaybookListStarted extends DaybookListEvent {
-  const DaybookListStarted();
+  const DaybookListStarted(this.isHistory);
+
+  final bool isHistory;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [isHistory];
 }
 
 final class DaybookListSearchChanged extends DaybookListEvent {

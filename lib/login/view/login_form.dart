@@ -37,6 +37,8 @@ class LoginForm extends StatelessWidget {
           dialog.show();
         } else if (state.status.isSuccess) {
           GoRouter.of(context).go(RouteUri.home);
+        } else if (state.status.isCanceled) {
+          GoRouter.of(context).go(RouteUri.login);
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -84,7 +86,11 @@ class LoginForm extends StatelessWidget {
                             const Padding(
                                 padding:
                                     EdgeInsets.only(bottom: kDefaultPadding)),
-                            _ConfirmButton()
+                            _ConfirmButton(),
+                            const Padding(
+                                padding:
+                                    EdgeInsets.only(bottom: kDefaultPadding)),
+                            _CancelButton()
                           ] else ...[
                             _UsernameInput(),
                             const Padding(
@@ -287,6 +293,32 @@ class _ConfirmButton extends StatelessWidget {
                         }
                       : null),
                   child: Text(lang.confirm),
+                ),
+              );
+      },
+    );
+  }
+}
+
+class _CancelButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final lang = Lang.of(context);
+    final themeData = Theme.of(context);
+
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return state.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SizedBox(
+                height: 40.0,
+                width: double.infinity,
+                child: ElevatedButton(
+                  style:
+                      themeData.extension<AppButtonTheme>()!.secondaryElevated,
+                  onPressed: () =>
+                      context.read<LoginBloc>().add(const LoginCancel()),
+                  child: Text(lang.cancel),
                 ),
               );
       },

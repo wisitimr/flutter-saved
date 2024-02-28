@@ -111,27 +111,49 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
           for (var doc in documents) {
             if (doc.id == daybook.document) {
               daybook.documentType = doc.code;
+              daybook.documentName = doc.name;
+            }
+          }
+        }
+      }
+      if (suppliers.isNotEmpty) {
+        if (daybook.supplier.isNotEmpty) {
+          for (var sup in suppliers) {
+            if (sup.id == daybook.supplier) {
+              daybook.supplierName = sup.name;
+            }
+          }
+        }
+      }
+      if (customers.isNotEmpty) {
+        if (daybook.customer.isNotEmpty) {
+          for (var cus in customers) {
+            if (cus.id == daybook.customer) {
+              daybook.customerName = cus.name;
             }
           }
         }
       }
       emit(state.copyWith(
-        status: DaybookFormStatus.success,
-        msDocument: documents,
-        msSupplier: suppliers,
-        msCustomer: customers,
-        id: Id.dirty(daybook.id),
-        number: Number.dirty(daybook.number),
-        invoice: Invoice.dirty(daybook.invoice),
-        document: Document.dirty(daybook.document),
-        documentType: daybook.documentType,
-        transactionDate: TransactionDate.dirty(daybook.transactionDate),
-        company: Company.dirty(daybook.company),
-        supplier: Supplier.dirty(daybook.supplier),
-        customer: Customer.dirty(daybook.customer),
-        daybookDetail: daybook.daybookDetail,
-        isValid: daybook.id.isNotEmpty,
-      ));
+          status: DaybookFormStatus.success,
+          msDocument: documents,
+          msSupplier: suppliers,
+          msCustomer: customers,
+          id: Id.dirty(daybook.id),
+          number: Number.dirty(daybook.number),
+          invoice: Invoice.dirty(daybook.invoice),
+          document: Document.dirty(daybook.document),
+          documentType: daybook.documentType,
+          documentName: daybook.documentName,
+          supplierName: daybook.supplierName,
+          customerName: daybook.customerName,
+          transactionDate: TransactionDate.dirty(daybook.transactionDate),
+          company: Company.dirty(daybook.company),
+          supplier: Supplier.dirty(daybook.supplier),
+          customer: Customer.dirty(daybook.customer),
+          daybookDetail: daybook.daybookDetail,
+          isValid: daybook.id.isNotEmpty,
+          isHistory: event.isHistory));
     } catch (e) {
       emit(state.copyWith(
         status: DaybookFormStatus.failure,
@@ -483,6 +505,9 @@ class DaybookFormTmp {
   String invoice = '';
   String document = '';
   String documentType = '';
+  String documentName = '';
+  String supplierName = '';
+  String customerName = '';
   String transactionDate =
       DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(DateTime.now());
   String company = '';

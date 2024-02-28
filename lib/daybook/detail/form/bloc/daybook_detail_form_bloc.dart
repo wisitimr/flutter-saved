@@ -64,6 +64,18 @@ class DaybookDetailFormBloc
           ...data.map((item) => MsAccount.fromJson(item)).toList(),
         ]);
       }
+      if (daybook.type.isNotEmpty) {
+        daybook.typeName = daybook.type;
+      }
+      if (accounts.isNotEmpty) {
+        if (daybook.account.isNotEmpty) {
+          for (var ac in accounts) {
+            if (ac.id == daybook.account) {
+              daybook.accountName = ac.name;
+            }
+          }
+        }
+      }
       emit(state.copyWith(
         status: DaybookDetailFormStatus.success,
         msAccount: accounts,
@@ -74,7 +86,10 @@ class DaybookDetailFormBloc
         amount: Amount.dirty(daybook.amount),
         account: Account.dirty(daybook.account),
         daybook: Daybook.dirty(daybook.daybook),
+        typeName: daybook.typeName,
+        accountName: daybook.accountName,
         isValid: daybook.id.isNotEmpty,
+        isHistory: event.isHistory,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -248,7 +263,9 @@ class DaybookDetailFormTmp {
   String id = '';
   String name = '';
   String type = '';
+  String typeName = '';
   String amount = '';
   String account = '';
+  String accountName = '';
   String daybook = '';
 }

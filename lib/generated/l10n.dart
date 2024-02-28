@@ -783,7 +783,7 @@ class Lang {
     );
   }
 
-  /// `Record findigitalservice successfully.`
+  /// `Record Saved successfully.`
   String get recordSavedSuccessfully {
     return Intl.message(
       'Record findigitalservice successfully.',
@@ -1049,10 +1049,46 @@ class Lang {
     );
   }
 
+  String get daybookHistory {
+    return Intl.message(
+      'Daybook History',
+      name: 'daybookHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get task {
+    return Intl.message(
+      'Task',
+      name: 'task',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get history {
+    return Intl.message(
+      'History',
+      name: 'history',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get daybookDetail {
     return Intl.message(
       'DaybookDetail',
       name: 'daybookDetail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get daybookDetailHistory {
+    return Intl.message(
+      'DaybookDetail History',
+      name: 'daybookDetailHistory',
       desc: '',
       args: [],
     );

@@ -23,6 +23,8 @@ final class DaybookDetailFormState extends Equatable {
     this.msAccountType = const <String>[],
     this.status = DaybookDetailFormStatus.loading,
     this.message = '',
+    this.typeName = '',
+    this.accountName = '',
     this.id = const Id.pure(),
     this.name = const Name.pure(),
     this.type = const Type.pure(),
@@ -30,12 +32,15 @@ final class DaybookDetailFormState extends Equatable {
     this.account = const Account.pure(),
     this.daybook = const Daybook.pure(),
     this.isValid = false,
+    this.isHistory = false,
   });
 
   final List<MsAccount> msAccount;
   final List<String> msAccountType;
   final DaybookDetailFormStatus status;
   final String message;
+  final String typeName;
+  final String accountName;
   final Id id;
   final Name name;
   final Type type;
@@ -43,12 +48,15 @@ final class DaybookDetailFormState extends Equatable {
   final Account account;
   final Daybook daybook;
   final bool isValid;
+  final bool isHistory;
 
   DaybookDetailFormState copyWith({
     List<MsAccount>? msAccount,
     List<String>? msAccountType,
     DaybookDetailFormStatus? status,
     String? message,
+    String? typeName,
+    String? accountName,
     Id? id,
     Name? name,
     Type? type,
@@ -56,12 +64,15 @@ final class DaybookDetailFormState extends Equatable {
     Account? account,
     Daybook? daybook,
     bool? isValid,
+    bool? isHistory,
   }) {
     return DaybookDetailFormState(
       msAccount: msAccount ?? this.msAccount,
       msAccountType: msAccountType ?? this.msAccountType,
       status: status ?? this.status,
       message: message ?? this.message,
+      typeName: typeName ?? this.typeName,
+      accountName: accountName ?? this.accountName,
       id: id ?? this.id,
       name: name ?? this.name,
       type: type ?? this.type,
@@ -69,12 +80,22 @@ final class DaybookDetailFormState extends Equatable {
       account: account ?? this.account,
       daybook: daybook ?? this.daybook,
       isValid: isValid ?? this.isValid,
+      isHistory: isHistory ?? this.isHistory,
     );
   }
 
   @override
-  List<Object> get props =>
-      [status, id, name, type, amount, account, daybook, isValid];
+  List<Object> get props => [
+        status,
+        id,
+        name,
+        type,
+        amount,
+        account,
+        daybook,
+        isValid,
+        isHistory,
+      ];
 }
 
 final class DaybookDetailFormLoading extends DaybookDetailFormState {

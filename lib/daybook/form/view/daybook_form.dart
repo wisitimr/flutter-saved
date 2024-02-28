@@ -74,7 +74,9 @@ class DaybookForm extends StatelessWidget {
             width: kDialogWidth,
             btnOkText: lang.ok,
             btnOkOnPress: () async {
-              context.read<DaybookFormBloc>().add(DaybookFormStarted(id));
+              context
+                  .read<DaybookFormBloc>()
+                  .add(DaybookFormStarted(id, state.isHistory));
             },
           );
 
@@ -152,7 +154,7 @@ class DaybookFormDetail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CardHeader(
-                title: lang.daybook,
+                title: state.isHistory ? lang.daybookHistory : lang.daybook,
               ),
               CardBody(
                 child: FormBuilder(
@@ -175,6 +177,7 @@ class DaybookFormDetail extends StatelessWidget {
                           ),
                           initialValue: state.number.value,
                           validator: FormBuilderValidators.required(),
+                          enabled: state.isHistory ? false : true,
                           onChanged: (number) => context
                               .read<DaybookFormBloc>()
                               .add(DaybookFormNumberChanged(number!)),
@@ -193,35 +196,63 @@ class DaybookFormDetail extends StatelessWidget {
                           ),
                           initialValue: state.invoice.value,
                           validator: FormBuilderValidators.required(),
+                          enabled: state.isHistory ? false : true,
                           onChanged: (invoice) => context
                               .read<DaybookFormBloc>()
                               .add(DaybookFormInvoiceChanged(invoice!)),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: kDefaultPadding * 2.0),
-                        child: FormBuilderDropdown(
-                          name: 'document',
-                          decoration: InputDecoration(
-                            labelText: lang.document,
-                            border: const OutlineInputBorder(),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            isDense: true,
+                      if (!state.isHistory) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 2.0),
+                          child: FormBuilderDropdown(
+                            name: 'document',
+                            decoration: InputDecoration(
+                              labelText: lang.document,
+                              border: const OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              isDense: true,
+                            ),
+                            validator: FormBuilderValidators.required(),
+                            items: state.msDocument
+                                .map((MsDocument e) => DropdownMenuItem(
+                                      value: e.id,
+                                      child: Text(e.name),
+                                    ))
+                                .toList(),
+                            initialValue: state.document.value,
+                            onChanged: (document) => state.isHistory
+                                ? null
+                                : context
+                                    .read<DaybookFormBloc>()
+                                    .add(DaybookFormDocumentChanged(document!)),
                           ),
-                          validator: FormBuilderValidators.required(),
-                          items: state.msDocument
-                              .map((MsDocument e) => DropdownMenuItem(
-                                    value: e.id,
-                                    child: Text(e.name),
-                                  ))
-                              .toList(),
-                          initialValue: state.document.value,
-                          onChanged: (document) => context
-                              .read<DaybookFormBloc>()
-                              .add(DaybookFormDocumentChanged(document!)),
                         ),
-                      ),
+                      ],
+                      if (state.isHistory) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 2.0),
+                          child: FormBuilderTextField(
+                            name: 'document',
+                            decoration: InputDecoration(
+                              labelText: lang.document,
+                              hintText: lang.document,
+                              border: const OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                            ),
+                            initialValue: state.documentName,
+                            validator: FormBuilderValidators.required(),
+                            enabled: false,
+                            onChanged: (document) => context
+                                .read<DaybookFormBloc>()
+                                .add(DaybookFormDocumentChanged(document!)),
+                          ),
+                        ),
+                      ],
                       Padding(
                         padding: const EdgeInsets.only(
                             bottom: kDefaultPadding * 2.0),
@@ -235,106 +266,155 @@ class DaybookFormDetail extends StatelessWidget {
                           initialValue:
                               DateTime.parse(state.transactionDate.value),
                           format: DateFormat('dd/MM/yyyy'),
+                          enabled: state.isHistory ? false : true,
                           onChanged: (transactionDate) => context
                               .read<DaybookFormBloc>()
                               .add(DaybookFormTransactionDateChanged(
                                   transactionDate!.toString())),
                         ),
                       ),
-                      if (state.documentType == 'PAY') ...[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: kDefaultPadding * 2.0),
-                          child: FormBuilderDropdown(
-                            name: 'supplier',
-                            decoration: InputDecoration(
-                              labelText: lang.supplier,
-                              border: const OutlineInputBorder(),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              isDense: true,
-                            ),
-                            items: state.msSupplier
-                                .map((MsSupplier e) => DropdownMenuItem(
-                                    value: e.id,
-                                    child: e.id != ""
-                                        ? Text("${e.code} - ${e.name}")
-                                        : Text(e.name)))
-                                .toList(),
-                            initialValue: state.supplier.value,
-                            onChanged: (supplier) => context
-                                .read<DaybookFormBloc>()
-                                .add(DaybookFormSupplierChanged(supplier!)),
-                          ),
-                        ),
-                      ],
-                      if (state.documentType == 'REC') ...[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: kDefaultPadding * 2.0),
-                          child: FormBuilderDropdown(
-                            name: 'customer',
-                            decoration: InputDecoration(
-                              labelText: lang.customer,
-                              border: const OutlineInputBorder(),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              isDense: true,
-                            ),
-                            items: state.msCustomer
-                                .map((MsCustomer e) => DropdownMenuItem(
+                      if (!state.isHistory) ...[
+                        if (state.documentType == 'PAY') ...[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 2.0),
+                            child: FormBuilderDropdown(
+                              name: 'supplier',
+                              decoration: InputDecoration(
+                                labelText: lang.supplier,
+                                border: const OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isDense: true,
+                              ),
+                              items: state.msSupplier
+                                  .map((MsSupplier e) => DropdownMenuItem(
                                       value: e.id,
                                       child: e.id != ""
                                           ? Text("${e.code} - ${e.name}")
-                                          : Text(e.name),
-                                    ))
-                                .toList(),
-                            initialValue: state.customer.value,
-                            onChanged: (customer) => context
-                                .read<DaybookFormBloc>()
-                                .add(DaybookFormCustomerChanged(customer!)),
+                                          : Text(e.name)))
+                                  .toList(),
+                              initialValue: state.supplier.value,
+                              enabled: state.isHistory ? false : true,
+                              onChanged: (supplier) => context
+                                  .read<DaybookFormBloc>()
+                                  .add(DaybookFormSupplierChanged(supplier!)),
+                            ),
                           ),
-                        ),
+                        ],
+                        if (state.documentType == 'REC') ...[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 2.0),
+                            child: FormBuilderDropdown(
+                              name: 'customer',
+                              decoration: InputDecoration(
+                                labelText: lang.customer,
+                                border: const OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isDense: true,
+                              ),
+                              items: state.msCustomer
+                                  .map((MsCustomer e) => DropdownMenuItem(
+                                        value: e.id,
+                                        child: e.id != ""
+                                            ? Text("${e.code} - ${e.name}")
+                                            : Text(e.name),
+                                      ))
+                                  .toList(),
+                              initialValue: state.customer.value,
+                              enabled: state.isHistory ? false : true,
+                              onChanged: (customer) => context
+                                  .read<DaybookFormBloc>()
+                                  .add(DaybookFormCustomerChanged(customer!)),
+                            ),
+                          ),
+                        ],
+                      ],
+                      if (state.isHistory) ...[
+                        if (state.documentType == 'PAY') ...[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 2.0),
+                            child: FormBuilderTextField(
+                              name: 'supplier',
+                              decoration: InputDecoration(
+                                labelText: lang.supplier,
+                                hintText: lang.supplier,
+                                border: const OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                              ),
+                              initialValue: state.supplierName,
+                              validator: FormBuilderValidators.required(),
+                              enabled: false,
+                              onChanged: (supplier) {},
+                            ),
+                          ),
+                        ],
+                        if (state.documentType == 'REC') ...[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 2.0),
+                            child: FormBuilderTextField(
+                              name: 'customer',
+                              decoration: InputDecoration(
+                                labelText: lang.customer,
+                                hintText: lang.customer,
+                                border: const OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                              ),
+                              initialValue: state.customerName,
+                              validator: FormBuilderValidators.required(),
+                              enabled: false,
+                              onChanged: (customer) {},
+                            ),
+                          ),
+                        ],
                       ],
                       if (state.id.isValid) ...[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(lang.detail),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: kDefaultPadding),
-                              child: SizedBox(
-                                height: 40.0,
-                                child: ElevatedButton(
-                                  style: themeData
-                                      .extension<AppButtonTheme>()!
-                                      .successElevated,
-                                  onPressed: () => GoRouter.of(context).go(
-                                      '${RouteUri.daybookDetailForm}?daybook=${state.id.value}'),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: kDefaultPadding * 0.5),
-                                        child: Icon(
-                                          Icons.add,
-                                          size: (themeData.textTheme.labelLarge!
-                                                  .fontSize! +
-                                              4.0),
+                        if (!state.isHistory) ...[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(lang.detail),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: kDefaultPadding),
+                                child: SizedBox(
+                                  height: 40.0,
+                                  child: ElevatedButton(
+                                    style: themeData
+                                        .extension<AppButtonTheme>()!
+                                        .successElevated,
+                                    onPressed: () => GoRouter.of(context).go(
+                                        '${RouteUri.daybookDetailForm}?daybook=${state.id.value}'),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: kDefaultPadding * 0.5),
+                                          child: Icon(
+                                            Icons.add,
+                                            size: (themeData.textTheme
+                                                    .labelLarge!.fontSize! +
+                                                4.0),
+                                          ),
                                         ),
-                                      ),
-                                      Text(lang.crudNew),
-                                    ],
+                                        Text(lang.crudNew),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
+                        ],
                         Padding(
                           padding: const EdgeInsets.only(
                               bottom: kDefaultPadding * 2.0),
@@ -381,13 +461,14 @@ class DaybookFormDetail extends StatelessWidget {
                                             )),
                                           ],
                                           source: _DataSource(
+                                            isHistory: state.isHistory,
                                             data: state.daybookDetail,
                                             context: context,
                                             onDetailButtonPressed: (data) {
                                               final query =
                                                   '?id=${data.id}&daybook=${state.id.value}';
                                               GoRouter.of(context).go(
-                                                  '${RouteUri.daybookDetailForm}$query');
+                                                  '${state.isHistory ? RouteUri.daybookDetailFormHistory : RouteUri.daybookDetailForm}$query');
                                             },
                                             onDeleteButtonPressed: (data) =>
                                                 context
@@ -415,8 +496,10 @@ class DaybookFormDetail extends StatelessWidget {
                               style: themeData
                                   .extension<AppButtonTheme>()!
                                   .secondaryElevated,
-                              onPressed: () async =>
-                                  GoRouter.of(context).go(RouteUri.daybook),
+                              onPressed: () async => GoRouter.of(context).go(
+                                  state.isHistory
+                                      ? RouteUri.daybookHistory
+                                      : RouteUri.daybook),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -436,41 +519,44 @@ class DaybookFormDetail extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Spacer(),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: SizedBox(
-                              height: 40.0,
-                              child: ElevatedButton(
-                                style: themeData
-                                    .extension<AppButtonTheme>()!
-                                    .primaryElevated,
-                                onPressed: (state.isValid
-                                    ? () {
-                                        context.read<DaybookFormBloc>().add(
-                                            const DaybookFormSubmitConfirm());
-                                      }
-                                    : null),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: kDefaultPadding * 0.5),
-                                      child: Icon(
-                                        Icons.save_rounded,
-                                        size: (themeData.textTheme.labelLarge!
-                                                .fontSize! +
-                                            4.0),
+                          if (!state.isHistory) ...[
+                            const Spacer(),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                height: 40.0,
+                                child: ElevatedButton(
+                                  style: themeData
+                                      .extension<AppButtonTheme>()!
+                                      .primaryElevated,
+                                  onPressed: (state.isValid
+                                      ? () {
+                                          context.read<DaybookFormBloc>().add(
+                                              const DaybookFormSubmitConfirm());
+                                        }
+                                      : null),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: kDefaultPadding * 0.5),
+                                        child: Icon(
+                                          Icons.save_rounded,
+                                          size: (themeData.textTheme.labelLarge!
+                                                  .fontSize! +
+                                              4.0),
+                                        ),
                                       ),
-                                    ),
-                                    Text(lang.save),
-                                  ],
+                                      Text(lang.save),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ],
@@ -486,12 +572,14 @@ class DaybookFormDetail extends StatelessWidget {
 }
 
 class _DataSource extends DataTableSource {
+  final bool isHistory;
   final List<DaybookDetailListModel> data;
   final BuildContext context;
   final void Function(DaybookDetailListModel data) onDetailButtonPressed;
   final void Function(DaybookDetailListModel data) onDeleteButtonPressed;
 
   _DataSource({
+    required this.isHistory,
     required this.data,
     required this.context,
     required this.onDetailButtonPressed,
@@ -527,14 +615,16 @@ class _DataSource extends DataTableSource {
                     label: Text(Lang.of(context).crudDetail),
                   ),
                 ),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.delete_rounded),
-                  onPressed: () => onDeleteButtonPressed.call(row),
-                  style: Theme.of(context)
-                      .extension<AppButtonTheme>()!
-                      .errorOutlined,
-                  label: Text(Lang.of(context).crudDelete),
-                ),
+                if (!isHistory) ...[
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.delete_rounded),
+                    onPressed: () => onDeleteButtonPressed.call(row),
+                    style: Theme.of(context)
+                        .extension<AppButtonTheme>()!
+                        .errorOutlined,
+                    label: Text(Lang.of(context).crudDelete),
+                  ),
+                ]
               ],
             );
           },

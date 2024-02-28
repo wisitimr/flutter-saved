@@ -39,6 +39,10 @@ final class LoginConfirm extends LoginEvent {
   const LoginConfirm();
 }
 
+final class LoginCancel extends LoginEvent {
+  const LoginCancel();
+}
+
 final class LoginSubmitted extends LoginEvent {
   const LoginSubmitted(this.provider);
 

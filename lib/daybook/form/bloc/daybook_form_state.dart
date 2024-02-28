@@ -33,12 +33,16 @@ final class DaybookFormState extends Equatable {
     this.invoice = const Invoice.pure(),
     this.document = const Document.pure(),
     this.documentType = '',
+    this.documentName = '',
+    this.supplierName = '',
+    this.customerName = '',
     this.transactionDate = const TransactionDate.pure(),
     this.company = const Company.pure(),
     this.supplier = const Supplier.pure(),
     this.customer = const Customer.pure(),
     this.daybookDetail = const <DaybookDetailListModel>[],
     this.isValid = false,
+    this.isHistory = false,
   });
 
   final List<MsDocument> msDocument;
@@ -52,12 +56,16 @@ final class DaybookFormState extends Equatable {
   final Invoice invoice;
   final Document document;
   final String documentType;
+  final String documentName;
+  final String supplierName;
+  final String customerName;
   final TransactionDate transactionDate;
   final Company company;
   final Supplier supplier;
   final Customer customer;
   final List<DaybookDetailListModel> daybookDetail;
   final bool isValid;
+  final bool isHistory;
 
   DaybookFormState copyWith({
     List<MsDocument>? msDocument,
@@ -71,12 +79,16 @@ final class DaybookFormState extends Equatable {
     Invoice? invoice,
     Document? document,
     String? documentType,
+    String? documentName,
+    String? supplierName,
+    String? customerName,
     TransactionDate? transactionDate,
     Company? company,
     Supplier? supplier,
     Customer? customer,
     List<DaybookDetailListModel>? daybookDetail,
     bool? isValid,
+    bool? isHistory,
   }) {
     return DaybookFormState(
       msDocument: msDocument ?? this.msDocument,
@@ -90,12 +102,16 @@ final class DaybookFormState extends Equatable {
       invoice: invoice ?? this.invoice,
       document: document ?? this.document,
       documentType: documentType ?? this.documentType,
+      documentName: documentName ?? this.documentName,
+      supplierName: supplierName ?? this.supplierName,
+      customerName: customerName ?? this.customerName,
       transactionDate: transactionDate ?? this.transactionDate,
       company: company ?? this.company,
       supplier: supplier ?? this.supplier,
       customer: customer ?? this.customer,
       daybookDetail: daybookDetail ?? this.daybookDetail,
       isValid: isValid ?? this.isValid,
+      isHistory: isHistory ?? this.isHistory,
     );
   }
 
@@ -109,11 +125,15 @@ final class DaybookFormState extends Equatable {
         invoice,
         document,
         documentType,
+        documentName,
+        supplierName,
+        customerName,
         transactionDate,
         company,
         supplier,
         customer,
-        isValid
+        isValid,
+        isHistory
       ];
 }
 

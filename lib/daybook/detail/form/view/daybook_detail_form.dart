@@ -17,11 +17,13 @@ import 'package:findigitalservice/widgets/card_elements.dart';
 class DaybookDetailForm extends StatelessWidget {
   final String id;
   final String daybook;
+  final bool isHistory;
 
   const DaybookDetailForm({
     Key? key,
     required this.id,
     required this.daybook,
+    required this.isHistory,
   }) : super(key: key);
 
   @override
@@ -114,7 +116,9 @@ class DaybookDetailFormDetail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CardHeader(
-                title: lang.daybookDetail,
+                title: state.isHistory
+                    ? lang.daybookDetailHistory
+                    : lang.daybookDetail,
               ),
               CardBody(
                 child: FormBuilder(
@@ -137,61 +141,108 @@ class DaybookDetailFormDetail extends StatelessWidget {
                           ),
                           initialValue: state.name.value,
                           validator: FormBuilderValidators.required(),
+                          enabled: state.isHistory ? false : true,
                           onChanged: (name) => context
                               .read<DaybookDetailFormBloc>()
                               .add(DaybookDetailFormNameChanged(name!)),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: kDefaultPadding * 2.0),
-                        child: FormBuilderDropdown(
-                          name: 'type',
-                          decoration: InputDecoration(
-                            labelText: lang.type,
-                            border: const OutlineInputBorder(),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            isDense: true,
+                      if (!state.isHistory) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 2.0),
+                          child: FormBuilderDropdown(
+                            name: 'type',
+                            decoration: InputDecoration(
+                              labelText: lang.type,
+                              border: const OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              isDense: true,
+                            ),
+                            validator: FormBuilderValidators.required(),
+                            items: state.msAccountType
+                                .map((String e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e),
+                                    ))
+                                .toList(),
+                            initialValue: state.type.value,
+                            onChanged: (type) => context
+                                .read<DaybookDetailFormBloc>()
+                                .add(DaybookDetailFormTypeChanged(type!)),
                           ),
-                          validator: FormBuilderValidators.required(),
-                          items: state.msAccountType
-                              .map((String e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(lang.getAccoutingType(e)),
-                                  ))
-                              .toList(),
-                          initialValue: state.type.value,
-                          onChanged: (type) => context
-                              .read<DaybookDetailFormBloc>()
-                              .add(DaybookDetailFormTypeChanged(type!)),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: kDefaultPadding * 2.0),
-                        child: FormBuilderDropdown(
-                          name: 'account',
-                          decoration: InputDecoration(
-                            labelText: lang.account,
-                            border: const OutlineInputBorder(),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            isDense: true,
+                      ],
+                      if (state.isHistory) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 2.0),
+                          child: FormBuilderTextField(
+                            name: 'type',
+                            decoration: InputDecoration(
+                              labelText: lang.type,
+                              hintText: lang.type,
+                              border: const OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                            ),
+                            initialValue: state.typeName,
+                            validator: FormBuilderValidators.required(),
+                            enabled: false,
+                            onChanged: (type) {},
                           ),
-                          validator: FormBuilderValidators.required(),
-                          items: state.msAccount
-                              .map((MsAccount e) => DropdownMenuItem(
-                                    value: e.id,
-                                    child: e.id != ""
-                                        ? Text("${e.code} - ${e.name}")
-                                        : Text(e.name),
-                                  ))
-                              .toList(),
-                          initialValue: state.account.value,
-                          onChanged: (account) => context
-                              .read<DaybookDetailFormBloc>()
-                              .add(DaybookDetailFormAccountChanged(account!)),
                         ),
-                      ),
+                      ],
+                      if (!state.isHistory) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 2.0),
+                          child: FormBuilderDropdown(
+                            name: 'account',
+                            decoration: InputDecoration(
+                              labelText: lang.account,
+                              border: const OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              isDense: true,
+                            ),
+                            validator: FormBuilderValidators.required(),
+                            items: state.msAccount
+                                .map((MsAccount e) => DropdownMenuItem(
+                                      value: e.id,
+                                      child: e.id != ""
+                                          ? Text("${e.code} - ${e.name}")
+                                          : Text(e.name),
+                                    ))
+                                .toList(),
+                            initialValue: state.account.value,
+                            onChanged: (account) => context
+                                .read<DaybookDetailFormBloc>()
+                                .add(DaybookDetailFormAccountChanged(account!)),
+                          ),
+                        ),
+                      ],
+                      if (state.isHistory) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 2.0),
+                          child: FormBuilderTextField(
+                            name: 'account',
+                            decoration: InputDecoration(
+                              labelText: lang.account,
+                              hintText: lang.account,
+                              border: const OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                            ),
+                            initialValue: state.accountName,
+                            validator: FormBuilderValidators.required(),
+                            enabled: false,
+                            onChanged: (account) {},
+                          ),
+                        ),
+                      ],
                       Padding(
                         padding: const EdgeInsets.only(
                             bottom: kDefaultPadding * 2.0),
@@ -210,6 +261,7 @@ class DaybookDetailFormDetail extends StatelessWidget {
                           ],
                           initialValue: state.amount.value,
                           validator: FormBuilderValidators.required(),
+                          enabled: state.isHistory ? false : true,
                           onChanged: (amount) => context
                               .read<DaybookDetailFormBloc>()
                               .add(DaybookDetailFormAmountChanged(amount!)),
@@ -245,41 +297,44 @@ class DaybookDetailFormDetail extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Spacer(),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: SizedBox(
-                              height: 40.0,
-                              child: ElevatedButton(
-                                style: themeData
-                                    .extension<AppButtonTheme>()!
-                                    .primaryElevated,
-                                onPressed: (state.isValid
-                                    ? () {
-                                        context.read<DaybookDetailFormBloc>().add(
-                                            const DaybookDetailFormSubmitConfirm());
-                                      }
-                                    : null),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: kDefaultPadding * 0.5),
-                                      child: Icon(
-                                        Icons.save_rounded,
-                                        size: (themeData.textTheme.labelLarge!
-                                                .fontSize! +
-                                            4.0),
+                          if (!state.isHistory) ...[
+                            const Spacer(),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                height: 40.0,
+                                child: ElevatedButton(
+                                  style: themeData
+                                      .extension<AppButtonTheme>()!
+                                      .primaryElevated,
+                                  onPressed: (state.isValid
+                                      ? () {
+                                          context.read<DaybookDetailFormBloc>().add(
+                                              const DaybookDetailFormSubmitConfirm());
+                                        }
+                                      : null),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: kDefaultPadding * 0.5),
+                                        child: Icon(
+                                          Icons.save_rounded,
+                                          size: (themeData.textTheme.labelLarge!
+                                                  .fontSize! +
+                                              4.0),
+                                        ),
                                       ),
-                                    ),
-                                    Text(lang.save),
-                                  ],
+                                      Text(lang.save),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ],

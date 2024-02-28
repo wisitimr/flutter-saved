@@ -179,7 +179,7 @@ class _PasswordInput extends StatelessWidget {
     final lang = Lang.of(context);
 
     return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.password != current.password,
+      // buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
         return FormBuilderTextField(
           name: 'password',
@@ -189,9 +189,21 @@ class _PasswordInput extends StatelessWidget {
             helperText: lang.passwordHelperText,
             border: const OutlineInputBorder(),
             floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: IconButton(
+              icon: Icon(
+                // Based on passwordVisible state choose the icon
+                state.isPasswordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: Theme.of(context).primaryColorDark,
+              ),
+              onPressed: () => context
+                  .read<RegisterBloc>()
+                  .add(LoginPasswordVisible(state.isPasswordVisible)),
+            ),
           ),
           enableSuggestions: false,
-          obscureText: true,
+          obscureText: !state.isPasswordVisible,
           validator: FormBuilderValidators.compose([
             FormBuilderValidators.required(),
             FormBuilderValidators.minLength(6),
@@ -217,7 +229,7 @@ class _RetypePasswordInput extends StatelessWidget {
       builder: (context, state) {
         return FormBuilder(
           key: formKey,
-          autovalidateMode: AutovalidateMode.disabled,
+          // autovalidateMode: AutovalidateMode.disabled,
           child: FormBuilderTextField(
             name: 'retypePassword',
             decoration: InputDecoration(
@@ -225,15 +237,26 @@ class _RetypePasswordInput extends StatelessWidget {
               hintText: lang.retypePassword,
               border: const OutlineInputBorder(),
               floatingLabelBehavior: FloatingLabelBehavior.always,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  // Based on passwordVisible state choose the icon
+                  state.isRetypePasswordVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off,
+                  color: Theme.of(context).primaryColorDark,
+                ),
+                onPressed: () => context.read<RegisterBloc>().add(
+                    LoginRetypePasswordVisible(state.isRetypePasswordVisible)),
+              ),
             ),
             enableSuggestions: false,
+            obscureText: !state.isRetypePasswordVisible,
             validator: (value) {
               if (state.password.value != value) {
                 return lang.passwordNotMatch;
               }
               return null;
             },
-            obscureText: true,
             onChanged: (retypePassword) => formKey.currentState!.validate(),
           ),
         );

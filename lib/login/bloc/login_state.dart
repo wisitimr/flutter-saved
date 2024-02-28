@@ -11,6 +11,7 @@ final class LoginState extends Equatable {
     this.isLoggedIn = false,
     this.isLoading = false,
     this.isValid = false,
+    this.isPasswordVisible = false,
   });
 
   final FormzSubmissionStatus status;
@@ -22,6 +23,7 @@ final class LoginState extends Equatable {
   final bool isLoggedIn;
   final bool isLoading;
   final bool isValid;
+  final bool isPasswordVisible;
 
   LoginState copyWith({
     FormzSubmissionStatus? status,
@@ -33,6 +35,7 @@ final class LoginState extends Equatable {
     bool? isLoggedIn,
     bool? isLoading,
     bool? isValid,
+    bool? isPasswordVisible,
   }) {
     return LoginState(
       status: status ?? this.status,
@@ -44,6 +47,7 @@ final class LoginState extends Equatable {
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       isLoading: isLoading ?? this.isLoading,
       isValid: isValid ?? this.isValid,
+      isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
     );
   }
 
@@ -56,5 +60,6 @@ final class LoginState extends Equatable {
         isLoggedIn,
         isLoading,
         isValid,
+        isPasswordVisible,
       ];
 }

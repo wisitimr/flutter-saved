@@ -61,6 +61,24 @@ final class RegisterLastNameChanged extends RegisterEvent {
   List<Object> get props => [lastName];
 }
 
+final class LoginPasswordVisible extends RegisterEvent {
+  const LoginPasswordVisible(this.isPasswordVisible);
+
+  final bool isPasswordVisible;
+
+  @override
+  List<Object> get props => [isPasswordVisible];
+}
+
+final class LoginRetypePasswordVisible extends RegisterEvent {
+  const LoginRetypePasswordVisible(this.isRetypePasswordVisible);
+
+  final bool isRetypePasswordVisible;
+
+  @override
+  List<Object> get props => [isRetypePasswordVisible];
+}
+
 final class RegisterSubmitted extends RegisterEvent {
   const RegisterSubmitted();
 }

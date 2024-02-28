@@ -14,6 +14,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<RegisterPasswordChanged>(_onPasswordChanged);
     on<RegisterFirstNameChanged>(_onFirstNameChanged);
     on<RegisterLastNameChanged>(_onLastNameChanged);
+    on<LoginPasswordVisible>(_onPasswordVisible);
+    on<LoginRetypePasswordVisible>(_onRetypePasswordVisible);
     on<RegisterSubmitted>(_onSubmitted);
   }
 
@@ -117,6 +119,24 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         status: FormzSubmissionStatus.initial,
       ),
     );
+  }
+
+  Future<void> _onPasswordVisible(
+    LoginPasswordVisible event,
+    Emitter<RegisterState> emit,
+  ) async {
+    emit(state.copyWith(
+      isPasswordVisible: !event.isPasswordVisible,
+    ));
+  }
+
+  Future<void> _onRetypePasswordVisible(
+    LoginRetypePasswordVisible event,
+    Emitter<RegisterState> emit,
+  ) async {
+    emit(state.copyWith(
+      isRetypePasswordVisible: !event.isRetypePasswordVisible,
+    ));
   }
 
   Future<void> _onSubmitted(

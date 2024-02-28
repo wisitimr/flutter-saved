@@ -10,6 +10,8 @@ final class RegisterState extends Equatable {
     this.firstName = const FirstName.pure(),
     this.lastName = const LastName.pure(),
     this.isValid = false,
+    this.isPasswordVisible = false,
+    this.isRetypePasswordVisible = false,
   });
 
   final FormzSubmissionStatus status;
@@ -20,6 +22,8 @@ final class RegisterState extends Equatable {
   final FirstName firstName;
   final LastName lastName;
   final bool isValid;
+  final bool isPasswordVisible;
+  final bool isRetypePasswordVisible;
 
   RegisterState copyWith({
     FormzSubmissionStatus? status,
@@ -30,6 +34,8 @@ final class RegisterState extends Equatable {
     FirstName? firstName,
     LastName? lastName,
     bool? isValid,
+    bool? isPasswordVisible,
+    bool? isRetypePasswordVisible,
   }) {
     return RegisterState(
       status: status ?? this.status,
@@ -40,10 +46,22 @@ final class RegisterState extends Equatable {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       isValid: isValid ?? this.isValid,
+      isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
+      isRetypePasswordVisible:
+          isRetypePasswordVisible ?? this.isRetypePasswordVisible,
     );
   }
 
   @override
-  List<Object> get props =>
-      [status, username, email, password, firstName, lastName];
+  List<Object> get props => [
+        status,
+        username,
+        email,
+        password,
+        firstName,
+        lastName,
+        isValid,
+        isPasswordVisible,
+        isRetypePasswordVisible,
+      ];
 }

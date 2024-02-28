@@ -35,6 +35,15 @@ final class LoginCompanySelected extends LoginEvent {
   List<Object> get props => [provider, company];
 }
 
+final class LoginPasswordVisible extends LoginEvent {
+  const LoginPasswordVisible(this.isPasswordVisible);
+
+  final bool isPasswordVisible;
+
+  @override
+  List<Object> get props => [isPasswordVisible];
+}
+
 final class LoginConfirm extends LoginEvent {
   const LoginConfirm();
 }

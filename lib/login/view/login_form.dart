@@ -152,7 +152,7 @@ class _PasswordInput extends StatelessWidget {
     final lang = Lang.of(context);
 
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.password != current.password,
+      // buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
         return FormBuilderTextField(
           name: 'password',
@@ -161,12 +161,25 @@ class _PasswordInput extends StatelessWidget {
             hintText: lang.password,
             border: const OutlineInputBorder(),
             floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: IconButton(
+              icon: Icon(
+                // Based on passwordVisible state choose the icon
+                state.isPasswordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: Theme.of(context).primaryColorDark,
+              ),
+              onPressed: () => context
+                  .read<LoginBloc>()
+                  .add(LoginPasswordVisible(state.isPasswordVisible)),
+            ),
           ),
           enableSuggestions: false,
-          obscureText: true,
+          obscureText: !state.isPasswordVisible,
           validator: FormBuilderValidators.required(),
-          onChanged: (password) =>
-              context.read<LoginBloc>().add(LoginPasswordChanged(password!)),
+          onChanged: (password) => context.read<LoginBloc>().add(
+                LoginPasswordChanged(password!),
+              ),
         );
       },
     );

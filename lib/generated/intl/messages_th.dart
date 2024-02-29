@@ -217,6 +217,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "document": MessageLookupByLibrary.simpleMessage("ประเภทเอกสาร"),
         "supplier": MessageLookupByLibrary.simpleMessage("ผู้จัดหา"),
         "customer": MessageLookupByLibrary.simpleMessage("ลูกค้า"),
+        "paymentMethod":
+            MessageLookupByLibrary.simpleMessage("วิธีการชำระเงิน"),
         "amount": MessageLookupByLibrary.simpleMessage("จำนวน"),
         "transactionDate":
             MessageLookupByLibrary.simpleMessage("วันที่ทำรายการ"),

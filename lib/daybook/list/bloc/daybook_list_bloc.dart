@@ -33,7 +33,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
       if (event.isHistory) {
         year = year - 1;
       } else {
-        param['transactionDate.gte'] = "${year.toString()}-01-01T00:00:00.000Z";
+        // param['transactrionDate.gte'] = "${year.toString()}-01-01T00:00:00.000Z";
       }
       param['transactionDate.lt'] = "${year + 1}-01-01T00:00:00.000Z";
       // int year = 2023;

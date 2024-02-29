@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:findigitalservice/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -11,8 +12,6 @@ import 'package:findigitalservice/app_router.dart';
 import 'package:findigitalservice/constants/dimens.dart';
 import 'package:findigitalservice/daybook/form/daybook_form.dart';
 import 'package:findigitalservice/generated/l10n.dart';
-import 'package:findigitalservice/models/master/ms_customer.dart';
-import 'package:findigitalservice/models/master/ms_document.dart';
 import 'package:findigitalservice/models/master/ms_supplier.dart';
 import 'package:findigitalservice/theme/theme_extensions/app_button_theme.dart';
 import 'package:intl/intl.dart';
@@ -331,6 +330,32 @@ class DaybookFormDetail extends StatelessWidget {
                             ),
                           ),
                         ],
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 2.0),
+                          child: FormBuilderDropdown(
+                            name: 'paymentMethod',
+                            decoration: InputDecoration(
+                              labelText: lang.paymentMethod,
+                              border: const OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              isDense: true,
+                            ),
+                            items: state.msPaymentMethod
+                                .map((MsPaymentMethod e) => DropdownMenuItem(
+                                      value: e.id,
+                                      child: Text(e.name),
+                                    ))
+                                .toList(),
+                            initialValue: state.paymentMethod.value,
+                            enabled: state.isHistory ? false : true,
+                            onChanged: (paymentMethod) => context
+                                .read<DaybookFormBloc>()
+                                .add(DaybookFormPaymentMethodChanged(
+                                    paymentMethod!)),
+                          ),
+                        ),
                       ],
                       if (state.isHistory) ...[
                         if (state.documentType == 'PAY') ...[
@@ -373,6 +398,24 @@ class DaybookFormDetail extends StatelessWidget {
                             ),
                           ),
                         ],
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 2.0),
+                          child: FormBuilderTextField(
+                            name: 'paymentMethod',
+                            decoration: InputDecoration(
+                              labelText: lang.paymentMethod,
+                              hintText: lang.paymentMethod,
+                              border: const OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                            ),
+                            initialValue: state.paymentMethodName,
+                            validator: FormBuilderValidators.required(),
+                            enabled: false,
+                            onChanged: (paymentMethod) {},
+                          ),
+                        ),
                       ],
                       if (state.id.isValid) ...[
                         if (!state.isHistory) ...[

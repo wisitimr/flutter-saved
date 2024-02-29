@@ -25,6 +25,7 @@ final class DaybookFormState extends Equatable {
     this.msDocument = const <MsDocument>[],
     this.msSupplier = const <MsSupplier>[],
     this.msCustomer = const <MsCustomer>[],
+    this.msPaymentMethod = const <MsPaymentMethod>[],
     this.status = DaybookFormStatus.loading,
     this.message = '',
     this.selectedDeleteRowId = '',
@@ -36,10 +37,12 @@ final class DaybookFormState extends Equatable {
     this.documentName = '',
     this.supplierName = '',
     this.customerName = '',
+    this.paymentMethodName = '',
     this.transactionDate = const TransactionDate.pure(),
     this.company = const Company.pure(),
     this.supplier = const Supplier.pure(),
     this.customer = const Customer.pure(),
+    this.paymentMethod = const PaymentMethod.pure(),
     this.daybookDetail = const <DaybookDetailListModel>[],
     this.isValid = false,
     this.isHistory = false,
@@ -48,6 +51,7 @@ final class DaybookFormState extends Equatable {
   final List<MsDocument> msDocument;
   final List<MsSupplier> msSupplier;
   final List<MsCustomer> msCustomer;
+  final List<MsPaymentMethod> msPaymentMethod;
   final DaybookFormStatus status;
   final String message;
   final String selectedDeleteRowId;
@@ -59,10 +63,12 @@ final class DaybookFormState extends Equatable {
   final String documentName;
   final String supplierName;
   final String customerName;
+  final String paymentMethodName;
   final TransactionDate transactionDate;
   final Company company;
   final Supplier supplier;
   final Customer customer;
+  final PaymentMethod paymentMethod;
   final List<DaybookDetailListModel> daybookDetail;
   final bool isValid;
   final bool isHistory;
@@ -71,6 +77,7 @@ final class DaybookFormState extends Equatable {
     List<MsDocument>? msDocument,
     List<MsSupplier>? msSupplier,
     List<MsCustomer>? msCustomer,
+    List<MsPaymentMethod>? msPaymentMethod,
     DaybookFormStatus? status,
     String? message,
     String? selectedDeleteRowId,
@@ -82,10 +89,12 @@ final class DaybookFormState extends Equatable {
     String? documentName,
     String? supplierName,
     String? customerName,
+    String? paymentMethodName,
     TransactionDate? transactionDate,
     Company? company,
     Supplier? supplier,
     Customer? customer,
+    PaymentMethod? paymentMethod,
     List<DaybookDetailListModel>? daybookDetail,
     bool? isValid,
     bool? isHistory,
@@ -94,6 +103,7 @@ final class DaybookFormState extends Equatable {
       msDocument: msDocument ?? this.msDocument,
       msSupplier: msSupplier ?? this.msSupplier,
       msCustomer: msCustomer ?? this.msCustomer,
+      msPaymentMethod: msPaymentMethod ?? this.msPaymentMethod,
       status: status ?? this.status,
       message: message ?? this.message,
       selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
@@ -105,10 +115,12 @@ final class DaybookFormState extends Equatable {
       documentName: documentName ?? this.documentName,
       supplierName: supplierName ?? this.supplierName,
       customerName: customerName ?? this.customerName,
+      paymentMethodName: paymentMethodName ?? this.paymentMethodName,
       transactionDate: transactionDate ?? this.transactionDate,
       company: company ?? this.company,
       supplier: supplier ?? this.supplier,
       customer: customer ?? this.customer,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
       daybookDetail: daybookDetail ?? this.daybookDetail,
       isValid: isValid ?? this.isValid,
       isHistory: isHistory ?? this.isHistory,
@@ -128,10 +140,12 @@ final class DaybookFormState extends Equatable {
         documentName,
         supplierName,
         customerName,
+        paymentMethodName,
         transactionDate,
         company,
         supplier,
         customer,
+        paymentMethod,
         isValid,
         isHistory
       ];

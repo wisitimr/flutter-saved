@@ -1166,6 +1166,15 @@ class Lang {
     );
   }
 
+  String get paymentMethod {
+    return Intl.message(
+      'Payment Type',
+      name: 'paymentMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
   String getAccoutingType(String type) {
     if (type == '') {
       return '-- Select --';

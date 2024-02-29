@@ -11,6 +11,7 @@ class DaybookFormModel extends Equatable {
     // required this.company,
     required this.supplier,
     required this.customer,
+    required this.paymentMethod,
     required this.daybookDetail,
   });
 
@@ -22,6 +23,7 @@ class DaybookFormModel extends Equatable {
   // final String company;
   final String supplier;
   final String customer;
+  final String paymentMethod;
   final List<DaybookDetailListModel> daybookDetail;
 
   factory DaybookFormModel.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +36,7 @@ class DaybookFormModel extends Equatable {
         // company: json['company'],
         supplier: json['supplier'] ?? '',
         customer: json['customer'] ?? '',
+        paymentMethod: json['paymentMethod'] ?? '',
         daybookDetail: (json['daybookDetails'] as List)
             .map((data) => DaybookDetailListModel.fromJson(data))
             .toList(),
@@ -48,5 +51,6 @@ class DaybookFormModel extends Equatable {
         transactionDate,
         supplier,
         customer,
+        paymentMethod,
       ];
 }

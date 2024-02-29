@@ -219,7 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "type": MessageLookupByLibrary.simpleMessage("Type"),
         "document": MessageLookupByLibrary.simpleMessage("Document Type"),
         "supplier": MessageLookupByLibrary.simpleMessage("Supplier"),
-        "customer": MessageLookupByLibrary.simpleMessage("Customer"),
+        "paymentMethod": MessageLookupByLibrary.simpleMessage("Payment Method"),
         "amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "transactionDate":
             MessageLookupByLibrary.simpleMessage("Transaction Date"),

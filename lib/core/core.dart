@@ -9,3 +9,4 @@ export 'supplier.dart';
 export 'user.dart';
 export 'material.dart';
 export 'product.dart';
+export 'payment_method.dart';

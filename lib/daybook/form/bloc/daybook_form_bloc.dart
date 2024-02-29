@@ -1,17 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:findigitalservice/core/core.dart';
+import 'package:findigitalservice/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:intl/intl.dart';
-import 'package:findigitalservice/core/customer.dart';
-import 'package:findigitalservice/core/daybook_detail.dart';
-import 'package:findigitalservice/core/document.dart';
-import 'package:findigitalservice/core/daybook.dart';
 import 'package:findigitalservice/app_provider.dart';
-import 'package:findigitalservice/core/supplier.dart';
 import 'package:findigitalservice/daybook/form/models/models.dart';
-import 'package:findigitalservice/models/master/ms_customer.dart';
-import 'package:findigitalservice/models/master/ms_document.dart';
 import 'package:findigitalservice/models/master/ms_supplier.dart';
 
 part 'daybook_form_event.dart';
@@ -30,6 +25,7 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
     on<DaybookFormCompanyChanged>(_onCompanyChanged);
     on<DaybookFormSupplierChanged>(_onSupplierChanged);
     on<DaybookFormCustomerChanged>(_onCustomerChanged);
+    on<DaybookFormPaymentMethodChanged>(_onPaymentMethodChanged);
     on<DaybookFormSubmitConfirm>(_onSubmitConfirm);
     on<DaybookSubmitted>(_onSubmitted);
     on<DaybookFormDeleteConfirm>(_onDeleteConfirm);
@@ -42,19 +38,22 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
   final DocumentService _documentService = DocumentService();
   final SupplierService _supplierService = SupplierService();
   final CustomerService _customerService = CustomerService();
+  final PaymentMethodService _paymentMethodService = PaymentMethodService();
 
   Future<void> _onStarted(
       DaybookFormStarted event, Emitter<DaybookFormState> emit) async {
     emit(state.copyWith(status: DaybookFormStatus.loading));
     try {
-      final [docRes, supRes, cusRes] = await Future.wait([
+      final [docRes, supRes, cusRes, payRes] = await Future.wait([
         _documentService.findAll(_provider, {}),
         _supplierService.findAll(_provider, {}),
         _customerService.findAll(_provider, {}),
+        _paymentMethodService.findAll(_provider, {}),
       ]);
       List<MsDocument> documents = [];
       List<MsSupplier> suppliers = [];
       List<MsCustomer> customers = [];
+      List<MsPaymentMethod> paymentMethods = [];
       final daybook = DaybookFormTmp();
       daybook.company = _provider.companyId;
       if (event.id.isNotEmpty) {
@@ -68,6 +67,7 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
           daybook.transactionDate = data.transactionDate;
           daybook.supplier = data.supplier;
           daybook.customer = data.customer;
+          daybook.paymentMethod = data.paymentMethod;
           daybook.daybookDetail = data.daybookDetail;
         }
       }
@@ -103,6 +103,16 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
           ...data.map((item) => MsCustomer.fromJson(item)).toList(),
         ]);
       }
+      if (payRes['statusCode'] == 200) {
+        List data = payRes['data'];
+        paymentMethods.addAll([
+          const MsPaymentMethod(
+            id: '',
+            name: '-- Select --',
+          ),
+          ...data.map((item) => MsPaymentMethod.fromJson(item)).toList(),
+        ]);
+      }
       if (documents.isNotEmpty) {
         if (daybook.document.isEmpty) {
           daybook.document = documents[0].id;
@@ -134,11 +144,21 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
           }
         }
       }
+      if (paymentMethods.isNotEmpty) {
+        if (daybook.paymentMethod.isNotEmpty) {
+          for (var cus in paymentMethods) {
+            if (cus.id == daybook.paymentMethod) {
+              daybook.paymentMethodName = cus.name;
+            }
+          }
+        }
+      }
       emit(state.copyWith(
           status: DaybookFormStatus.success,
           msDocument: documents,
           msSupplier: suppliers,
           msCustomer: customers,
+          msPaymentMethod: paymentMethods,
           id: Id.dirty(daybook.id),
           number: Number.dirty(daybook.number),
           invoice: Invoice.dirty(daybook.invoice),
@@ -147,10 +167,12 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
           documentName: daybook.documentName,
           supplierName: daybook.supplierName,
           customerName: daybook.customerName,
+          paymentMethodName: daybook.paymentMethodName,
           transactionDate: TransactionDate.dirty(daybook.transactionDate),
           company: Company.dirty(daybook.company),
           supplier: Supplier.dirty(daybook.supplier),
           customer: Customer.dirty(daybook.customer),
+          paymentMethod: PaymentMethod.dirty(daybook.paymentMethod),
           daybookDetail: daybook.daybookDetail,
           isValid: daybook.id.isNotEmpty,
           isHistory: event.isHistory));
@@ -358,6 +380,29 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
     );
   }
 
+  void _onPaymentMethodChanged(
+    DaybookFormPaymentMethodChanged event,
+    Emitter<DaybookFormState> emit,
+  ) {
+    final paymentMethod = PaymentMethod.dirty(event.paymentMethod);
+    emit(
+      state.copyWith(
+        paymentMethod: paymentMethod,
+        isValid: validateWithDocumentInput(
+          [
+            state.number,
+            state.invoice,
+            state.document,
+            state.transactionDate,
+            state.company,
+            paymentMethod,
+          ],
+          true,
+        ),
+      ),
+    );
+  }
+
   Future<void> _onSubmitConfirm(
     DaybookFormSubmitConfirm event,
     Emitter<DaybookFormState> emit,
@@ -508,10 +553,12 @@ class DaybookFormTmp {
   String documentName = '';
   String supplierName = '';
   String customerName = '';
+  String paymentMethodName = '';
   String transactionDate =
       DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(DateTime.now());
   String company = '';
   String supplier = '';
   String customer = '';
+  String paymentMethod = '';
   List<DaybookDetailListModel> daybookDetail = [];
 }

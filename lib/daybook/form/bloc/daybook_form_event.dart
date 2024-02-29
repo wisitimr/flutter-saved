@@ -90,6 +90,15 @@ final class DaybookFormCustomerChanged extends DaybookFormEvent {
   List<Object> get props => [customer];
 }
 
+final class DaybookFormPaymentMethodChanged extends DaybookFormEvent {
+  const DaybookFormPaymentMethodChanged(this.paymentMethod);
+
+  final String paymentMethod;
+
+  @override
+  List<Object> get props => [paymentMethod];
+}
+
 final class DaybookFormDeleteConfirm extends DaybookFormEvent {
   const DaybookFormDeleteConfirm(this.id);
 

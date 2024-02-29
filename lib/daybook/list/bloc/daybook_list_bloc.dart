@@ -29,13 +29,14 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
       Map<String, dynamic> param = {};
       DateTime now = DateTime.now();
       int year = now.year;
+      param['company'] = _provider.companyId;
       if (event.isHistory) {
         year = year - 1;
+      } else {
+        param['transactionDate.gte'] = "${year.toString()}-01-01T00:00:00.000Z";
       }
-      // int year = 2023;
-      param['company'] = _provider.companyId;
-      // param['transactionDate.gte'] = "${year.toString()}-01-01T00:00:00.000Z";
       param['transactionDate.lt'] = "${year + 1}-01-01T00:00:00.000Z";
+      // int year = 2023;
       final res = await _daybookService.findAll(_provider, param);
       List<DaybookListModel> daybooks = [];
       if (res['statusCode'] == 200) {

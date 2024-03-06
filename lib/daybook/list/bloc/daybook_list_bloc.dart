@@ -34,7 +34,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
       DateTime now = DateTime.now();
       List<String> y = [];
       int yearSelected = now.year;
-      for (var i = 0; i < 20; i++) {
+      for (var i = 0; i < 15; i++) {
         var newDate = DateTime(now.year - i);
         y.add(newDate.year.toString());
       }
@@ -84,11 +84,12 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
       }
       emit(
         state.copyWith(
-            status: DaybookListStatus.success,
-            daybooks: daybooks,
-            filter: daybooks,
-            yearSelected: event.year,
-            isHistory: now.year > int.parse(event.year)),
+          status: DaybookListStatus.success,
+          daybooks: daybooks,
+          filter: daybooks,
+          yearSelected: event.year,
+          isHistory: now.year > int.parse(event.year),
+        ),
       );
     } catch (e) {
       emit(state.copyWith(
@@ -170,7 +171,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
     // emit(state.copyWith(status: DaybookListStatus.loading));
     try {
       await _daybookService.downloadFinancialStatement(
-          _provider, _provider.companyId, 'test.xlsx');
+          _provider, _provider.companyId, event.year, 'test.xlsx');
       emit(
         state.copyWith(
           status: DaybookListStatus.downloaded,

@@ -19,11 +19,8 @@ import 'package:findigitalservice/widgets/card_elements.dart';
 import 'package:findigitalservice/widgets/portal_master_layout/portal_master_layout.dart';
 
 class DaybookListPage extends StatefulWidget {
-  final bool isHistory;
-
   const DaybookListPage({
     Key? key,
-    required this.isHistory,
   }) : super(key: key);
 
   @override
@@ -260,8 +257,8 @@ class DaybookList extends StatelessWidget {
                                     .secondaryElevated,
                                 onPressed: () => context
                                     .read<DaybookListBloc>()
-                                    .add(
-                                        const DaybookListDownloadFinancialStatement()),
+                                    .add(DaybookListDownloadFinancialStatement(
+                                        state.yearSelected)),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,10 +288,10 @@ class DaybookList extends StatelessWidget {
                                 style: themeData
                                     .extension<AppButtonTheme>()!
                                     .successElevated,
-                                onPressed: () => GoRouter.of(context).go(
-                                    state.isHistory
-                                        ? RouteUri.daybookFormHistory
-                                        : RouteUri.daybookForm),
+                                onPressed: () {
+                                  GoRouter.of(context)
+                                      .go('${RouteUri.daybookForm}?isNew=true');
+                                },
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,7 +376,7 @@ class DaybookList extends StatelessWidget {
                                                           data)),
                                               onDetailButtonPressed: (data) =>
                                                   GoRouter.of(context).go(
-                                                      '${state.isHistory ? RouteUri.daybookFormHistory : RouteUri.daybookForm}?id=${data.id}'),
+                                                      '${RouteUri.daybookForm}?id=${data.id}&isHistory=${state.isHistory}'),
                                               onDeleteButtonPressed: (data) =>
                                                   context
                                                       .read<DaybookListBloc>()

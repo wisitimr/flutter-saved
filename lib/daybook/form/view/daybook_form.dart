@@ -75,7 +75,7 @@ class DaybookForm extends StatelessWidget {
             btnOkOnPress: () async {
               context
                   .read<DaybookFormBloc>()
-                  .add(DaybookFormStarted(id, state.isHistory));
+                  .add(DaybookFormStarted(id, state.isHistory, state.isNew));
             },
           );
 
@@ -465,77 +465,81 @@ class DaybookFormDetail extends StatelessWidget {
                             ],
                           ),
                         ],
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: kDefaultPadding * 2.0),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                final double dataTableWidth =
-                                    max(kScreenWidthMd, constraints.maxWidth);
+                        if (!state.isNew) ...[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: kDefaultPadding * 2.0),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final double dataTableWidth =
+                                      max(kScreenWidthMd, constraints.maxWidth);
 
-                                return Scrollbar(
-                                  controller:
-                                      dataTableHorizontalScrollController,
-                                  thumbVisibility: true,
-                                  trackVisibility: true,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
+                                  return Scrollbar(
                                     controller:
                                         dataTableHorizontalScrollController,
-                                    child: SizedBox(
-                                      width: dataTableWidth,
-                                      child: Theme(
-                                        data: themeData.copyWith(
-                                          cardTheme:
-                                              appDataTableTheme.cardTheme,
-                                          dataTableTheme: appDataTableTheme
-                                              .dataTableThemeData,
-                                        ),
-                                        child: PaginatedDataTable(
-                                          key: key,
-                                          showFirstLastButtons: true,
-                                          rowsPerPage: 5,
-                                          columns: [
-                                            DataColumn(label: Text(lang.name)),
-                                            DataColumn(
-                                                label: Text(lang.account)),
-                                            DataColumn(label: Text(lang.type)),
-                                            DataColumn(
-                                                label: Text(lang.amount)),
-                                            const DataColumn(
-                                                label: Text(
-                                              '...',
-                                              textAlign: TextAlign.center,
-                                            )),
-                                          ],
-                                          source: _DataSource(
-                                            isHistory: state.isHistory,
-                                            data: state.daybookDetail,
-                                            context: context,
-                                            onDetailButtonPressed: (data) {
-                                              final query =
-                                                  '?id=${data.id}&daybook=${state.id.value}';
-                                              GoRouter.of(context).go(
-                                                  '${state.isHistory ? RouteUri.daybookDetailFormHistory : RouteUri.daybookDetailForm}$query');
-                                            },
-                                            onDeleteButtonPressed: (data) =>
-                                                context
-                                                    .read<DaybookFormBloc>()
-                                                    .add(
-                                                        DaybookFormDeleteConfirm(
-                                                            data.id)),
+                                    thumbVisibility: true,
+                                    trackVisibility: true,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      controller:
+                                          dataTableHorizontalScrollController,
+                                      child: SizedBox(
+                                        width: dataTableWidth,
+                                        child: Theme(
+                                          data: themeData.copyWith(
+                                            cardTheme:
+                                                appDataTableTheme.cardTheme,
+                                            dataTableTheme: appDataTableTheme
+                                                .dataTableThemeData,
+                                          ),
+                                          child: PaginatedDataTable(
+                                            key: key,
+                                            showFirstLastButtons: true,
+                                            rowsPerPage: 5,
+                                            columns: [
+                                              DataColumn(
+                                                  label: Text(lang.name)),
+                                              DataColumn(
+                                                  label: Text(lang.account)),
+                                              DataColumn(
+                                                  label: Text(lang.type)),
+                                              DataColumn(
+                                                  label: Text(lang.amount)),
+                                              const DataColumn(
+                                                  label: Text(
+                                                '...',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                            ],
+                                            source: _DataSource(
+                                              isHistory: state.isHistory,
+                                              data: state.daybookDetail,
+                                              context: context,
+                                              onDetailButtonPressed: (data) {
+                                                final query =
+                                                    '?id=${data.id}&daybook=${state.id.value}&isHistory=${state.isHistory}';
+                                                GoRouter.of(context).go(
+                                                    '${RouteUri.daybookDetailForm}$query');
+                                              },
+                                              onDeleteButtonPressed: (data) =>
+                                                  context
+                                                      .read<DaybookFormBloc>()
+                                                      .add(
+                                                          DaybookFormDeleteConfirm(
+                                                              data.id)),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                        ),
+                        ]
                       ],
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -546,10 +550,8 @@ class DaybookFormDetail extends StatelessWidget {
                               style: themeData
                                   .extension<AppButtonTheme>()!
                                   .secondaryElevated,
-                              onPressed: () async => GoRouter.of(context).go(
-                                  state.isHistory
-                                      ? RouteUri.daybookHistory
-                                      : RouteUri.daybook),
+                              onPressed: () async =>
+                                  GoRouter.of(context).go(RouteUri.daybook),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.center,

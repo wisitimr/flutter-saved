@@ -157,10 +157,10 @@ class DaybookService {
     }
   }
 
-  Future<void> downloadFinancialStatement(
-      AppProvider provider, String company, String fileName) async {
+  Future<void> downloadFinancialStatement(AppProvider provider, String company,
+      String year, String fileName) async {
     try {
-      String url = "/generate/financial/$company";
+      String url = "/generate/financial/$company/$year";
       if (defaultTargetPlatform == TargetPlatform.macOS ||
           defaultTargetPlatform == TargetPlatform.windows ||
           defaultTargetPlatform == TargetPlatform.linux) {

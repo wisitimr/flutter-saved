@@ -56,8 +56,10 @@ final class DaybookListDelete extends DaybookListEvent {
 }
 
 final class DaybookListDownloadFinancialStatement extends DaybookListEvent {
-  const DaybookListDownloadFinancialStatement();
+  const DaybookListDownloadFinancialStatement(this.year);
+
+  final String year;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [year];
 }

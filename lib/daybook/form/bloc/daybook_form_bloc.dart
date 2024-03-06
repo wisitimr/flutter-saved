@@ -163,17 +163,17 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
           number: Number.dirty(daybook.number),
           invoice: Invoice.dirty(daybook.invoice),
           document: Document.dirty(daybook.document),
-          documentType: daybook.documentType,
-          documentName: daybook.documentName,
-          supplierName: daybook.supplierName,
-          customerName: daybook.customerName,
-          paymentMethodName: daybook.paymentMethodName,
           transactionDate: TransactionDate.dirty(daybook.transactionDate),
           company: Company.dirty(daybook.company),
           supplier: Supplier.dirty(daybook.supplier),
           customer: Customer.dirty(daybook.customer),
           paymentMethod: PaymentMethod.dirty(daybook.paymentMethod),
           daybookDetail: daybook.daybookDetail,
+          documentType: daybook.documentType,
+          documentName: daybook.documentName,
+          supplierName: daybook.supplierName,
+          customerName: daybook.customerName,
+          paymentMethodName: daybook.paymentMethodName,
           isValid: daybook.id.isNotEmpty,
           isHistory: event.isHistory));
     } catch (e) {
@@ -452,20 +452,27 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
             daybookDetail.add(d.id);
           }
         }
+        data['paymentMethod'] = state.paymentMethod.value;
         data['daybookDetails'] = daybookDetail;
         dynamic res = await _daybookService.save(_provider, data);
 
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
           emit(state.copyWith(
-              status: DaybookFormStatus.submited,
-              message: res['statusMessage']));
+            status: DaybookFormStatus.submited,
+            message: res['statusMessage'],
+            isNew: res['statusCode'] == 201,
+          ));
         } else {
           emit(state.copyWith(
-              status: DaybookFormStatus.failure,
-              message: res['statusMessage']));
+            status: DaybookFormStatus.failure,
+            message: res['statusMessage'],
+          ));
         }
       } catch (e) {
-        emit(state.copyWith(status: DaybookFormStatus.failure));
+        emit(state.copyWith(
+          status: DaybookFormStatus.failure,
+          message: e.toString(),
+        ));
       }
     }
   }

@@ -46,6 +46,7 @@ final class DaybookFormState extends Equatable {
     this.daybookDetail = const <DaybookDetailListModel>[],
     this.isValid = false,
     this.isHistory = false,
+    this.isNew = false,
   });
 
   final List<MsDocument> msDocument;
@@ -72,6 +73,7 @@ final class DaybookFormState extends Equatable {
   final List<DaybookDetailListModel> daybookDetail;
   final bool isValid;
   final bool isHistory;
+  final bool isNew;
 
   DaybookFormState copyWith({
     List<MsDocument>? msDocument,
@@ -98,6 +100,7 @@ final class DaybookFormState extends Equatable {
     List<DaybookDetailListModel>? daybookDetail,
     bool? isValid,
     bool? isHistory,
+    bool? isNew,
   }) {
     return DaybookFormState(
       msDocument: msDocument ?? this.msDocument,
@@ -124,6 +127,7 @@ final class DaybookFormState extends Equatable {
       daybookDetail: daybookDetail ?? this.daybookDetail,
       isValid: isValid ?? this.isValid,
       isHistory: isHistory ?? this.isHistory,
+      isNew: isNew ?? this.isNew,
     );
   }
 
@@ -147,7 +151,8 @@ final class DaybookFormState extends Equatable {
         customer,
         paymentMethod,
         isValid,
-        isHistory
+        isHistory,
+        isNew,
       ];
 }
 

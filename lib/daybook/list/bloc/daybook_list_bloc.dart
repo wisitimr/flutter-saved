@@ -13,8 +13,10 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
       : _provider = provider,
         super(DaybookListLoading()) {
     on<DaybookListStarted>(_onStarted);
+    on<DaybookListYearSelected>(_onYearSelected);
     on<DaybookListSearchChanged>(_onSearchChanged);
     on<DaybookListDownload>(_onDownload);
+    on<DaybookListDownloadFinancialStatement>(_onDownloadFinancialStatement);
     on<DaybookListDeleteConfirm>(_onConfirm);
     on<DaybookListDelete>(_onDelete);
   }
@@ -23,32 +25,71 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
   final DaybookService _daybookService = DaybookService();
 
   Future<void> _onStarted(
-      DaybookListStarted event, Emitter<DaybookListState> emit) async {
+    DaybookListStarted event,
+    Emitter<DaybookListState> emit,
+  ) async {
     emit(state.copyWith(status: DaybookListStatus.loading));
     try {
       Map<String, dynamic> param = {};
       DateTime now = DateTime.now();
-      int year = now.year;
-      param['company'] = _provider.companyId;
-      if (event.isHistory) {
-        year = year - 1;
-      } else {
-        // param['transactrionDate.gte'] = "${year.toString()}-01-01T00:00:00.000Z";
+      List<String> y = [];
+      int yearSelected = now.year;
+      for (var i = 0; i < 20; i++) {
+        var newDate = DateTime(now.year - i);
+        y.add(newDate.year.toString());
       }
-      param['transactionDate.lt'] = "${year + 1}-01-01T00:00:00.000Z";
-      // int year = 2023;
+      param['company'] = _provider.companyId;
+      param['transactionDate.gte'] = "$yearSelected-01-01T00:00:00.000Z";
+      param['transactionDate.lt'] = "${yearSelected + 1}-01-01T00:00:00.000Z";
       final res = await _daybookService.findAll(_provider, param);
       List<DaybookListModel> daybooks = [];
       if (res['statusCode'] == 200) {
         List data = res['data'];
         daybooks = data.map((item) => DaybookListModel.fromJson(item)).toList();
       }
+      emit(
+        state.copyWith(
+          status: DaybookListStatus.success,
+          daybooks: daybooks,
+          filter: daybooks,
+          isHistory: false,
+          years: y,
+          yearSelected: yearSelected.toString(),
+        ),
+      );
+    } catch (e) {
       emit(state.copyWith(
-        status: DaybookListStatus.success,
-        daybooks: daybooks,
-        filter: daybooks,
-        isHistory: event.isHistory,
+        status: DaybookListStatus.failure,
+        message: e.toString(),
       ));
+    }
+  }
+
+  Future<void> _onYearSelected(
+    DaybookListYearSelected event,
+    Emitter<DaybookListState> emit,
+  ) async {
+    try {
+      DateTime now = DateTime.now();
+      Map<String, dynamic> param = {};
+      param['company'] = _provider.companyId;
+      param['transactionDate.gte'] = "${event.year}-01-01T00:00:00.000Z";
+      param['transactionDate.lt'] =
+          "${int.parse(event.year) + 1}-01-01T00:00:00.000Z";
+      final res = await _daybookService.findAll(_provider, param);
+      List<DaybookListModel> daybooks = [];
+      if (res['statusCode'] == 200) {
+        List data = res['data'];
+        daybooks = data.map((item) => DaybookListModel.fromJson(item)).toList();
+      }
+      emit(
+        state.copyWith(
+            status: DaybookListStatus.success,
+            daybooks: daybooks,
+            filter: daybooks,
+            yearSelected: event.year,
+            isHistory: now.year > int.parse(event.year)),
+      );
     } catch (e) {
       emit(state.copyWith(
         status: DaybookListStatus.failure,
@@ -114,6 +155,27 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
           message: "Invalid parameter",
         ));
       }
+    } catch (e) {
+      emit(state.copyWith(
+        status: DaybookListStatus.failure,
+        message: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onDownloadFinancialStatement(
+    DaybookListDownloadFinancialStatement event,
+    Emitter<DaybookListState> emit,
+  ) async {
+    // emit(state.copyWith(status: DaybookListStatus.loading));
+    try {
+      await _daybookService.downloadFinancialStatement(
+          _provider, _provider.companyId, 'test.xlsx');
+      emit(
+        state.copyWith(
+          status: DaybookListStatus.downloaded,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(
         status: DaybookListStatus.failure,

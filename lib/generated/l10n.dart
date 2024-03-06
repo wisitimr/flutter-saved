@@ -636,15 +636,12 @@ class Lang {
     );
   }
 
-  /// `{count, plural, one{New Order} other{New Orders}}`
-  String dDaybook(num count) {
-    return Intl.plural(
-      count,
-      one: 'Daybook',
-      other: 'Daybooks',
+  String dDaybook(String value) {
+    return Intl.message(
+      'Day Book - $value.',
       name: 'dDaybook',
       desc: '',
-      args: [count],
+      args: [value],
     );
   }
 
@@ -858,6 +855,16 @@ class Lang {
     return Intl.message(
       'Save',
       name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year`
+  String get year {
+    return Intl.message(
+      'Year',
+      name: 'year',
       desc: '',
       args: [],
     );

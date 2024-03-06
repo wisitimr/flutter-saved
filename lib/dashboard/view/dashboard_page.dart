@@ -69,6 +69,7 @@ class DashboardCardList extends StatelessWidget {
                 final summaryCardWidth = ((constraints.maxWidth -
                         (kDefaultPadding * (summaryCardCrossAxisCount - 1))) /
                     summaryCardCrossAxisCount);
+                DateTime now = DateTime.now();
 
                 return Wrap(
                   direction: Axis.horizontal,
@@ -76,8 +77,7 @@ class DashboardCardList extends StatelessWidget {
                   runSpacing: kDefaultPadding,
                   children: [
                     SummaryCard(
-                      title: lang
-                          .dDaybook(num.parse(state.daybookCount.toString())),
+                      title: lang.dDaybook(now.year.toString()),
                       value: state.daybookCount.toString(),
                       icon: Icons.library_books_rounded,
                       backgroundColor: appColorScheme.info,

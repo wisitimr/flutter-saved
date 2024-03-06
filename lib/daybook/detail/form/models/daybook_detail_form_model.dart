@@ -7,6 +7,7 @@ class DaybookDetailFormModel extends Equatable {
     required this.type,
     required this.amount,
     required this.account,
+    required this.company,
   });
 
   final String id;
@@ -14,6 +15,7 @@ class DaybookDetailFormModel extends Equatable {
   final String type;
   final double amount;
   final String account;
+  final String company;
 
   factory DaybookDetailFormModel.fromJson(Map<String, dynamic> json) =>
       DaybookDetailFormModel(
@@ -22,6 +24,7 @@ class DaybookDetailFormModel extends Equatable {
         type: json['type'] ?? '',
         amount: json['amount'] ?? '',
         account: json['account'] ?? '',
+        company: json['company'] ?? '',
       );
 
   @override
@@ -31,5 +34,6 @@ class DaybookDetailFormModel extends Equatable {
         type,
         amount,
         account,
+        company,
       ];
 }

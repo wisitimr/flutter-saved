@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:findigitalservice/app_router.dart';
@@ -39,8 +41,7 @@ class _DaybookListPageState extends State<DaybookListPage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return DaybookListBloc(provider)
-            ..add(DaybookListStarted(widget.isHistory));
+          return DaybookListBloc(provider)..add(const DaybookListStarted());
         },
         child: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),
@@ -94,7 +95,7 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkOnPress: () async {
                         context
                             .read<DaybookListBloc>()
-                            .add(DaybookListStarted(widget.isHistory));
+                            .add(const DaybookListStarted());
                       },
                     );
 
@@ -109,7 +110,7 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkOnPress: () async {
                         context
                             .read<DaybookListBloc>()
-                            .add(DaybookListStarted(widget.isHistory));
+                            .add(const DaybookListStarted());
                       },
                     );
 
@@ -180,12 +181,50 @@ class DaybookList extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
+                              SizedBox(
+                                width: kDropdownWidth * 0.5,
+                                child: FormBuilderDropdown(
+                                  name: 'year',
+                                  decoration: InputDecoration(
+                                    labelText: lang.year,
+                                    hintText: lang.year,
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.only(
+                                      topRight: Radius.zero,
+                                      bottomRight: Radius.zero,
+                                      topLeft: Radius.circular(4.0),
+                                      bottomLeft: Radius.circular(4.0),
+                                    )),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.always,
+                                    isDense: true,
+                                  ),
+                                  validator: FormBuilderValidators.required(),
+                                  items: state.years
+                                      .map((year) => DropdownMenuItem(
+                                            value: year,
+                                            child: Text(year),
+                                          ))
+                                      .toList(),
+                                  initialValue: state.yearSelected,
+                                  onChanged: (year) => context
+                                      .read<DaybookListBloc>()
+                                      .add(DaybookListYearSelected(year!)),
+                                ),
+                              ),
                               Expanded(
                                 child: TextField(
                                   decoration: InputDecoration(
                                     labelText: lang.search,
                                     hintText: lang.search,
-                                    border: const OutlineInputBorder(),
+                                    border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(4.0),
+                                        bottomRight: Radius.circular(4.0),
+                                        topLeft: Radius.zero,
+                                        bottomLeft: Radius.zero,
+                                      ),
+                                    ),
                                     floatingLabelBehavior:
                                         FloatingLabelBehavior.auto,
                                     isDense: true,
@@ -208,6 +247,41 @@ class DaybookList extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: kDefaultPadding * 0.5,
+                              right: kDefaultPadding * 0.5,
+                            ),
+                            child: SizedBox(
+                              height: 40.0,
+                              child: ElevatedButton(
+                                style: themeData
+                                    .extension<AppButtonTheme>()!
+                                    .secondaryElevated,
+                                onPressed: () => context
+                                    .read<DaybookListBloc>()
+                                    .add(
+                                        const DaybookListDownloadFinancialStatement()),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: kDefaultPadding * 0.5),
+                                      child: Icon(
+                                        Icons.file_download,
+                                        size: (themeData.textTheme.labelLarge!
+                                                .fontSize! +
+                                            4.0),
+                                      ),
+                                    ),
+                                    Text(lang.download),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 bottom: kDefaultPadding * 0.5),

@@ -49,6 +49,7 @@ class DaybookDetailFormBloc
           daybook.type = data.type;
           daybook.amount = data.amount.toStringAsFixed(2);
           daybook.account = data.account;
+          daybook.company = data.company;
         }
       }
       if (acctRes['statusCode'] == 200) {
@@ -86,6 +87,7 @@ class DaybookDetailFormBloc
         amount: Amount.dirty(daybook.amount),
         account: Account.dirty(daybook.account),
         daybook: Daybook.dirty(daybook.daybook),
+        company: Company.dirty(daybook.company),
         typeName: daybook.typeName,
         accountName: daybook.accountName,
         isValid: daybook.id.isNotEmpty,
@@ -236,7 +238,7 @@ class DaybookDetailFormBloc
         data['amount'] = double.parse(state.amount.value.replaceAll(',', ''));
       }
       data['daybook'] = state.daybook.value;
-
+      data['company'] = state.company.value;
       dynamic res = await _daybookDetailService.save(_provider, data);
 
       if (res['statusCode'] == 200 || res['statusCode'] == 201) {
@@ -266,6 +268,7 @@ class DaybookDetailFormTmp {
   String typeName = '';
   String amount = '';
   String account = '';
+  String company = '';
   String accountName = '';
   String daybook = '';
 }

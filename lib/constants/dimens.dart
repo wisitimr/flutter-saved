@@ -23,3 +23,5 @@ const double kDialogWidth = 460.0;
 // Text width begin.
 const double kTextWidth = 170;
 // Text width end.
+
+const double kDropdownWidth = 360.0;

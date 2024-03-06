@@ -195,7 +195,7 @@ class _PasswordInput extends StatelessWidget {
                 state.isPasswordVisible
                     ? Icons.visibility
                     : Icons.visibility_off,
-                color: Theme.of(context).primaryColorDark,
+                color: Theme.of(context).colorScheme.primary,
               ),
               onPressed: () => context
                   .read<RegisterBloc>()
@@ -243,7 +243,7 @@ class _RetypePasswordInput extends StatelessWidget {
                   state.isRetypePasswordVisible
                       ? Icons.visibility
                       : Icons.visibility_off,
-                  color: Theme.of(context).primaryColorDark,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () => context.read<RegisterBloc>().add(
                     LoginRetypePasswordVisible(state.isRetypePasswordVisible)),

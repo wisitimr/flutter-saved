@@ -31,6 +31,7 @@ final class DaybookDetailFormState extends Equatable {
     this.amount = const Amount.pure(),
     this.account = const Account.pure(),
     this.daybook = const Daybook.pure(),
+    this.company = const Company.pure(),
     this.isValid = false,
     this.isHistory = false,
   });
@@ -47,6 +48,7 @@ final class DaybookDetailFormState extends Equatable {
   final Amount amount;
   final Account account;
   final Daybook daybook;
+  final Company company;
   final bool isValid;
   final bool isHistory;
 
@@ -63,6 +65,7 @@ final class DaybookDetailFormState extends Equatable {
     Amount? amount,
     Account? account,
     Daybook? daybook,
+    Company? company,
     bool? isValid,
     bool? isHistory,
   }) {
@@ -79,6 +82,7 @@ final class DaybookDetailFormState extends Equatable {
       amount: amount ?? this.amount,
       account: account ?? this.account,
       daybook: daybook ?? this.daybook,
+      company: company ?? this.company,
       isValid: isValid ?? this.isValid,
       isHistory: isHistory ?? this.isHistory,
     );
@@ -93,6 +97,7 @@ final class DaybookDetailFormState extends Equatable {
         amount,
         account,
         daybook,
+        company,
         isValid,
         isHistory,
       ];

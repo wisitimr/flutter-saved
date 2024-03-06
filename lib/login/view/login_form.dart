@@ -150,6 +150,7 @@ class _PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lang = Lang.of(context);
+    final themeData = Theme.of(context);
 
     return BlocBuilder<LoginBloc, LoginState>(
       // buildWhen: (previous, current) => previous.password != current.password,
@@ -167,7 +168,7 @@ class _PasswordInput extends StatelessWidget {
                 state.isPasswordVisible
                     ? Icons.visibility
                     : Icons.visibility_off,
-                color: Theme.of(context).primaryColorDark,
+                color: themeData.colorScheme.primary,
               ),
               onPressed: () => context
                   .read<LoginBloc>()

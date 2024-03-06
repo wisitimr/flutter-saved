@@ -164,7 +164,7 @@ class DaybookDetailFormDetail extends StatelessWidget {
                             items: state.msAccountType
                                 .map((String e) => DropdownMenuItem(
                                       value: e,
-                                      child: Text(e),
+                                      child: Text(e == "" ? "-- Select --" : e),
                                     ))
                                 .toList(),
                             initialValue: state.type.value,

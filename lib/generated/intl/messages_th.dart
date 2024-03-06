@@ -67,8 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(count) =>
       "${Intl.plural(count, one: 'UI Element', other: 'UI Elements')}";
 
-  static String m17(count) =>
-      "${Intl.plural(count, one: 'สมุดรายวัน', other: 'สมุดรายวัน')}";
+  static String m17(year) => 'สมุดรายวัน (${year})';
 
   static String m18(count) =>
       "${Intl.plural(count, one: 'ผู้ใช้งาน', other: 'ผู้ใช้งาน')}";
@@ -176,6 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "retypePassword":
             MessageLookupByLibrary.simpleMessage("ยืนยันรหัสผ่าน"),
         "save": MessageLookupByLibrary.simpleMessage("บันทึก"),
+        "year": MessageLookupByLibrary.simpleMessage("ปี"),
         "search": MessageLookupByLibrary.simpleMessage("ค้นหา"),
         "ok": MessageLookupByLibrary.simpleMessage("ตกลง"),
         "text": MessageLookupByLibrary.simpleMessage("Text"),

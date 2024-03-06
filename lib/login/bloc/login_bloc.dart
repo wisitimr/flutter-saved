@@ -59,12 +59,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginCompanySelected event,
     Emitter<LoginState> emit,
   ) async {
-    final AppProvider provider = event.provider;
     final company = Company.dirty(event.company);
     CompanyModel companySelected =
         state.companies.firstWhere((CompanyModel c) => c.id == company.value);
     if (event.company.isNotEmpty) {
-      await provider.setCompanyAsync(
+      await _provider.setCompanyAsync(
         companyId: companySelected.id,
         companyName: companySelected.name,
       );
@@ -124,7 +123,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginSubmitted event,
     Emitter<LoginState> emit,
   ) async {
-    final AppProvider provider = event.provider;
     if (state.isValid) {
       emit(state.copyWith(isLoading: true));
       try {
@@ -167,7 +165,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
                   isValid: false,
                 ));
               } else {
-                await provider.setCompanyAsync(
+                await _provider.setCompanyAsync(
                   companyId: data.companies[0].id,
                   companyName: data.companies[0].name,
                 );

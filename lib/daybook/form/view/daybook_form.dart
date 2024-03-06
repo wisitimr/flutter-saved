@@ -104,7 +104,14 @@ class DaybookForm extends StatelessWidget {
             desc: state.message,
             width: kDialogWidth,
             btnOkText: lang.ok,
-            btnOkOnPress: () => GoRouter.of(context).go(provider.previous),
+            btnOkOnPress: () {
+              if (state.isNew) {
+                GoRouter.of(context)
+                    .go('${RouteUri.daybookForm}?id=${state.id.value}');
+              } else {
+                GoRouter.of(context).go(provider.previous);
+              }
+            },
           );
 
           dialog.show();
@@ -417,7 +424,7 @@ class DaybookFormDetail extends StatelessWidget {
                           ),
                         ),
                       ],
-                      if (state.id.isValid) ...[
+                      if (!state.isNew) ...[
                         if (!state.isHistory) ...[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

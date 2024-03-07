@@ -70,7 +70,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
     Emitter<DaybookListState> emit,
   ) async {
     try {
-      DateTime now = DateTime.now();
+      // DateTime now = DateTime.now();
       Map<String, dynamic> param = {};
       param['company'] = _provider.companyId;
       param['transactionDate.gte'] = "${event.year}-01-01T00:00:00.000Z";
@@ -88,7 +88,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
           daybooks: daybooks,
           filter: daybooks,
           yearSelected: event.year,
-          isHistory: now.year > int.parse(event.year),
+          // isHistory: now.year > int.parse(event.year),
         ),
       );
     } catch (e) {

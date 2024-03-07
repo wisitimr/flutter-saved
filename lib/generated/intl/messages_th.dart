@@ -81,6 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Admin Portal Login"),
         "appTitle":
             MessageLookupByLibrary.simpleMessage("Financial Digital Service"),
+        "appShortTitle": MessageLookupByLibrary.simpleMessage("FDS"),
         "backToLogin":
             MessageLookupByLibrary.simpleMessage("กลับไปหน้าเข้าสู่ระบบ"),
         "buttonEmphasis":

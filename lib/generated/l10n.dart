@@ -100,8 +100,17 @@ class Lang {
   /// `Web Admin`
   String get appTitle {
     return Intl.message(
-      'Saved',
+      'Financial Digital Service',
       name: 'appTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get appShortTitle {
+    return Intl.message(
+      'Financial Digital Service',
+      name: 'appShortTitle',
       desc: '',
       args: [],
     );

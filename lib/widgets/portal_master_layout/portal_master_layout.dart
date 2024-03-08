@@ -250,7 +250,9 @@ class ResponsiveAppBarTitle extends StatelessWidget {
                 ),
               ),
             ),
-            Text(lang.appTitle),
+            Text(MediaQuery.of(context).size.width > kScreenWidthSm
+                ? lang.appTitle
+                : lang.appShortTitle),
           ],
         ),
       ),

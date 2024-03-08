@@ -186,12 +186,13 @@ class DaybookList extends StatelessWidget {
                                     labelText: lang.year,
                                     hintText: lang.year,
                                     border: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.only(
-                                      topRight: Radius.zero,
-                                      bottomRight: Radius.zero,
-                                      topLeft: Radius.circular(4.0),
-                                      bottomLeft: Radius.circular(4.0),
-                                    )),
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.zero,
+                                        bottomRight: Radius.zero,
+                                        topLeft: Radius.circular(4.0),
+                                        bottomLeft: Radius.circular(4.0),
+                                      ),
+                                    ),
                                     floatingLabelBehavior:
                                         FloatingLabelBehavior.always,
                                     isDense: true,

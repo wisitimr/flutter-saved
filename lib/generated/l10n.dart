@@ -109,7 +109,7 @@ class Lang {
 
   String get appShortTitle {
     return Intl.message(
-      'Financial Digital Service',
+      'FDS',
       name: 'appShortTitle',
       desc: '',
       args: [],

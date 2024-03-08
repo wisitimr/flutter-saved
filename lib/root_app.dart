@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:form_builder_validators/localization/l10n.dart';
@@ -67,13 +66,7 @@ class _RootAppState extends State<RootApp> {
                           FormBuilderLocalizations.delegate,
                         ],
                         locale: provider.locale,
-                        onGenerateTitle: (context) => defaultTargetPlatform ==
-                                    TargetPlatform.macOS ||
-                                defaultTargetPlatform ==
-                                    TargetPlatform.windows ||
-                                defaultTargetPlatform == TargetPlatform.linux
-                            ? Lang.of(context).appTitle
-                            : Lang.of(context).appShortTitle,
+                        onGenerateTitle: (context) => Lang.of(context).appTitle,
                         theme: AppThemeData.instance.light(),
                         darkTheme: AppThemeData.instance.dark(),
                         themeMode: provider.themeMode,

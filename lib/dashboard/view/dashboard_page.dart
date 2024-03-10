@@ -19,7 +19,6 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
-    final lang = Lang.of(context);
     final themeData = Theme.of(context);
     final provider = context.read<AppProvider>();
 
@@ -32,7 +31,7 @@ class _DashboardPageState extends State<DashboardPage> {
           padding: const EdgeInsets.all(kDefaultPadding),
           children: [
             Text(
-              "${lang.dashboard} - ${provider.companyName}",
+              provider.companyName,
               style: themeData.textTheme.headlineMedium,
             ),
             const Padding(

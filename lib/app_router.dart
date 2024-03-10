@@ -33,6 +33,8 @@ class RouteUri {
   static const String daybook = '/daybook';
   static const String daybookForm = '/daybook-form';
   static const String daybookDetailForm = '/daybook-detail-from';
+  static const String report = '/report';
+  static const String financialStatement = '/financial/statement';
   static const String user = '/user';
   static const String userForm = '/user-form';
   static const String userCompanyForn = '/user-company-form';
@@ -91,7 +93,9 @@ GoRouter appRouter(AppProvider provider) {
         path: RouteUri.daybook,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: const DaybookListPage(),
+          child: DaybookListPage(
+            year: state.queryParameters['year'] ?? '0',
+          ),
         ),
       ),
       GoRoute(
@@ -103,6 +107,7 @@ GoRouter appRouter(AppProvider provider) {
             isHistory:
                 state.queryParameters['isHistory'] == 'true' ? true : false,
             isNew: state.queryParameters['isNew'] == 'true' ? true : false,
+            year: state.queryParameters['year'] ?? '',
           ),
         ),
       ),

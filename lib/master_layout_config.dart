@@ -16,6 +16,17 @@ final sidebarMenuConfigs = [
     title: (context) => Lang.of(context).daybook,
   ),
   SidebarMenuConfig(
+      uri: RouteUri.report,
+      icon: Icons.bar_chart_rounded,
+      title: (context) => Lang.of(context).report,
+      children: [
+        SidebarChildMenuConfig(
+          uri: RouteUri.financialStatement,
+          icon: Icons.view_list_rounded,
+          title: (context) => Lang.of(context).financialStatement,
+        ),
+      ]),
+  SidebarMenuConfig(
     uri: '',
     icon: Icons.storage_rounded,
     title: (context) => Lang.of(context).database,

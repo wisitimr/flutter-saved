@@ -30,13 +30,16 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
   ) async {
     emit(state.copyWith(status: DaybookListStatus.loading));
     try {
-      Map<String, dynamic> param = {};
       DateTime now = DateTime.now();
-      List<String> y = [];
-      int yearSelected = now.year;
+      Map<String, dynamic> param = {};
+      List<int> y = [];
+      int yearSelected = event.year;
+      if (yearSelected == 0) {
+        yearSelected = now.year;
+      }
       for (var i = 0; i < 15; i++) {
         var newDate = DateTime(now.year - i);
-        y.add(newDate.year.toString());
+        y.add(newDate.year);
       }
       param['company'] = _provider.companyId;
       param['transactionDate.gte'] = "$yearSelected-01-01T00:00:00.000Z";
@@ -53,8 +56,8 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
           daybooks: daybooks,
           filter: daybooks,
           isHistory: false,
-          years: y,
-          yearSelected: yearSelected.toString(),
+          yearList: y,
+          year: yearSelected,
         ),
       );
     } catch (e) {
@@ -74,8 +77,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
       Map<String, dynamic> param = {};
       param['company'] = _provider.companyId;
       param['transactionDate.gte'] = "${event.year}-01-01T00:00:00.000Z";
-      param['transactionDate.lt'] =
-          "${int.parse(event.year) + 1}-01-01T00:00:00.000Z";
+      param['transactionDate.lt'] = "${event.year + 1}-01-01T00:00:00.000Z";
       final res = await _daybookService.findAll(_provider, param);
       List<DaybookListModel> daybooks = [];
       if (res['statusCode'] == 200) {
@@ -87,7 +89,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
           status: DaybookListStatus.success,
           daybooks: daybooks,
           filter: daybooks,
-          yearSelected: event.year,
+          year: event.year,
           // isHistory: now.year > int.parse(event.year),
         ),
       );
@@ -171,7 +173,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
     // emit(state.copyWith(status: DaybookListStatus.loading));
     try {
       await _daybookService.downloadFinancialStatement(
-          _provider, _provider.companyId, event.year, 'test.xlsx');
+          _provider, _provider.companyId, event.year.toString(), 'test.xlsx');
       emit(
         state.copyWith(
           status: DaybookListStatus.downloaded,

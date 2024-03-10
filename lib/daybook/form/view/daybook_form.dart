@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
-import 'package:findigitalservice/app_provider.dart';
 import 'package:findigitalservice/app_router.dart';
 import 'package:findigitalservice/constants/dimens.dart';
 import 'package:findigitalservice/daybook/form/daybook_form.dart';
@@ -29,7 +28,6 @@ class DaybookForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<AppProvider>();
     final themeData = Theme.of(context);
     final appColorScheme = themeData.extension<AppColorScheme>()!;
     final lang = Lang.of(context);
@@ -73,9 +71,12 @@ class DaybookForm extends StatelessWidget {
             width: kDialogWidth,
             btnOkText: lang.ok,
             btnOkOnPress: () async {
-              context
-                  .read<DaybookFormBloc>()
-                  .add(DaybookFormStarted(id, state.isHistory, state.isNew));
+              context.read<DaybookFormBloc>().add(DaybookFormStarted(
+                    id,
+                    state.isHistory,
+                    state.isNew,
+                    state.year,
+                  ));
             },
           );
 
@@ -109,7 +110,8 @@ class DaybookForm extends StatelessWidget {
                 GoRouter.of(context)
                     .go('${RouteUri.daybookForm}?id=${state.id.value}');
               } else {
-                GoRouter.of(context).go(provider.previous);
+                GoRouter.of(context)
+                    .go("${RouteUri.daybook}?year=${state.year}");
               }
             },
           );
@@ -550,8 +552,8 @@ class DaybookFormDetail extends StatelessWidget {
                               style: themeData
                                   .extension<AppButtonTheme>()!
                                   .secondaryElevated,
-                              onPressed: () async =>
-                                  GoRouter.of(context).go(RouteUri.daybook),
+                              onPressed: () async => GoRouter.of(context)
+                                  .go("${RouteUri.daybook}?year=${state.year}"),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.center,

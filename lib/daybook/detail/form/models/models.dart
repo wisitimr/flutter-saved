@@ -1,5 +1,6 @@
 export 'id.dart';
 export 'name.dart';
+export 'detail.dart';
 export 'type.dart';
 export 'amount.dart';
 export 'account.dart';

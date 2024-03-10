@@ -46,14 +46,21 @@ class SupplierFormBloc extends Bloc<SupplierFormEvent, SupplierFormState> {
           supplier.contact = data.contact;
         }
       }
+      final id = Id.dirty(supplier.id);
+      final code = Code.dirty(supplier.code);
+      final name = Name.dirty(supplier.name);
+      final address = Address.dirty(supplier.address);
+      final phone = Phone.dirty(supplier.phone);
+      final contact = Contact.dirty(supplier.contact);
+
       emit(state.copyWith(
         status: SupplierFormStatus.success,
-        id: Id.dirty(supplier.id),
-        code: Code.dirty(supplier.code),
-        name: Name.dirty(supplier.name),
-        address: Address.dirty(supplier.address),
-        phone: Phone.dirty(supplier.phone),
-        contact: Contact.dirty(supplier.contact),
+        id: id,
+        code: code,
+        name: name,
+        address: address,
+        phone: phone,
+        contact: contact,
         isValid: supplier.id.isNotEmpty,
       ));
     } catch (e) {

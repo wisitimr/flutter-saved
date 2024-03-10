@@ -19,8 +19,11 @@ import 'package:findigitalservice/widgets/card_elements.dart';
 import 'package:findigitalservice/widgets/portal_master_layout/portal_master_layout.dart';
 
 class DaybookListPage extends StatefulWidget {
+  final String year;
+
   const DaybookListPage({
     Key? key,
+    required this.year,
   }) : super(key: key);
 
   @override
@@ -38,7 +41,10 @@ class _DaybookListPageState extends State<DaybookListPage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return DaybookListBloc(provider)..add(const DaybookListStarted());
+          return DaybookListBloc(provider)
+            ..add(DaybookListStarted(
+              widget.year.isNotEmpty ? int.parse(widget.year) : 0,
+            ));
         },
         child: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),
@@ -92,7 +98,7 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkOnPress: () async {
                         context
                             .read<DaybookListBloc>()
-                            .add(const DaybookListStarted());
+                            .add(DaybookListStarted(state.year));
                       },
                     );
 
@@ -107,7 +113,7 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkOnPress: () async {
                         context
                             .read<DaybookListBloc>()
-                            .add(const DaybookListStarted());
+                            .add(DaybookListStarted(state.year));
                       },
                     );
 
@@ -198,13 +204,13 @@ class DaybookList extends StatelessWidget {
                                     isDense: true,
                                   ),
                                   validator: FormBuilderValidators.required(),
-                                  items: state.years
+                                  items: state.yearList
                                       .map((year) => DropdownMenuItem(
                                             value: year,
-                                            child: Text(year),
+                                            child: Text(year.toString()),
                                           ))
                                       .toList(),
-                                  initialValue: state.yearSelected,
+                                  initialValue: state.year,
                                   onChanged: (year) => context
                                       .read<DaybookListBloc>()
                                       .add(DaybookListYearSelected(year!)),
@@ -261,7 +267,7 @@ class DaybookList extends StatelessWidget {
                                       .read<DaybookListBloc>()
                                       .add(
                                           DaybookListDownloadFinancialStatement(
-                                              state.yearSelected)),
+                                              state.year)),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment:
@@ -381,7 +387,7 @@ class DaybookList extends StatelessWidget {
                                                           data)),
                                               onDetailButtonPressed: (data) =>
                                                   GoRouter.of(context).go(
-                                                      '${RouteUri.daybookForm}?id=${data.id}&isHistory=${state.isHistory}'),
+                                                      '${RouteUri.daybookForm}?id=${data.id}&isHistory=${state.isHistory}&year=${state.year}'),
                                               onDeleteButtonPressed: (data) =>
                                                   context
                                                       .read<DaybookListBloc>()

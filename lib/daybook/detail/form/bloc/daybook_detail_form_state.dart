@@ -27,6 +27,7 @@ final class DaybookDetailFormState extends Equatable {
     this.accountName = '',
     this.id = const Id.pure(),
     this.name = const Name.pure(),
+    this.detail = const Detail.pure(),
     this.type = const Type.pure(),
     this.amount = const Amount.pure(),
     this.account = const Account.pure(),
@@ -44,6 +45,7 @@ final class DaybookDetailFormState extends Equatable {
   final String accountName;
   final Id id;
   final Name name;
+  final Detail detail;
   final Type type;
   final Amount amount;
   final Account account;
@@ -61,6 +63,7 @@ final class DaybookDetailFormState extends Equatable {
     String? accountName,
     Id? id,
     Name? name,
+    Detail? detail,
     Type? type,
     Amount? amount,
     Account? account,
@@ -78,6 +81,7 @@ final class DaybookDetailFormState extends Equatable {
       accountName: accountName ?? this.accountName,
       id: id ?? this.id,
       name: name ?? this.name,
+      detail: detail ?? this.detail,
       type: type ?? this.type,
       amount: amount ?? this.amount,
       account: account ?? this.account,
@@ -93,6 +97,7 @@ final class DaybookDetailFormState extends Equatable {
         status,
         id,
         name,
+        detail,
         type,
         amount,
         account,

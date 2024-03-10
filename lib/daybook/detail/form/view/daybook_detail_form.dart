@@ -147,6 +147,25 @@ class DaybookDetailFormDetail extends StatelessWidget {
                               .add(DaybookDetailFormNameChanged(name!)),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: kDefaultPadding * 2.0),
+                        child: FormBuilderTextField(
+                          name: 'detail',
+                          decoration: InputDecoration(
+                            labelText: lang.detail,
+                            hintText: lang.detail,
+                            border: const OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          initialValue: state.detail.value,
+                          validator: FormBuilderValidators.required(),
+                          enabled: state.isHistory ? false : true,
+                          onChanged: (detail) => context
+                              .read<DaybookDetailFormBloc>()
+                              .add(DaybookDetailFormDetailChanged(detail!)),
+                        ),
+                      ),
                       if (!state.isHistory) ...[
                         Padding(
                           padding: const EdgeInsets.only(

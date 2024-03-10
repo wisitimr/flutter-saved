@@ -27,8 +27,8 @@ final class DaybookListState extends Equatable {
     this.filter = const <DaybookListModel>[],
     this.selectedDeleteRowId = '',
     this.isHistory = false,
-    this.years = const <String>[],
-    this.yearSelected = '',
+    this.yearList = const <int>[],
+    this.year = 0,
   });
 
   final List<DaybookListModel> daybooks;
@@ -37,8 +37,8 @@ final class DaybookListState extends Equatable {
   final String message;
   final String selectedDeleteRowId;
   final bool isHistory;
-  final List<String> years;
-  final String yearSelected;
+  final List<int> yearList;
+  final int year;
 
   DaybookListState copyWith({
     DaybookListStatus? status,
@@ -47,8 +47,8 @@ final class DaybookListState extends Equatable {
     List<DaybookListModel>? filter,
     String? selectedDeleteRowId,
     bool? isHistory,
-    List<String>? years,
-    String? yearSelected,
+    List<int>? yearList,
+    int? year,
   }) {
     return DaybookListState(
       status: status ?? this.status,
@@ -57,8 +57,8 @@ final class DaybookListState extends Equatable {
       filter: filter ?? this.filter,
       selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
       isHistory: isHistory ?? this.isHistory,
-      years: years ?? this.years,
-      yearSelected: yearSelected ?? this.yearSelected,
+      yearList: yearList ?? this.yearList,
+      year: year ?? this.year,
     );
   }
 
@@ -70,8 +70,8 @@ final class DaybookListState extends Equatable {
         filter,
         selectedDeleteRowId,
         isHistory,
-        years,
-        yearSelected,
+        yearList,
+        year,
       ];
 }
 

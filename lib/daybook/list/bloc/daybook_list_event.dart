@@ -6,10 +6,12 @@ sealed class DaybookListEvent extends Equatable {
 }
 
 final class DaybookListStarted extends DaybookListEvent {
-  const DaybookListStarted();
+  const DaybookListStarted(this.year);
+
+  final int year;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [year];
 }
 
 final class DaybookListSearchChanged extends DaybookListEvent {
@@ -24,7 +26,7 @@ final class DaybookListSearchChanged extends DaybookListEvent {
 final class DaybookListYearSelected extends DaybookListEvent {
   const DaybookListYearSelected(this.year);
 
-  final String year;
+  final int year;
 
   @override
   List<Object> get props => [year];
@@ -58,7 +60,7 @@ final class DaybookListDelete extends DaybookListEvent {
 final class DaybookListDownloadFinancialStatement extends DaybookListEvent {
   const DaybookListDownloadFinancialStatement(this.year);
 
-  final String year;
+  final int year;
 
   @override
   List<Object> get props => [year];

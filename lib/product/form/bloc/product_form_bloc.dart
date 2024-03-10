@@ -44,15 +44,29 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
           product.price = data.price.toStringAsFixed(2);
         }
       }
-      emit(state.copyWith(
-        status: ProductFormStatus.success,
-        id: Id.dirty(product.id),
-        code: Code.dirty(product.code),
-        name: Name.dirty(product.name),
-        description: Description.dirty(product.description),
-        price: Price.dirty(product.price),
-        isValid: product.id.isNotEmpty,
-      ));
+
+      final id = Id.dirty(product.id);
+      final code = Code.dirty(product.code);
+      final name = Name.dirty(product.name);
+      final description = Description.dirty(product.description);
+      final price = Price.dirty(product.price);
+
+      emit(
+        state.copyWith(
+          status: ProductFormStatus.success,
+          id: id,
+          code: code,
+          name: name,
+          description: description,
+          price: price,
+          isValid: Formz.validate(
+            [
+              state.code,
+              state.name,
+            ],
+          ),
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(

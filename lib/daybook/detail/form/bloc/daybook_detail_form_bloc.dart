@@ -19,6 +19,7 @@ class DaybookDetailFormBloc
     on<DaybookDetailFormStarted>(_onStarted);
     on<DaybookDetailFormIdChanged>(_onIdChanged);
     on<DaybookDetailFormNameChanged>(_onNameChanged);
+    on<DaybookDetailFormDetailChanged>(_onDetailChanged);
     on<DaybookDetailFormTypeChanged>(_onTypeChanged);
     on<DaybookDetailFormAmountChanged>(_onAmountChanged);
     on<DaybookDetailFormAccountChanged>(_onAccountChanged);
@@ -36,22 +37,8 @@ class DaybookDetailFormBloc
     try {
       final acctRes = await _accountService.findAll(_provider, {});
       List<MsAccount> accounts = [];
-      final daybook = DaybookDetailFormTmp();
-      daybook.daybook = event.daybook;
-      if (event.id.isNotEmpty) {
-        final invRes =
-            await _daybookDetailService.findById(_provider, event.id);
-        if (invRes != null && invRes['statusCode'] == 200) {
-          DaybookDetailFormModel data =
-              DaybookDetailFormModel.fromJson(invRes['data']);
-          daybook.id = data.id;
-          daybook.name = data.name;
-          daybook.type = data.type;
-          daybook.amount = data.amount.toStringAsFixed(2);
-          daybook.account = data.account;
-          daybook.company = data.company;
-        }
-      }
+      final form = DaybookDetailFormTmp();
+      form.daybook = event.daybook;
       if (acctRes['statusCode'] == 200) {
         List data = acctRes['data'];
         accounts.addAll([
@@ -65,32 +52,65 @@ class DaybookDetailFormBloc
           ...data.map((item) => MsAccount.fromJson(item)).toList(),
         ]);
       }
-      if (daybook.type.isNotEmpty) {
-        daybook.typeName = daybook.type;
+      if (event.id.isNotEmpty) {
+        final res = await _daybookDetailService.findById(_provider, event.id);
+        if (res != null && res['statusCode'] == 200) {
+          DaybookDetailFormModel data =
+              DaybookDetailFormModel.fromJson(res['data']);
+          form.id = data.id;
+          form.name = data.name;
+          form.detail = data.detail;
+          form.type = data.type;
+          form.amount = data.amount.toStringAsFixed(2);
+          form.account = data.account;
+          form.daybook = data.daybook;
+          form.company = data.company;
+        }
+      }
+      if (form.type.isNotEmpty) {
+        form.typeName = form.type;
       }
       if (accounts.isNotEmpty) {
-        if (daybook.account.isNotEmpty) {
+        if (form.account.isNotEmpty) {
           for (var ac in accounts) {
-            if (ac.id == daybook.account) {
-              daybook.accountName = ac.name;
+            if (ac.id == form.account) {
+              form.accountName = ac.name;
             }
           }
         }
       }
+      final id = Id.dirty(form.id);
+      final name = Name.dirty(form.name);
+      final detail = Detail.dirty(form.detail);
+      final type = Type.dirty(form.type);
+      final amount = Amount.dirty(form.amount);
+      final account = Account.dirty(form.account);
+      final daybook = Daybook.dirty(form.daybook);
+      final company = Company.dirty(form.company);
+
       emit(state.copyWith(
         status: DaybookDetailFormStatus.success,
         msAccount: accounts,
         msAccountType: ['', 'DR', 'CR'],
-        id: Id.dirty(daybook.id),
-        name: Name.dirty(daybook.name),
-        type: Type.dirty(daybook.type),
-        amount: Amount.dirty(daybook.amount),
-        account: Account.dirty(daybook.account),
-        daybook: Daybook.dirty(daybook.daybook),
-        company: Company.dirty(daybook.company),
-        typeName: daybook.typeName,
-        accountName: daybook.accountName,
-        isValid: daybook.id.isNotEmpty,
+        id: id,
+        name: name,
+        detail: detail,
+        type: type,
+        amount: amount,
+        account: account,
+        daybook: daybook,
+        company: company,
+        typeName: form.typeName,
+        accountName: form.accountName,
+        isValid: Formz.validate(
+          [
+            name,
+            detail,
+            type,
+            amount,
+            account,
+          ],
+        ),
         isHistory: event.isHistory,
       ));
     } catch (e) {
@@ -112,6 +132,7 @@ class DaybookDetailFormBloc
         isValid: Formz.validate(
           [
             state.name,
+            state.detail,
             state.type,
             state.amount,
             state.account,
@@ -132,6 +153,28 @@ class DaybookDetailFormBloc
         isValid: Formz.validate(
           [
             name,
+            state.detail,
+            state.type,
+            state.amount,
+            state.account,
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _onDetailChanged(
+    DaybookDetailFormDetailChanged event,
+    Emitter<DaybookDetailFormState> emit,
+  ) {
+    final detail = Detail.dirty(event.detail);
+    emit(
+      state.copyWith(
+        detail: detail,
+        isValid: Formz.validate(
+          [
+            state.name,
+            detail,
             state.type,
             state.amount,
             state.account,
@@ -152,6 +195,7 @@ class DaybookDetailFormBloc
         isValid: Formz.validate(
           [
             state.name,
+            state.detail,
             type,
             state.amount,
             state.account,
@@ -172,6 +216,7 @@ class DaybookDetailFormBloc
         isValid: Formz.validate(
           [
             state.name,
+            state.detail,
             state.type,
             amount,
             state.account,
@@ -192,6 +237,7 @@ class DaybookDetailFormBloc
         isValid: Formz.validate(
           [
             state.name,
+            state.detail,
             state.type,
             state.amount,
             account,
@@ -232,6 +278,7 @@ class DaybookDetailFormBloc
         data['id'] = null;
       }
       data['name'] = state.name.value;
+      data['detail'] = state.detail.value;
       data['type'] = state.type.value;
       data['account'] = state.account.value;
       if (state.amount.isValid) {
@@ -264,6 +311,7 @@ class DaybookDetailFormBloc
 class DaybookDetailFormTmp {
   String id = '';
   String name = '';
+  String detail = '';
   String type = '';
   String typeName = '';
   String amount = '';

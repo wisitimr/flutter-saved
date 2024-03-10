@@ -42,13 +42,24 @@ class MaterialFormBloc extends Bloc<MaterialFormEvent, MaterialFormState> {
           material.type = data.type;
         }
       }
+
+      final id = Id.dirty(material.id);
+      final code = Code.dirty(material.code);
+      final name = Name.dirty(material.name);
+      final description = Description.dirty(material.description);
+
       emit(state.copyWith(
         status: MaterialFormStatus.success,
-        id: Id.dirty(material.id),
-        code: Code.dirty(material.code),
-        name: Name.dirty(material.name),
-        description: Description.dirty(material.description),
-        isValid: material.id.isNotEmpty,
+        id: id,
+        code: code,
+        name: name,
+        description: description,
+        isValid: Formz.validate(
+          [
+            state.code,
+            state.name,
+          ],
+        ),
       ));
     } catch (e) {
       emit(

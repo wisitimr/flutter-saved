@@ -29,6 +29,7 @@ final class DaybookFormState extends Equatable {
     this.status = DaybookFormStatus.loading,
     this.message = '',
     this.selectedDeleteRowId = '',
+    this.year = '',
     this.id = const Id.pure(),
     this.number = const Number.pure(),
     this.invoice = const Invoice.pure(),
@@ -56,6 +57,7 @@ final class DaybookFormState extends Equatable {
   final DaybookFormStatus status;
   final String message;
   final String selectedDeleteRowId;
+  final String year;
   final Id id;
   final Number number;
   final Invoice invoice;
@@ -83,6 +85,7 @@ final class DaybookFormState extends Equatable {
     DaybookFormStatus? status,
     String? message,
     String? selectedDeleteRowId,
+    String? year,
     Id? id,
     Number? number,
     Invoice? invoice,
@@ -110,6 +113,7 @@ final class DaybookFormState extends Equatable {
       status: status ?? this.status,
       message: message ?? this.message,
       selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
+      year: year ?? this.year,
       id: id ?? this.id,
       number: number ?? this.number,
       invoice: invoice ?? this.invoice,

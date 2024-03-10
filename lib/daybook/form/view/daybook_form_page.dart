@@ -10,12 +10,14 @@ class DaybookFormPage extends StatefulWidget {
   final String id;
   final bool isHistory;
   final bool isNew;
+  final String year;
 
   const DaybookFormPage({
     Key? key,
     required this.id,
     required this.isHistory,
     required this.isNew,
+    required this.year,
   }) : super(key: key);
 
   @override
@@ -32,8 +34,8 @@ class _DaybookFormPageState extends State<DaybookFormPage> {
       body: BlocProvider(
         create: (context) {
           return DaybookFormBloc(provider)
-            ..add(
-                DaybookFormStarted(widget.id, widget.isHistory, widget.isNew));
+            ..add(DaybookFormStarted(
+                widget.id, widget.isHistory, widget.isNew, widget.year));
         },
         child:
             ListView(padding: const EdgeInsets.all(kDefaultPadding), children: [

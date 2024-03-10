@@ -67,7 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(count) =>
       "${Intl.plural(count, one: 'UI Element', other: 'UI Elements')}";
 
-  static String m17(year) => 'Day Book (${year})';
+  static String m17(year) => 'Daybook (${year})';
 
   static String m18(count) =>
       "${Intl.plural(count, one: 'User', other: 'Users')}";
@@ -202,17 +202,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "pay": MessageLookupByLibrary.simpleMessage("Daybook journal"),
         "receive":
             MessageLookupByLibrary.simpleMessage("Money received journal"),
-        "daybook": MessageLookupByLibrary.simpleMessage("Day Book"),
+        "report": MessageLookupByLibrary.simpleMessage("Report"),
+        "financialStatement":
+            MessageLookupByLibrary.simpleMessage("Financial Statement"),
+        "daybook": MessageLookupByLibrary.simpleMessage("Daybook"),
         "daybookHistory":
-            MessageLookupByLibrary.simpleMessage("Day Book History"),
+            MessageLookupByLibrary.simpleMessage("Daybook History"),
         "task": MessageLookupByLibrary.simpleMessage("Task"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "dDaybook": m17,
         "dUser": m18,
-        "daybookDetail":
-            MessageLookupByLibrary.simpleMessage("Day Book Detail"),
+        "daybookDetail": MessageLookupByLibrary.simpleMessage("Daybook Detail"),
         "daybookDetailHistory":
-            MessageLookupByLibrary.simpleMessage("Day Book Detail History"),
+            MessageLookupByLibrary.simpleMessage("Daybook Detail History"),
         "detail": MessageLookupByLibrary.simpleMessage("Detail"),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
@@ -233,5 +235,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "firstName": MessageLookupByLibrary.simpleMessage("First Name"),
         "lastName": MessageLookupByLibrary.simpleMessage("Last Name"),
         "role": MessageLookupByLibrary.simpleMessage("Role"),
+        "ref": MessageLookupByLibrary.simpleMessage("Reference"),
       };
 }

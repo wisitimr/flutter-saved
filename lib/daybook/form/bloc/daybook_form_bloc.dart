@@ -54,21 +54,21 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
       List<MsSupplier> suppliers = [];
       List<MsCustomer> customers = [];
       List<MsPaymentMethod> paymentMethods = [];
-      final daybook = DaybookFormTmp();
-      daybook.company = _provider.companyId;
+      final form = DaybookFormTmp();
+      form.company = _provider.companyId;
       if (event.id.isNotEmpty) {
         final invRes = await _daybookService.findById(_provider, event.id);
         if (invRes != null && invRes['statusCode'] == 200) {
           DaybookFormModel data = DaybookFormModel.fromJson(invRes['data']);
-          daybook.id = data.id;
-          daybook.number = data.number;
-          daybook.invoice = data.invoice;
-          daybook.document = data.document;
-          daybook.transactionDate = data.transactionDate;
-          daybook.supplier = data.supplier;
-          daybook.customer = data.customer;
-          daybook.paymentMethod = data.paymentMethod;
-          daybook.daybookDetail = data.daybookDetail;
+          form.id = data.id;
+          form.number = data.number;
+          form.invoice = data.invoice;
+          form.document = data.document;
+          form.transactionDate = data.transactionDate;
+          form.supplier = data.supplier;
+          form.customer = data.customer;
+          form.paymentMethod = data.paymentMethod;
+          form.daybookDetail = data.daybookDetail;
         }
       }
       if (docRes['statusCode'] == 200) {
@@ -114,69 +114,83 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
         ]);
       }
       if (documents.isNotEmpty) {
-        if (daybook.document.isEmpty) {
-          daybook.document = documents[0].id;
-          daybook.documentType = documents[0].code;
+        if (form.document.isEmpty) {
+          form.document = documents[0].id;
+          form.documentType = documents[0].code;
         } else {
           for (var doc in documents) {
-            if (doc.id == daybook.document) {
-              daybook.documentType = doc.code;
-              daybook.documentName = doc.name;
+            if (doc.id == form.document) {
+              form.documentType = doc.code;
+              form.documentName = doc.name;
             }
           }
         }
       }
       if (suppliers.isNotEmpty) {
-        if (daybook.supplier.isNotEmpty) {
+        if (form.supplier.isNotEmpty) {
           for (var sup in suppliers) {
-            if (sup.id == daybook.supplier) {
-              daybook.supplierName = sup.name;
+            if (sup.id == form.supplier) {
+              form.supplierName = sup.name;
             }
           }
         }
       }
       if (customers.isNotEmpty) {
-        if (daybook.customer.isNotEmpty) {
+        if (form.customer.isNotEmpty) {
           for (var cus in customers) {
-            if (cus.id == daybook.customer) {
-              daybook.customerName = cus.name;
+            if (cus.id == form.customer) {
+              form.customerName = cus.name;
             }
           }
         }
       }
       if (paymentMethods.isNotEmpty) {
-        if (daybook.paymentMethod.isNotEmpty) {
+        if (form.paymentMethod.isNotEmpty) {
           for (var cus in paymentMethods) {
-            if (cus.id == daybook.paymentMethod) {
-              daybook.paymentMethodName = cus.name;
+            if (cus.id == form.paymentMethod) {
+              form.paymentMethodName = cus.name;
             }
           }
         }
       }
+      final id = Id.dirty(form.id);
+      final number = Number.dirty(form.number);
+      final invoice = Invoice.dirty(form.invoice);
+      final document = Document.dirty(form.document);
+      final transactionDate = TransactionDate.dirty(form.transactionDate);
+      final company = Company.dirty(form.company);
+      final supplier = Supplier.dirty(form.supplier);
+      final customer = Customer.dirty(form.customer);
+      final paymentMethod = PaymentMethod.dirty(form.paymentMethod);
+
       emit(state.copyWith(
         status: DaybookFormStatus.success,
         msDocument: documents,
         msSupplier: suppliers,
         msCustomer: customers,
         msPaymentMethod: paymentMethods,
-        id: Id.dirty(daybook.id),
-        number: Number.dirty(daybook.number),
-        invoice: Invoice.dirty(daybook.invoice),
-        document: Document.dirty(daybook.document),
-        transactionDate: TransactionDate.dirty(daybook.transactionDate),
-        company: Company.dirty(daybook.company),
-        supplier: Supplier.dirty(daybook.supplier),
-        customer: Customer.dirty(daybook.customer),
-        paymentMethod: PaymentMethod.dirty(daybook.paymentMethod),
-        daybookDetail: daybook.daybookDetail,
-        documentType: daybook.documentType,
-        documentName: daybook.documentName,
-        supplierName: daybook.supplierName,
-        customerName: daybook.customerName,
-        paymentMethodName: daybook.paymentMethodName,
-        isValid: daybook.id.isNotEmpty,
+        id: id,
+        number: number,
+        invoice: invoice,
+        document: document,
+        transactionDate: transactionDate,
+        company: company,
+        supplier: supplier,
+        customer: customer,
+        paymentMethod: paymentMethod,
+        daybookDetail: form.daybookDetail,
+        documentType: form.documentType,
+        documentName: form.documentName,
+        supplierName: form.supplierName,
+        customerName: form.customerName,
+        paymentMethodName: form.paymentMethodName,
+        isValid: validateWithDocumentInput(
+          [number, invoice, document, transactionDate, company],
+          false,
+        ),
         isHistory: event.isHistory,
         isNew: event.isNew,
+        year: event.year,
       ));
     } catch (e) {
       emit(state.copyWith(

@@ -44,14 +44,25 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
           account.type = data.type;
         }
       }
+      final id = Id.dirty(account.id);
+      final code = Code.dirty(account.code);
+      final name = Name.dirty(account.name);
+      final description = Description.dirty(account.description);
+      final type = Type.dirty(account.type);
+
       emit(state.copyWith(
         status: AccountFormStatus.success,
-        id: Id.dirty(account.id),
-        code: Code.dirty(account.code),
-        name: Name.dirty(account.name),
-        description: Description.dirty(account.description),
-        type: Type.dirty(account.type),
-        isValid: account.id.isNotEmpty,
+        id: id,
+        code: code,
+        name: name,
+        description: description,
+        type: type,
+        isValid: Formz.validate(
+          [
+            state.code,
+            state.name,
+          ],
+        ),
       ));
     } catch (e) {
       emit(state.copyWith(

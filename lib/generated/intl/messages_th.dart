@@ -199,6 +199,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "phone": MessageLookupByLibrary.simpleMessage("เบอร์ติดต่อ"),
         "contact": MessageLookupByLibrary.simpleMessage("ติดต่อ"),
         "enable": MessageLookupByLibrary.simpleMessage("เปิดการใช้งาน"),
+        "report": MessageLookupByLibrary.simpleMessage("รายงาน"),
+        "financialStatement": MessageLookupByLibrary.simpleMessage("งบการเงิน"),
         "daybook": MessageLookupByLibrary.simpleMessage("สมุดรายวัน"),
         "daybookHistory":
             MessageLookupByLibrary.simpleMessage("ประวัติสมุดรายวัน"),
@@ -232,5 +234,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "firstName": MessageLookupByLibrary.simpleMessage("ชื่อจริง"),
         "lastName": MessageLookupByLibrary.simpleMessage("นามสกุล"),
         "role": MessageLookupByLibrary.simpleMessage("บทบาท"),
+        "ref": MessageLookupByLibrary.simpleMessage("อ้างอิง"),
       };
 }

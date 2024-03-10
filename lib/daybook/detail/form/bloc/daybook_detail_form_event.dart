@@ -41,6 +41,15 @@ final class DaybookDetailFormNameChanged extends DaybookDetailFormEvent {
   List<Object> get props => [name];
 }
 
+final class DaybookDetailFormDetailChanged extends DaybookDetailFormEvent {
+  const DaybookDetailFormDetailChanged(this.detail);
+
+  final String detail;
+
+  @override
+  List<Object> get props => [detail];
+}
+
 final class DaybookDetailFormTypeChanged extends DaybookDetailFormEvent {
   const DaybookDetailFormTypeChanged(this.type);
 

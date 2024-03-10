@@ -647,7 +647,7 @@ class Lang {
 
   String dDaybook(String value) {
     return Intl.message(
-      'Day Book - $value.',
+      'Daybook - $value.',
       name: 'dDaybook',
       desc: '',
       args: [value],
@@ -909,6 +909,15 @@ class Lang {
     );
   }
 
+  String get ref {
+    return Intl.message(
+      'Ref',
+      name: 'ref',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Text Emphasis`
   String get textEmphasis {
     return Intl.message(
@@ -1060,6 +1069,24 @@ class Lang {
     return Intl.message(
       'Daybook',
       name: 'daybook',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get report {
+    return Intl.message(
+      'Report',
+      name: 'report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get financialStatement {
+    return Intl.message(
+      'Financial Statement',
+      name: 'financialStatement',
       desc: '',
       args: [],
     );

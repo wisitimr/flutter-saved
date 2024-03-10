@@ -46,15 +46,28 @@ class CustomerFormBloc extends Bloc<CustomerFormEvent, CustomerFormState> {
           customer.contact = data.contact;
         }
       }
+
+      final id = Id.dirty(customer.id);
+      final code = Code.dirty(customer.code);
+      final name = Name.dirty(customer.name);
+      final address = Address.dirty(customer.address);
+      final phone = Phone.dirty(customer.phone);
+      final contact = Contact.dirty(customer.contact);
+
       emit(state.copyWith(
         status: CustomerFormStatus.success,
-        id: Id.dirty(customer.id),
-        code: Code.dirty(customer.code),
-        name: Name.dirty(customer.name),
-        address: Address.dirty(customer.address),
-        phone: Phone.dirty(customer.phone),
-        contact: Contact.dirty(customer.contact),
-        isValid: customer.id.isNotEmpty,
+        id: id,
+        code: code,
+        name: name,
+        address: address,
+        phone: phone,
+        contact: contact,
+        isValid: Formz.validate(
+          [
+            state.code,
+            state.name,
+          ],
+        ),
       ));
     } catch (e) {
       emit(

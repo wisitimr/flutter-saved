@@ -1101,6 +1101,15 @@ class Lang {
     );
   }
 
+  String get ledgerAccount {
+    return Intl.message(
+      'Ledger Account',
+      name: 'ledgerAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get task {
     return Intl.message(
       'Task',

@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:findigitalservice/report/financial_statement/list/bloc/report_financial_statement_list_bloc.dart';
+import 'package:findigitalservice/report/financial_statement/list/models/report_financial_statement_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -9,26 +11,27 @@ import 'package:findigitalservice/app_router.dart';
 import 'package:findigitalservice/constants/dimens.dart';
 import 'package:findigitalservice/generated/l10n.dart';
 import 'package:findigitalservice/app_provider.dart';
-import 'package:findigitalservice/daybook/list/daybook_list.dart';
 import 'package:findigitalservice/theme/theme_extensions/app_button_theme.dart';
 import 'package:findigitalservice/theme/theme_extensions/app_color_scheme.dart';
 import 'package:findigitalservice/theme/theme_extensions/app_data_table_theme.dart';
 import 'package:findigitalservice/widgets/card_elements.dart';
 import 'package:findigitalservice/widgets/portal_master_layout/portal_master_layout.dart';
 
-class DaybookListPage extends StatefulWidget {
+class FinancialStatementListPage extends StatefulWidget {
   final String year;
 
-  const DaybookListPage({
+  const FinancialStatementListPage({
     Key? key,
     required this.year,
   }) : super(key: key);
 
   @override
-  State<DaybookListPage> createState() => _DaybookListPageState();
+  State<FinancialStatementListPage> createState() =>
+      _FinancialStatementListPageState();
 }
 
-class _DaybookListPageState extends State<DaybookListPage> {
+class _FinancialStatementListPageState
+    extends State<FinancialStatementListPage> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -39,8 +42,8 @@ class _DaybookListPageState extends State<DaybookListPage> {
     return PortalMasterLayout(
       body: BlocProvider(
         create: (context) {
-          return DaybookListBloc(provider)
-            ..add(DaybookListStarted(
+          return FinancialStatementListBloc(provider)
+            ..add(FinancialStatementListStarted(
               widget.year.isNotEmpty ? int.parse(widget.year) : 0,
             ));
         },
@@ -53,7 +56,8 @@ class _DaybookListPageState extends State<DaybookListPage> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-              child: BlocListener<DaybookListBloc, DaybookListState>(
+              child: BlocListener<FinancialStatementListBloc,
+                  FinancialStatementListState>(
                 listener: (context, state) {
                   // print(state.status);
                   if (state.status.isFailure) {
@@ -77,8 +81,8 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkColor: appColorScheme.error,
                       btnOkOnPress: () {
                         context
-                            .read<DaybookListBloc>()
-                            .add(const DaybookListDelete());
+                            .read<FinancialStatementListBloc>()
+                            .add(const FinancialStatementListDelete());
                       },
                       btnCancelText: lang.cancel,
                       btnCancelColor: appColorScheme.secondary,
@@ -95,8 +99,8 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkText: lang.ok,
                       btnOkOnPress: () async {
                         context
-                            .read<DaybookListBloc>()
-                            .add(DaybookListStarted(state.year));
+                            .read<FinancialStatementListBloc>()
+                            .add(FinancialStatementListStarted(state.year));
                       },
                     );
 
@@ -110,29 +114,30 @@ class _DaybookListPageState extends State<DaybookListPage> {
                       btnOkText: lang.ok,
                       btnOkOnPress: () async {
                         context
-                            .read<DaybookListBloc>()
-                            .add(DaybookListStarted(state.year));
+                            .read<FinancialStatementListBloc>()
+                            .add(FinancialStatementListStarted(state.year));
                       },
                     );
 
                     dialog.show();
                   }
                 },
-                child: BlocBuilder<DaybookListBloc, DaybookListState>(
+                child: BlocBuilder<FinancialStatementListBloc,
+                    FinancialStatementListState>(
                   builder: (context, state) {
                     switch (state.status) {
-                      case DaybookListStatus.loading:
+                      case FinancialStatementListStatus.loading:
                         return const Center(child: CircularProgressIndicator());
-                      case DaybookListStatus.failure:
-                        return const DaybookList();
-                      case DaybookListStatus.downloaded:
-                        return const DaybookList();
-                      case DaybookListStatus.deleteConfirmation:
-                        return const DaybookList();
-                      case DaybookListStatus.deleted:
-                        return const DaybookList();
-                      case DaybookListStatus.success:
-                        return const DaybookList();
+                      case FinancialStatementListStatus.failure:
+                        return const FinancialStatementList();
+                      case FinancialStatementListStatus.downloaded:
+                        return const FinancialStatementList();
+                      case FinancialStatementListStatus.deleteConfirmation:
+                        return const FinancialStatementList();
+                      case FinancialStatementListStatus.deleted:
+                        return const FinancialStatementList();
+                      case FinancialStatementListStatus.success:
+                        return const FinancialStatementList();
                     }
                   },
                 ),
@@ -145,8 +150,8 @@ class _DaybookListPageState extends State<DaybookListPage> {
   }
 }
 
-class DaybookList extends StatelessWidget {
-  const DaybookList({
+class FinancialStatementList extends StatelessWidget {
+  const FinancialStatementList({
     Key? key,
   }) : super(key: key);
 
@@ -165,7 +170,7 @@ class DaybookList extends StatelessWidget {
         borderColor = Colors.white70;
     }
 
-    return BlocBuilder<DaybookListBloc, DaybookListState>(
+    return BlocBuilder<FinancialStatementListBloc, FinancialStatementListState>(
       builder: (context, state) {
         return Card(
           clipBehavior: Clip.antiAlias,
@@ -173,7 +178,7 @@ class DaybookList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CardHeader(
-                title: state.isHistory ? lang.daybookHistory : lang.daybook,
+                title: lang.ledgerAccount,
               ),
               CardBody(
                 child: Column(
@@ -224,8 +229,10 @@ class DaybookList extends StatelessWidget {
                                           .toList(),
                                       value: state.year,
                                       onChanged: (year) => context
-                                          .read<DaybookListBloc>()
-                                          .add(DaybookListYearSelected(year!)),
+                                          .read<FinancialStatementListBloc>()
+                                          .add(
+                                              FinancialStatementListYearSelected(
+                                                  year!)),
                                     ),
                                   ),
                                 ),
@@ -264,8 +271,10 @@ class DaybookList extends StatelessWidget {
                                     ),
                                     onChanged: (text) => {
                                       context
-                                          .read<DaybookListBloc>()
-                                          .add(DaybookListSearchChanged(text)),
+                                          .read<FinancialStatementListBloc>()
+                                          .add(
+                                              FinancialStatementListSearchChanged(
+                                                  text)),
                                       key.currentState?.pageTo(0)
                                     },
                                   ),
@@ -280,45 +289,6 @@ class DaybookList extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          if (state.daybooks.isNotEmpty) ...[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: kDefaultPadding * 0.5,
-                                right: kDefaultPadding * 0.5,
-                              ),
-                              child: SizedBox(
-                                height: 40.0,
-                                child: ElevatedButton(
-                                  style: themeData
-                                      .extension<AppButtonTheme>()!
-                                      .secondaryElevated,
-                                  onPressed: () => context
-                                      .read<DaybookListBloc>()
-                                      .add(
-                                          DaybookListDownloadFinancialStatement(
-                                              state.year)),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: kDefaultPadding * 0.5),
-                                        child: Icon(
-                                          Icons.file_download,
-                                          size: (themeData.textTheme.labelLarge!
-                                                  .fontSize! +
-                                              4.0),
-                                        ),
-                                      ),
-                                      Text(lang.download),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
                           Padding(
                             padding: const EdgeInsets.only(
                                 bottom: kDefaultPadding * 0.5),
@@ -408,23 +378,17 @@ class DaybookList extends StatelessWidget {
                                               )),
                                             ],
                                             source: _DataSource(
-                                              isHistory: state.isHistory,
                                               data: state.filter,
                                               context: context,
-                                              onDownloadButtonPressed: (data) =>
-                                                  context
-                                                      .read<DaybookListBloc>()
-                                                      .add(DaybookListDownload(
-                                                          data)),
+                                              onDownloadButtonPressed: (year) => context
+                                                  .read<
+                                                      FinancialStatementListBloc>()
+                                                  .add(
+                                                      FinancialStatementListDownload(
+                                                          year)),
                                               onDetailButtonPressed: (data) =>
                                                   GoRouter.of(context).go(
                                                       '${RouteUri.daybookForm}?id=${data.id}&isHistory=${state.isHistory}&year=${state.year}'),
-                                              onDeleteButtonPressed: (data) =>
-                                                  context
-                                                      .read<DaybookListBloc>()
-                                                      .add(
-                                                          DaybookListDeleteConfirm(
-                                                              data.id)),
                                             ),
                                           )),
                                     ),
@@ -455,20 +419,16 @@ class SearchForm {
 }
 
 class _DataSource extends DataTableSource {
-  final bool isHistory;
-  final List<DaybookListModel> data;
+  final List<FinancialStatementListModel> data;
   final BuildContext context;
-  final void Function(DaybookListModel data) onDownloadButtonPressed;
-  final void Function(DaybookListModel data) onDetailButtonPressed;
-  final void Function(DaybookListModel data) onDeleteButtonPressed;
+  final void Function(FinancialStatementListModel data) onDownloadButtonPressed;
+  final void Function(FinancialStatementListModel data) onDetailButtonPressed;
 
   _DataSource({
-    required this.isHistory,
     required this.data,
     required this.context,
     required this.onDownloadButtonPressed,
     required this.onDetailButtonPressed,
-    required this.onDeleteButtonPressed,
   });
   final inputFormat = DateFormat('yyyy-MM-ddTHH:mm:ssZ');
   final outputFormat = DateFormat('dd/MM/yyyy');
@@ -479,7 +439,7 @@ class _DataSource extends DataTableSource {
       return null;
     }
 
-    DaybookListModel row = data[index];
+    FinancialStatementListModel row = data[index];
     var createdAt = inputFormat.parse(row.transactionDate);
     return DataRow(
       cells: [
@@ -514,16 +474,6 @@ class _DataSource extends DataTableSource {
                     label: Text(Lang.of(context).crudDetail),
                   ),
                 ),
-                if (!isHistory) ...[
-                  OutlinedButton.icon(
-                    icon: const Icon(Icons.delete_rounded),
-                    onPressed: () => onDeleteButtonPressed.call(row),
-                    style: Theme.of(context)
-                        .extension<AppButtonTheme>()!
-                        .errorOutlined,
-                    label: Text(Lang.of(context).crudDelete),
-                  ),
-                ]
               ],
             );
           },

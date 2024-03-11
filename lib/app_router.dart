@@ -1,3 +1,4 @@
+import 'package:findigitalservice/report/financial_statement/list/view/view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:findigitalservice/account/form/view/account_form_page.dart';
@@ -34,7 +35,10 @@ class RouteUri {
   static const String daybookForm = '/daybook-form';
   static const String daybookDetailForm = '/daybook-detail-from';
   static const String report = '/report';
+  static const String ledgerAccount = '/ledger';
+  static const String ledgerAccountForn = '/ledger-form';
   static const String financialStatement = '/financial/statement';
+  static const String financialStatementForn = '/financial/statement-form';
   static const String user = '/user';
   static const String userForm = '/user-form';
   static const String userCompanyForn = '/user-company-form';
@@ -269,6 +273,22 @@ GoRouter appRouter(AppProvider provider) {
           ),
         ),
       ),
+      GoRoute(
+        path: RouteUri.report + RouteUri.ledgerAccount,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: FinancialStatementListPage(
+            year: state.queryParameters['year'] ?? '0',
+          ),
+        ),
+      ),
+      // GoRoute(
+      //   path: RouteUri.report + RouteUri.financialStatementForn,
+      //   pageBuilder: (context, state) => NoTransitionPage<void>(
+      //     key: state.pageKey,
+      //     child: const FinancialStatementPage(),
+      //   ),
+      // ),
     ],
     redirect: (context, state) async {
       final provider = context.read<AppProvider>();

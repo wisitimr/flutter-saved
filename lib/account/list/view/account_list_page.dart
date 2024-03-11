@@ -157,7 +157,7 @@ class AccountCard extends StatelessWidget {
                             Expanded(
                               child: TextField(
                                 decoration: InputDecoration(
-                                  labelText: lang.search,
+                                  // labelText: lang.search,
                                   hintText: lang.search,
                                   border: const OutlineInputBorder(),
                                   floatingLabelBehavior:
@@ -247,9 +247,6 @@ class AccountCard extends StatelessWidget {
                                         child: PaginatedDataTable(
                                           key: key,
                                           showFirstLastButtons: true,
-                                          onPageChanged: (int index) {
-                                            print(index);
-                                          },
                                           columns: [
                                             DataColumn(label: Text(lang.code)),
                                             DataColumn(label: Text(lang.name)),

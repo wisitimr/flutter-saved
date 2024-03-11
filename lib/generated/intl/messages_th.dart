@@ -204,6 +204,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "daybook": MessageLookupByLibrary.simpleMessage("สมุดรายวัน"),
         "daybookHistory":
             MessageLookupByLibrary.simpleMessage("ประวัติสมุดรายวัน"),
+        "ledgerAccount": MessageLookupByLibrary.simpleMessage("แยกประเภท"),
         "task": MessageLookupByLibrary.simpleMessage("งานรอดำเนินการ"),
         "history": MessageLookupByLibrary.simpleMessage("ประวัติ"),
         "dDaybook": m17,

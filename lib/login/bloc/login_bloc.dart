@@ -124,7 +124,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     if (state.isValid) {
-      emit(state.copyWith(isLoading: true));
+      emit(state.copyWith(
+        status: FormzSubmissionStatus.inProgress,
+        isLoading: true,
+      ));
       try {
         dynamic res = await _authService.login(
           state.username.value,
@@ -184,16 +187,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             }
           } else {
             emit(state.copyWith(
-                status: FormzSubmissionStatus.failure,
-                message: res['statusMessage']));
+              status: FormzSubmissionStatus.failure,
+              message: res['statusMessage'],
+              isLoading: false,
+            ));
           }
         } else {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
-              message: res['statusMessage']));
+            status: FormzSubmissionStatus.failure,
+            message: res['statusMessage'],
+            isLoading: false,
+          ));
         }
-      } catch (_) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
+      } catch (e) {
+        print(e);
+        emit(state.copyWith(
+          status: FormzSubmissionStatus.failure,
+          message: e.toString(),
+          isLoading: false,
+        ));
       }
     }
   }

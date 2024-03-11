@@ -16,14 +16,14 @@ final sidebarMenuConfigs = [
     title: (context) => Lang.of(context).daybook,
   ),
   SidebarMenuConfig(
-      uri: RouteUri.report,
+      uri: '',
       icon: Icons.bar_chart_rounded,
       title: (context) => Lang.of(context).report,
       children: [
         SidebarChildMenuConfig(
-          uri: RouteUri.financialStatement,
-          icon: Icons.view_list_rounded,
-          title: (context) => Lang.of(context).financialStatement,
+          uri: RouteUri.report + RouteUri.ledgerAccount,
+          icon: Icons.splitscreen_rounded,
+          title: (context) => Lang.of(context).ledgerAccount,
         ),
       ]),
   SidebarMenuConfig(

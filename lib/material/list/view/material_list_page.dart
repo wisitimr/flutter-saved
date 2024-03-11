@@ -160,7 +160,7 @@ class MaterialCard extends StatelessWidget {
                             Expanded(
                               child: TextField(
                                   decoration: InputDecoration(
-                                    labelText: lang.search,
+                                    // labelText: lang.search,
                                     hintText: lang.search,
                                     border: const OutlineInputBorder(),
                                     floatingLabelBehavior:

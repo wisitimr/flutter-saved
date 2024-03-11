@@ -208,6 +208,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "daybook": MessageLookupByLibrary.simpleMessage("Daybook"),
         "daybookHistory":
             MessageLookupByLibrary.simpleMessage("Daybook History"),
+        "ledgerAccount": MessageLookupByLibrary.simpleMessage("Ledger Account"),
         "task": MessageLookupByLibrary.simpleMessage("Task"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "dDaybook": m17,

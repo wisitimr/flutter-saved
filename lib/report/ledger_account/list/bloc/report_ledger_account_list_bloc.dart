@@ -79,6 +79,16 @@ class ReportLedgerAccountListBloc
             acc['name'] = "${element.code} - ${element.name}";
             accounts.add(acc);
             element.accountDetail.add(
+              const AccountDetail(
+                month: '',
+                date: 0,
+                detail: '',
+                number: '',
+                amountDr: 0,
+                amountCr: 0,
+              ),
+            );
+            element.accountDetail.add(
               AccountDetail(
                 month: '',
                 date: 0,
@@ -142,9 +152,9 @@ class ReportLedgerAccountListBloc
               .map((item) => ReportLedgerAccountListModel.fromJson(item))
               .toList();
 
-          double drBalance = 0;
-          double crBalance = 0;
           for (var element in ledgers) {
+            double drBalance = 0;
+            double crBalance = 0;
             for (var element2 in element.accountDetail) {
               drBalance += element2.amountDr;
               crBalance += element2.amountCr;

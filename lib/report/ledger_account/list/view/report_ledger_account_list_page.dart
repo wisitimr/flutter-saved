@@ -527,6 +527,9 @@ class PreviewLedgerAccount extends StatelessWidget {
                             ),
                             child: PaginatedDataTable(
                               key: key,
+                              rowsPerPage: data.accountDetail.length > 10
+                                  ? 10
+                                  : data.accountDetail.length,
                               showFirstLastButtons: true,
                               columns: [
                                 DataColumn(
@@ -603,14 +606,20 @@ class _LedgerAccountDataSource extends DataTableSource {
     if (row.amountCr > 0) {
       credit = row.amountCr.toStringAsFixed(2);
     }
-    if (row.detail != "") {
-      if (index == 0) {
-        balance = row.amountDr - row.amountCr;
-      } else {
-        AccountDetail previousRow = data[index - 1];
-        balance = (previousRow.amountDr - previousRow.amountCr) +
-            row.amountDr -
-            row.amountCr;
+    if (index == 0 || row.detail == "รวม") {
+      balance = row.amountDr - row.amountCr;
+    } else {
+      if (row.date > 0) {
+        double preBalance = 0;
+        for (var i = 0; i < index; i++) {
+          AccountDetail p = data[i];
+          if (i == 0) {
+            preBalance = (p.amountDr - p.amountCr);
+          } else {
+            preBalance = (preBalance + p.amountDr - p.amountCr);
+          }
+        }
+        balance = preBalance + row.amountDr - row.amountCr;
       }
     }
     return DataRow(

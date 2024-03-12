@@ -223,9 +223,11 @@ class DaybookList extends StatelessWidget {
                                               ))
                                           .toList(),
                                       value: state.year,
-                                      onChanged: (year) => context
-                                          .read<DaybookListBloc>()
-                                          .add(DaybookListYearSelected(year!)),
+                                      onChanged: (year) => {
+                                        context.read<DaybookListBloc>().add(
+                                            DaybookListYearSelected(year!)),
+                                        key.currentState?.pageTo(0)
+                                      },
                                     ),
                                   ),
                                 ),
@@ -280,45 +282,6 @@ class DaybookList extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          if (state.daybooks.isNotEmpty) ...[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: kDefaultPadding * 0.5,
-                                right: kDefaultPadding * 0.5,
-                              ),
-                              child: SizedBox(
-                                height: 40.0,
-                                child: ElevatedButton(
-                                  style: themeData
-                                      .extension<AppButtonTheme>()!
-                                      .secondaryElevated,
-                                  onPressed: () => context
-                                      .read<DaybookListBloc>()
-                                      .add(
-                                          DaybookListDownloadFinancialStatement(
-                                              state.year)),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: kDefaultPadding * 0.5),
-                                        child: Icon(
-                                          Icons.file_download,
-                                          size: (themeData.textTheme.labelLarge!
-                                                  .fontSize! +
-                                              4.0),
-                                        ),
-                                      ),
-                                      Text(lang.download),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
                           Padding(
                             padding: const EdgeInsets.only(
                                 bottom: kDefaultPadding * 0.5),

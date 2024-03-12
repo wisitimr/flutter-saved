@@ -1,4 +1,4 @@
-import 'package:findigitalservice/report/financial_statement/list/view/view.dart';
+import 'package:findigitalservice/report/ledger_account/list/view/report_ledger_account_list_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:findigitalservice/account/form/view/account_form_page.dart';
@@ -274,10 +274,10 @@ GoRouter appRouter(AppProvider provider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.report + RouteUri.ledgerAccount,
+        path: RouteUri.report + RouteUri.financialStatement,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: FinancialStatementListPage(
+          child: ReportLedgerAccountListPage(
             year: state.queryParameters['year'] ?? '0',
           ),
         ),

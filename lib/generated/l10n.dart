@@ -177,6 +177,15 @@ class Lang {
     );
   }
 
+  String get close {
+    return Intl.message(
+      'Close',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{count, plural, one{Color} other{Colors}}`
   String colors(num count) {
     return Intl.plural(
@@ -283,6 +292,15 @@ class Lang {
     return Intl.message(
       'Detail',
       name: 'crudDetail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get preview {
+    return Intl.message(
+      'Preview',
+      name: 'preview',
       desc: '',
       args: [],
     );
@@ -1065,6 +1083,24 @@ class Lang {
     );
   }
 
+  String get month {
+    return Intl.message(
+      'Month',
+      name: 'month',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get date {
+    return Intl.message(
+      'Date',
+      name: 'date',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get daybook {
     return Intl.message(
       'Daybook',
@@ -1110,6 +1146,15 @@ class Lang {
     );
   }
 
+  String get tb12 {
+    return Intl.message(
+      'TB12',
+      name: 'tb12',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get task {
     return Intl.message(
       'Task',
@@ -1150,6 +1195,33 @@ class Lang {
     return Intl.message(
       'Detail',
       name: 'detail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get debit {
+    return Intl.message(
+      'Debit',
+      name: 'debit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get credit {
+    return Intl.message(
+      'Credit',
+      name: 'credit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get balance {
+    return Intl.message(
+      'Balance',
+      name: 'balance',
       desc: '',
       args: [],
     );

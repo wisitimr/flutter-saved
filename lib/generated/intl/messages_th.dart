@@ -91,6 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "successSelect": MessageLookupByLibrary.simpleMessage("เลือกสำเร็จ"),
         "closeNavigationMenu":
             MessageLookupByLibrary.simpleMessage("Close Navigation Menu"),
+        "close": MessageLookupByLibrary.simpleMessage("ปิด"),
         "colorPalette": MessageLookupByLibrary.simpleMessage("Color Palette"),
         "colorScheme": MessageLookupByLibrary.simpleMessage("Color Scheme"),
         "colors": m1,
@@ -104,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "crudBack": MessageLookupByLibrary.simpleMessage("กลับ"),
         "crudDelete": MessageLookupByLibrary.simpleMessage("ลบ"),
         "crudDetail": MessageLookupByLibrary.simpleMessage("รายละเอียด"),
+        "preview": MessageLookupByLibrary.simpleMessage("ดูตัวอย่าง"),
         "download": MessageLookupByLibrary.simpleMessage("ดาวน์โหลด"),
         "crudNew": MessageLookupByLibrary.simpleMessage("เพิ่ม"),
         "darkTheme": MessageLookupByLibrary.simpleMessage("Dark Theme"),
@@ -192,6 +194,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "company": MessageLookupByLibrary.simpleMessage("บริษัท"),
         "code": MessageLookupByLibrary.simpleMessage("รหัส"),
         "name": MessageLookupByLibrary.simpleMessage("ชื่อ"),
+        "month": MessageLookupByLibrary.simpleMessage("เดือน"),
+        "date": MessageLookupByLibrary.simpleMessage("วันที่"),
         "select": MessageLookupByLibrary.simpleMessage("เลือก"),
         "description": MessageLookupByLibrary.simpleMessage("คำอธิบาย"),
         "tax": MessageLookupByLibrary.simpleMessage("ภาษี"),
@@ -205,6 +209,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "daybookHistory":
             MessageLookupByLibrary.simpleMessage("ประวัติสมุดรายวัน"),
         "ledgerAccount": MessageLookupByLibrary.simpleMessage("แยกประเภท"),
+        "tb12": MessageLookupByLibrary.simpleMessage("TB12"),
         "task": MessageLookupByLibrary.simpleMessage("งานรอดำเนินการ"),
         "history": MessageLookupByLibrary.simpleMessage("ประวัติ"),
         "dDaybook": m17,
@@ -214,6 +219,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "daybookDetailHistory":
             MessageLookupByLibrary.simpleMessage("ประวัติรายละเอียดสมุดรายวัน"),
         "detail": MessageLookupByLibrary.simpleMessage("รายละเอียด"),
+        "debit": MessageLookupByLibrary.simpleMessage("เดบิต"),
+        "credit": MessageLookupByLibrary.simpleMessage("เครดิต"),
+        "balance": MessageLookupByLibrary.simpleMessage("ยอดคงเหลือ"),
         "price": MessageLookupByLibrary.simpleMessage("ราคา"),
         "number": MessageLookupByLibrary.simpleMessage("เลขที่"),
         "invoice": MessageLookupByLibrary.simpleMessage("ใบแจ้งหนี้"),

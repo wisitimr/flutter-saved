@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:findigitalservice/core/report.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:findigitalservice/core/daybook.dart';
@@ -16,13 +17,13 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
     on<DaybookListYearSelected>(_onYearSelected);
     on<DaybookListSearchChanged>(_onSearchChanged);
     on<DaybookListDownload>(_onDownload);
-    on<DaybookListDownloadFinancialStatement>(_onDownloadFinancialStatement);
     on<DaybookListDeleteConfirm>(_onConfirm);
     on<DaybookListDelete>(_onDelete);
   }
 
   final AppProvider _provider;
   final DaybookService _daybookService = DaybookService();
+  final ReportService _reportService = ReportService();
 
   Future<void> _onStarted(
     DaybookListStarted event,
@@ -146,7 +147,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
           fileName += (event.data.customer?.name ?? '');
         }
         fileName += '.xlsx';
-        await _daybookService.downloadExcel(_provider, event.data.id, fileName);
+        await _reportService.downloadExcel(_provider, event.data.id, fileName);
         emit(
           state.copyWith(
             status: DaybookListStatus.downloaded,
@@ -158,27 +159,6 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
           message: "Invalid parameter",
         ));
       }
-    } catch (e) {
-      emit(state.copyWith(
-        status: DaybookListStatus.failure,
-        message: e.toString(),
-      ));
-    }
-  }
-
-  Future<void> _onDownloadFinancialStatement(
-    DaybookListDownloadFinancialStatement event,
-    Emitter<DaybookListState> emit,
-  ) async {
-    // emit(state.copyWith(status: DaybookListStatus.loading));
-    try {
-      await _daybookService.downloadFinancialStatement(
-          _provider, _provider.companyId, event.year.toString(), 'test.xlsx');
-      emit(
-        state.copyWith(
-          status: DaybookListStatus.downloaded,
-        ),
-      );
     } catch (e) {
       emit(state.copyWith(
         status: DaybookListStatus.failure,

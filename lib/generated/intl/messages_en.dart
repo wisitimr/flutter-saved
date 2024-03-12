@@ -91,6 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Successfully selected"),
         "closeNavigationMenu":
             MessageLookupByLibrary.simpleMessage("Close Navigation Menu"),
+        "close": MessageLookupByLibrary.simpleMessage("Close"),
         "colorPalette": MessageLookupByLibrary.simpleMessage("Color Palette"),
         "colorScheme": MessageLookupByLibrary.simpleMessage("Color Scheme"),
         "colors": m1,
@@ -104,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "crudBack": MessageLookupByLibrary.simpleMessage("Back"),
         "crudDelete": MessageLookupByLibrary.simpleMessage("Delete"),
         "crudDetail": MessageLookupByLibrary.simpleMessage("Detail"),
+        "preview": MessageLookupByLibrary.simpleMessage("Preview"),
         "download": MessageLookupByLibrary.simpleMessage("Download"),
         "crudNew": MessageLookupByLibrary.simpleMessage("New"),
         "darkTheme": MessageLookupByLibrary.simpleMessage("Dark Theme"),
@@ -192,6 +194,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "companies": MessageLookupByLibrary.simpleMessage("Companies"),
         "code": MessageLookupByLibrary.simpleMessage("Code"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "month": MessageLookupByLibrary.simpleMessage("Month"),
+        "date": MessageLookupByLibrary.simpleMessage("Date"),
         "select": MessageLookupByLibrary.simpleMessage("Select"),
         "description": MessageLookupByLibrary.simpleMessage("Description"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
@@ -209,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "daybookHistory":
             MessageLookupByLibrary.simpleMessage("Daybook History"),
         "ledgerAccount": MessageLookupByLibrary.simpleMessage("Ledger Account"),
+        "tb12": MessageLookupByLibrary.simpleMessage("TB12"),
         "task": MessageLookupByLibrary.simpleMessage("Task"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "dDaybook": m17,
@@ -217,6 +222,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "daybookDetailHistory":
             MessageLookupByLibrary.simpleMessage("Daybook Detail History"),
         "detail": MessageLookupByLibrary.simpleMessage("Detail"),
+        "debit": MessageLookupByLibrary.simpleMessage("Debit"),
+        "credit": MessageLookupByLibrary.simpleMessage("Credit"),
+        "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "invoice": MessageLookupByLibrary.simpleMessage("Invoice"),

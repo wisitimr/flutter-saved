@@ -21,9 +21,9 @@ final sidebarMenuConfigs = [
       title: (context) => Lang.of(context).report,
       children: [
         SidebarChildMenuConfig(
-          uri: RouteUri.report + RouteUri.ledgerAccount,
+          uri: RouteUri.report + RouteUri.financialStatement,
           icon: Icons.splitscreen_rounded,
-          title: (context) => Lang.of(context).ledgerAccount,
+          title: (context) => Lang.of(context).financialStatement,
         ),
       ]),
   SidebarMenuConfig(

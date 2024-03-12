@@ -105,14 +105,10 @@ class ReportService {
   }
 
   Future<dynamic> findLedgerAccount(
-      AppProvider provider, Map<String, dynamic> param) async {
+      AppProvider provider, String company, String year) async {
     try {
-      String url = '/ledger/account';
-      if (param.isNotEmpty) {
-        url = '?${Uri(queryParameters: param).query}';
-      }
       Response response = await _dio.get(
-        url,
+        "/ledger/account/$company/$year",
         options: Options(
           headers: {'Authorization': 'Bearer ${provider.accessToken}'},
         ),

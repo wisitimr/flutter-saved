@@ -137,7 +137,6 @@ class ReportLedgerAccountList extends StatelessWidget {
       case Brightness.dark:
         borderColor = Colors.white70;
     }
-
     return BlocBuilder<ReportLedgerAccountListBloc,
         ReportLedgerAccountListState>(
       builder: (context, state) {
@@ -278,7 +277,9 @@ class ReportLedgerAccountList extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.of(context).size.height < 700
+                          ? 700
+                          : MediaQuery.of(context).size.height,
                       child: ContainedTabBarView(
                         onChange: (value) => {
                           fieldText.clear(),

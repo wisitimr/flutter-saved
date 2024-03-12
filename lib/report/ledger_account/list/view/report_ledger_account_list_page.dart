@@ -619,7 +619,8 @@ class _LedgerAccountDataSource extends DataTableSource {
     }
     return DataRow(
       cells: [
-        DataCell(Text(row.month)),
+        DataCell(Text(
+            index > 0 && data[index - 1].month == row.month ? "" : row.month)),
         DataCell(Text(row.date > 0 ? row.date.toString() : '')),
         DataCell(Text(row.detail)),
         DataCell(Text(row.number)),

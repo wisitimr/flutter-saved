@@ -224,6 +224,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "balance": MessageLookupByLibrary.simpleMessage("ยอดคงเหลือ"),
         "price": MessageLookupByLibrary.simpleMessage("ราคา"),
         "number": MessageLookupByLibrary.simpleMessage("เลขที่"),
+        "folio": MessageLookupByLibrary.simpleMessage("หน้าบัญชี"),
         "invoice": MessageLookupByLibrary.simpleMessage("ใบแจ้งหนี้"),
         "type": MessageLookupByLibrary.simpleMessage("ประเภท"),
         "document": MessageLookupByLibrary.simpleMessage("ประเภทเอกสาร"),

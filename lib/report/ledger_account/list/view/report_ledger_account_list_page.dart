@@ -351,13 +351,7 @@ class ReportLedgerAccountList extends StatelessWidget {
                                                           label:
                                                               Text(lang.name)),
                                                       const DataColumn(
-                                                          label: Center(
-                                                        child: Text(
-                                                          '...',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                        ),
-                                                      )),
+                                                          label: Text('...')),
                                                     ],
                                                     source: _DataSource(
                                                       data: state.ledgetFilter,
@@ -542,7 +536,7 @@ class PreviewLedgerAccount extends StatelessWidget {
                                   label: Text(lang.detail),
                                 ),
                                 DataColumn(
-                                  label: Text(lang.number),
+                                  label: Text(lang.folio),
                                 ),
                                 DataColumn(
                                     label: Text(

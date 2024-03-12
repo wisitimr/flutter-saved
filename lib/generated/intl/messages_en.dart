@@ -227,6 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "balance": MessageLookupByLibrary.simpleMessage("Balance"),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
+        "folio": MessageLookupByLibrary.simpleMessage("Folio"),
         "invoice": MessageLookupByLibrary.simpleMessage("Invoice"),
         "type": MessageLookupByLibrary.simpleMessage("Type"),
         "document": MessageLookupByLibrary.simpleMessage("Document Type"),

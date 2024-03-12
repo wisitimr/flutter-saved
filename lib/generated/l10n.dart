@@ -1245,6 +1245,15 @@ class Lang {
     );
   }
 
+  String get folio {
+    return Intl.message(
+      'Folio',
+      name: 'folio',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get invoice {
     return Intl.message(
       'Invoice',

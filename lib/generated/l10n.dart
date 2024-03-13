@@ -50,11 +50,65 @@ class Lang {
     return Localizations.of<Lang>(context, Lang);
   }
 
+  String getAccoutGroup(String type) {
+    return Intl.message(
+      '',
+      name: type,
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Account`
   String get account {
     return Intl.message(
       'Account',
       name: 'account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get accountCode {
+    return Intl.message(
+      'Account Code',
+      name: 'accountCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get accountName {
+    return Intl.message(
+      'Account Name',
+      name: 'accountName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get accountGroup {
+    return Intl.message(
+      'Account Group',
+      name: 'accountGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get totalDebit {
+    return Intl.message(
+      'Total Debit',
+      name: 'totalDebit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get totalCredit {
+    return Intl.message(
+      'Total Credit',
+      name: 'totalCredit',
       desc: '',
       args: [],
     );

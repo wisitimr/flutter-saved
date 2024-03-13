@@ -108,7 +108,24 @@ class ReportService {
       AppProvider provider, String company, String year) async {
     try {
       Response response = await _dio.get(
-        "/ledger/account/$company/$year",
+        "/account/ledger/$company/$year",
+        options: Options(
+          headers: {'Authorization': 'Bearer ${provider.accessToken}'},
+        ),
+      );
+      //returns the successful user data json object
+      return response.data;
+    } on DioException catch (e) {
+      //returns the error object if any
+      return e.response!.data;
+    }
+  }
+
+  Future<dynamic> findAccountBalance(
+      AppProvider provider, String company, String year) async {
+    try {
+      Response response = await _dio.get(
+        "/account/balance/$company/$year",
         options: Options(
           headers: {'Authorization': 'Bearer ${provider.accessToken}'},
         ),

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:findigitalservice/report/ledger_account/list/models/account_detail.dart';
+import 'package:findigitalservice/report/financial_statement/list/models/account_detail.dart';
 
 class MonthDetail extends Equatable {
   const MonthDetail({

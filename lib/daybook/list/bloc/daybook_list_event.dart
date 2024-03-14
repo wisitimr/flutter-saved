@@ -23,6 +23,19 @@ final class DaybookListSearchChanged extends DaybookListEvent {
   List<Object> get props => [text];
 }
 
+final class DaybookListHeaderSort extends DaybookListEvent {
+  const DaybookListHeaderSort(this.columnIndex, this.ascending);
+
+  final int columnIndex;
+  final bool ascending;
+
+  @override
+  List<Object> get props => [
+        columnIndex,
+        ascending,
+      ];
+}
+
 final class DaybookListYearSelected extends DaybookListEvent {
   const DaybookListYearSelected(this.year);
 

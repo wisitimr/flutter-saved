@@ -16,6 +16,7 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
     on<DaybookListStarted>(_onStarted);
     on<DaybookListYearSelected>(_onYearSelected);
     on<DaybookListSearchChanged>(_onSearchChanged);
+    on<DaybookListHeaderSort>(_onHeaderSort);
     on<DaybookListDownload>(_onDownload);
     on<DaybookListDeleteConfirm>(_onConfirm);
     on<DaybookListDelete>(_onDelete);
@@ -129,6 +130,54 @@ class DaybookListBloc extends Bloc<DaybookListEvent, DaybookListState> {
         status: DaybookListStatus.success,
         daybooks: state.daybooks,
         filter: filter,
+      ),
+    );
+  }
+
+  void _onHeaderSort(
+    DaybookListHeaderSort event,
+    Emitter<DaybookListState> emit,
+  ) {
+    emit(state.copyWith(status: DaybookListStatus.loading));
+    var filter = state.filter;
+    switch (event.columnIndex) {
+      case 0:
+        filter.sort((a, b) {
+          return event.ascending
+              ? Comparable.compare(a.number, b.number)
+              : Comparable.compare(b.number, a.number);
+        });
+        break;
+      case 1:
+        filter.sort((a, b) {
+          return event.ascending
+              ? Comparable.compare(a.invoice, b.invoice)
+              : Comparable.compare(b.invoice, a.invoice);
+        });
+        break;
+      case 2:
+        filter.sort((a, b) {
+          return event.ascending
+              ? Comparable.compare(a.document, b.document)
+              : Comparable.compare(b.document, a.document);
+        });
+        break;
+      case 3:
+        filter.sort((a, b) {
+          return event.ascending
+              ? Comparable.compare(a.transactionDate, b.transactionDate)
+              : Comparable.compare(b.transactionDate, a.transactionDate);
+        });
+        break;
+    }
+
+    emit(
+      state.copyWith(
+        status: DaybookListStatus.success,
+        daybooks: state.daybooks,
+        filter: filter,
+        ascending: event.ascending,
+        columnIndex: event.columnIndex,
       ),
     );
   }

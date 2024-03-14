@@ -156,15 +156,18 @@ class ReportFinancialStatementList extends StatelessWidget {
     final tableKey2 = GlobalKey<PaginatedDataTableState>();
     final fieldText = TextEditingController();
 
+    Color tabColor;
     Color borderColor;
     Color textColor;
     switch (Theme.of(context).brightness) {
       case Brightness.light:
         borderColor = Colors.grey.shade700;
         textColor = Colors.black;
+        tabColor = Colors.black12;
       case Brightness.dark:
         borderColor = Colors.white70;
         textColor = Colors.white;
+        tabColor = Colors.white12;
     }
     return BlocBuilder<ReportFinancialStatementListBloc,
         ReportFinancialStatementListState>(
@@ -179,134 +182,141 @@ class ReportFinancialStatementList extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          width: kDropdownWidth * 0.5,
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(4.0),
-                                bottomLeft: Radius.circular(4.0),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            width: kDropdownWidth * 0.5,
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.only(left: 15, right: 15),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(4.0),
+                                  bottomLeft: Radius.circular(4.0),
+                                ),
+                                border: Border(
+                                  left: BorderSide(
+                                    color: borderColor,
+                                  ),
+                                  top: BorderSide(
+                                    color: borderColor,
+                                  ),
+                                  bottom: BorderSide(
+                                    color: borderColor,
+                                  ),
+                                ),
                               ),
-                              border: Border(
-                                left: BorderSide(
-                                  color: borderColor,
-                                ),
-                                top: BorderSide(
-                                  color: borderColor,
-                                ),
-                                bottom: BorderSide(
-                                  color: borderColor,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  items: state.yearList
+                                      .map((year) => DropdownMenuItem(
+                                            value: year,
+                                            child: Text(
+                                              year.toString(),
+                                              style: const TextStyle(),
+                                            ),
+                                          ))
+                                      .toList(),
+                                  value: state.year,
+                                  onChanged: (year) => {
+                                    context
+                                        .read<
+                                            ReportFinancialStatementListBloc>()
+                                        .add(
+                                            ReportFinancialStatementListYearSelected(
+                                                year!)),
+                                    tableKey1.currentState?.pageTo(0)
+                                  },
                                 ),
                               ),
                             ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton(
-                                items: state.yearList
-                                    .map((year) => DropdownMenuItem(
-                                          value: year,
-                                          child: Text(
-                                            year.toString(),
-                                            style: const TextStyle(),
-                                          ),
-                                        ))
-                                    .toList(),
-                                value: state.year,
-                                onChanged: (year) => {
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.only(left: 15, right: 15),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(4.0),
+                                  bottomRight: Radius.circular(4.0),
+                                ),
+                                border: Border(
+                                  left: BorderSide(
+                                    color: borderColor,
+                                  ),
+                                  top: BorderSide(
+                                    color: borderColor,
+                                  ),
+                                  bottom: BorderSide(
+                                    color: borderColor,
+                                  ),
+                                  right: BorderSide(
+                                    color: borderColor,
+                                  ),
+                                ),
+                              ),
+                              child: TextField(
+                                controller: fieldText,
+                                decoration: InputDecoration(
+                                  // labelText: lang.search,
+                                  hintText: lang.search,
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  suffixIcon: const Icon(Icons.search),
+                                ),
+                                onChanged: (text) => {
                                   context
                                       .read<ReportFinancialStatementListBloc>()
                                       .add(
-                                          ReportFinancialStatementListYearSelected(
-                                              year!)),
+                                          ReportFinancialStatementListSearchChanged(
+                                              text)),
                                   tableKey1.currentState?.pageTo(0)
                                 },
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(4.0),
-                                bottomRight: Radius.circular(4.0),
-                              ),
-                              border: Border(
-                                left: BorderSide(
-                                  color: borderColor,
-                                ),
-                                top: BorderSide(
-                                  color: borderColor,
-                                ),
-                                bottom: BorderSide(
-                                  color: borderColor,
-                                ),
-                                right: BorderSide(
-                                  color: borderColor,
-                                ),
-                              ),
-                            ),
-                            child: TextField(
-                              controller: fieldText,
-                              decoration: InputDecoration(
-                                // labelText: lang.search,
-                                hintText: lang.search,
-                                border: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                suffixIcon: const Icon(Icons.search),
-                              ),
-                              onChanged: (text) => {
-                                context
-                                    .read<ReportFinancialStatementListBloc>()
-                                    .add(
-                                        ReportFinancialStatementListSearchChanged(
-                                            text)),
-                                tableKey1.currentState?.pageTo(0)
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        if (state.count > 0) ...[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              style: themeData
-                                  .extension<AppButtonTheme>()!
-                                  .successElevated,
-                              onPressed: () => context
-                                  .read<ReportFinancialStatementListBloc>()
-                                  .add(ReportFinancialStatementListDownload(
-                                      state.year)),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: kDefaultPadding * 0.5),
-                                    child: Icon(
-                                      Icons.file_download,
-                                      size: (themeData
-                                              .textTheme.labelLarge!.fontSize! +
-                                          4.0),
-                                    ),
-                                  ),
-                                  Text(lang.download),
-                                ],
-                              ),
-                            ),
-                          ),
                         ],
-                      ],
+                      ),
                     ),
+                    if (state.count > 0) ...[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          style: themeData
+                              .extension<AppButtonTheme>()!
+                              .successElevated,
+                          onPressed: () => context
+                              .read<ReportFinancialStatementListBloc>()
+                              .add(ReportFinancialStatementListDownload(
+                                  state.year)),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: kDefaultPadding * 0.5),
+                                  child: Icon(
+                                    Icons.file_download,
+                                    size: (themeData
+                                            .textTheme.labelLarge!.fontSize! +
+                                        4.0),
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                  alignment: Alignment.center,
+                                  child: Text(lang.download)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       width: MediaQuery.of(context).size.width,
@@ -522,8 +532,14 @@ class ReportFinancialStatementList extends StatelessWidget {
                                     initialValue: state.columnSelected,
                                     listType: MultiSelectListType.CHIP,
                                     checkColor: appColorScheme.error,
-                                    buttonText:
-                                        const Text("Tap to select one or more"),
+                                    buttonText: const Text(
+                                      "Tap to select one or more",
+                                    ),
+                                    // decoration: BoxDecoration(
+                                    //   color: tabColor,
+                                    //   borderRadius: const BorderRadius.all(
+                                    //       Radius.circular(4.0)),
+                                    // ),
                                     chipDisplay: MultiSelectChipDisplay(
                                       chipColor: appColorScheme.success,
                                       textStyle:

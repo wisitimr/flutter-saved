@@ -156,7 +156,7 @@ class DaybookList extends StatelessWidget {
     final themeData = Theme.of(context);
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
     final dataTableHorizontalScrollController = ScrollController();
-    final key = GlobalKey<PaginatedDataTableState>();
+    final tableKey1 = GlobalKey<PaginatedDataTableState>();
     Color borderColor;
     switch (Theme.of(context).brightness) {
       case Brightness.light:
@@ -226,7 +226,7 @@ class DaybookList extends StatelessWidget {
                                       onChanged: (year) => {
                                         context.read<DaybookListBloc>().add(
                                             DaybookListYearSelected(year!)),
-                                        key.currentState?.pageTo(0)
+                                        tableKey1.currentState?.pageTo(0)
                                       },
                                     ),
                                   ),
@@ -268,7 +268,7 @@ class DaybookList extends StatelessWidget {
                                       context
                                           .read<DaybookListBloc>()
                                           .add(DaybookListSearchChanged(text)),
-                                      key.currentState?.pageTo(0)
+                                      tableKey1.currentState?.pageTo(0)
                                     },
                                   ),
                                 ),
@@ -350,18 +350,64 @@ class DaybookList extends StatelessWidget {
                                                 .dataTableThemeData,
                                           ),
                                           child: PaginatedDataTable(
-                                            key: key,
+                                            key: tableKey1,
                                             showFirstLastButtons: true,
+                                            sortColumnIndex: state.columnIndex,
+                                            sortAscending: state.ascending,
                                             columns: [
                                               DataColumn(
-                                                  label: Text(lang.number)),
+                                                label: Text(lang.number),
+                                                onSort:
+                                                    (columnIndex, ascending) {
+                                                  context
+                                                      .read<DaybookListBloc>()
+                                                      .add(
+                                                          DaybookListHeaderSort(
+                                                              columnIndex,
+                                                              !state
+                                                                  .ascending));
+                                                },
+                                              ),
                                               DataColumn(
-                                                  label: Text(lang.invoice)),
+                                                label: Text(lang.invoice),
+                                                onSort:
+                                                    (columnIndex, ascending) {
+                                                  context
+                                                      .read<DaybookListBloc>()
+                                                      .add(
+                                                          DaybookListHeaderSort(
+                                                              columnIndex,
+                                                              !state
+                                                                  .ascending));
+                                                },
+                                              ),
                                               DataColumn(
-                                                  label: Text(lang.document)),
+                                                label: Text(lang.document),
+                                                onSort:
+                                                    (columnIndex, ascending) {
+                                                  context
+                                                      .read<DaybookListBloc>()
+                                                      .add(
+                                                          DaybookListHeaderSort(
+                                                              columnIndex,
+                                                              !state
+                                                                  .ascending));
+                                                },
+                                              ),
                                               DataColumn(
-                                                  label: Text(
-                                                      lang.transactionDate)),
+                                                label:
+                                                    Text(lang.transactionDate),
+                                                onSort:
+                                                    (columnIndex, ascending) {
+                                                  context
+                                                      .read<DaybookListBloc>()
+                                                      .add(
+                                                          DaybookListHeaderSort(
+                                                              columnIndex,
+                                                              !state
+                                                                  .ascending));
+                                                },
+                                              ),
                                               const DataColumn(
                                                   label: Center(
                                                 child: Text(

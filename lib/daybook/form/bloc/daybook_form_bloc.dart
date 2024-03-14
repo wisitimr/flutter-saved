@@ -473,11 +473,16 @@ class DaybookFormBloc extends Bloc<DaybookFormEvent, DaybookFormState> {
         dynamic res = await _daybookService.save(_provider, data);
 
         if (res['statusCode'] == 200 || res['statusCode'] == 201) {
-          emit(state.copyWith(
-            status: DaybookFormStatus.submited,
-            message: res['statusMessage'],
-            isNew: res['statusCode'] == 201,
-          ));
+          emit(
+            state.copyWith(
+              status: DaybookFormStatus.submited,
+              message: res['statusMessage'],
+              isNew: res['statusCode'] == 201,
+              id: Id.dirty(res['data']['id']),
+              isHistory: false,
+              year: DateTime.parse(state.transactionDate.value).year.toString(),
+            ),
+          );
         } else {
           emit(state.copyWith(
             status: DaybookFormStatus.failure,

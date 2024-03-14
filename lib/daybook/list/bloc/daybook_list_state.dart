@@ -29,6 +29,8 @@ final class DaybookListState extends Equatable {
     this.isHistory = false,
     this.yearList = const <int>[],
     this.year = 0,
+    this.ascending = false,
+    this.columnIndex = 0,
   });
 
   final List<DaybookListModel> daybooks;
@@ -39,6 +41,8 @@ final class DaybookListState extends Equatable {
   final bool isHistory;
   final List<int> yearList;
   final int year;
+  final bool ascending;
+  final int columnIndex;
 
   DaybookListState copyWith({
     DaybookListStatus? status,
@@ -49,6 +53,8 @@ final class DaybookListState extends Equatable {
     bool? isHistory,
     List<int>? yearList,
     int? year,
+    bool? ascending,
+    int? columnIndex,
   }) {
     return DaybookListState(
       status: status ?? this.status,
@@ -59,6 +65,8 @@ final class DaybookListState extends Equatable {
       isHistory: isHistory ?? this.isHistory,
       yearList: yearList ?? this.yearList,
       year: year ?? this.year,
+      ascending: ascending ?? this.ascending,
+      columnIndex: columnIndex ?? this.columnIndex,
     );
   }
 
@@ -72,6 +80,8 @@ final class DaybookListState extends Equatable {
         isHistory,
         yearList,
         year,
+        ascending,
+        columnIndex,
       ];
 }
 

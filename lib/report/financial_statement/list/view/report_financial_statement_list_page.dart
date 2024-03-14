@@ -311,7 +311,7 @@ class ReportFinancialStatementList extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height < 700
-                          ? 700 * 1.6
+                          ? 700 * 2
                           : MediaQuery.of(context).size.height * 1.2,
                       child: ContainedTabBarView(
                         onChange: (value) => {
@@ -409,359 +409,413 @@ class ReportFinancialStatementList extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: kDefaultPadding,
-                                  bottom: kDefaultPadding,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        onPressed: () => context
+                                            .read<
+                                                ReportFinancialStatementListBloc>()
+                                            .add(
+                                                ReportFinancialStatementListAccountBalanceColumnSelectedAll(
+                                                    !state.isSelectAll)),
+                                        style: Theme.of(context)
+                                            .extension<AppButtonTheme>()!
+                                            .primaryElevated,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(
+                                                  right: kDefaultPadding * 0.5),
+                                            ),
+                                            Text(state.isSelectAll
+                                                ? lang.unSelectAll
+                                                : lang.selectAll),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        onPressed: () => context
+                                            .read<
+                                                ReportFinancialStatementListBloc>()
+                                            .add(
+                                                const ReportFinancialStatementListAccountBalanceColumnSelectedDefault()),
+                                        style: Theme.of(context)
+                                            .extension<AppButtonTheme>()!
+                                            .primaryElevated,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(
+                                                  right: kDefaultPadding * 0.5),
+                                            ),
+                                            Text(lang.selectDefault),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                child: MultiSelectDialogField(
-                                  // chipBackGroundColor: appColorScheme.success,
-                                  // chipLabelStyle: const TextStyle(
-                                  //     fontWeight: FontWeight.bold),
-                                  // dialogTextStyle: const TextStyle(
-                                  //     fontWeight: FontWeight.bold),
-                                  // // checkBoxActiveColor: Colors.red,
-                                  // // checkBoxCheckColor: Colors.green,
-                                  // dialogShapeBorder:
-                                  //     const RoundedRectangleBorder(
-                                  //         borderRadius: BorderRadius.all(
-                                  //             Radius.circular(12.0))),
-                                  // title: const Text(
-                                  //   "Columns",
-                                  //   style: TextStyle(fontSize: 16),
-                                  // ),
-                                  items: const [
-                                    {"index": 0, "text": "ยกยอดมา (DR)"},
-                                    {"index": 1, "text": "ยกยอดมา (CR)"},
-                                    {"index": 2, "text": "มค (DR)"},
-                                    {"index": 3, "text": "มค (CR)"},
-                                    {"index": 4, "text": "กพ (DR)"},
-                                    {"index": 5, "text": "กพ (CR)"},
-                                    {"index": 6, "text": "มีค (DR)"},
-                                    {"index": 7, "text": "มีค (CR)"},
-                                    {"index": 8, "text": "เมย (DR)"},
-                                    {"index": 9, "text": "เมย (CR)"},
-                                    {"index": 10, "text": "พค (DR)"},
-                                    {"index": 11, "text": "พค (CR)"},
-                                    {"index": 12, "text": "มิย (DR)"},
-                                    {"index": 13, "text": "มิย (CR)"},
-                                    {"index": 14, "text": "กค (DR)"},
-                                    {"index": 15, "text": "กค (CR)"},
-                                    {"index": 16, "text": "สค (DR)"},
-                                    {"index": 17, "text": "สค (CR)"},
-                                    {"index": 18, "text": "กย (DR)"},
-                                    {"index": 19, "text": "กย (CR)"},
-                                    {"index": 20, "text": "ตค (DR)"},
-                                    {"index": 21, "text": "ตค (CR)"},
-                                    {"index": 22, "text": "พศ (DR)"},
-                                    {"index": 23, "text": "พศ (CR)"},
-                                    {"index": 24, "text": "ธค (DR)"},
-                                    {"index": 25, "text": "ธค (CR)"},
-                                    {"index": 26, "text": "Total (DR)"},
-                                    {"index": 27, "text": "Total (CR)"},
-                                    {"index": 28, "text": "Ending"},
-                                  ]
-                                      .map((e) => MultiSelectItem(
-                                          e["index"], e["text"] as String))
-                                      .toList(),
-                                  initialValue: state.columnSelected,
-                                  listType: MultiSelectListType.CHIP,
-                                  checkColor: appColorScheme.error,
-                                  buttonText:
-                                      const Text("Tap to select one or more"),
-                                  chipDisplay: MultiSelectChipDisplay(
-                                    chipColor: appColorScheme.success,
-                                    textStyle: TextStyle(color: textColor),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: kDefaultPadding,
+                                    bottom: kDefaultPadding,
                                   ),
-                                  itemsTextStyle: TextStyle(
-                                    color: textColor,
-                                  ),
-                                  selectedItemsTextStyle: TextStyle(
-                                    color: textColor,
-                                    backgroundColor: appColorScheme.success,
-                                  ),
-                                  selectedColor: appColorScheme.success,
-                                  title: const Text("Select one or more"),
-                                  onConfirm: (value) {
-                                    return context
+                                  child: MultiSelectDialogField(
+                                    items: [
+                                      {
+                                        "index": 0,
+                                        "text": "${lang.forward} (DR)"
+                                      },
+                                      {
+                                        "index": 1,
+                                        "text": "${lang.forward} (CR)"
+                                      },
+                                      {"index": 2, "text": "${lang.jan} (DR)"},
+                                      {"index": 3, "text": "${lang.jan} (CR)"},
+                                      {"index": 4, "text": "${lang.feb} (DR)"},
+                                      {"index": 5, "text": "${lang.feb} (CR)"},
+                                      {"index": 6, "text": "${lang.mar} (DR)"},
+                                      {"index": 7, "text": "${lang.mar} (CR)"},
+                                      {"index": 8, "text": "${lang.apr} (DR)"},
+                                      {"index": 9, "text": "${lang.apr} (CR)"},
+                                      {"index": 10, "text": "${lang.may} (DR)"},
+                                      {"index": 11, "text": "${lang.may} (CR)"},
+                                      {"index": 12, "text": "${lang.jun} (DR)"},
+                                      {"index": 13, "text": "${lang.jun} (CR)"},
+                                      {"index": 14, "text": "${lang.jul} (DR)"},
+                                      {"index": 15, "text": "${lang.jul} (CR)"},
+                                      {"index": 16, "text": "${lang.aug} (DR)"},
+                                      {"index": 17, "text": "${lang.aug} (CR)"},
+                                      {"index": 18, "text": "${lang.sep} (DR)"},
+                                      {"index": 19, "text": "${lang.sep} (CR)"},
+                                      {"index": 20, "text": "${lang.oct} (DR)"},
+                                      {"index": 21, "text": "${lang.oct} (CR)"},
+                                      {"index": 22, "text": "${lang.nov} (DR)"},
+                                      {"index": 23, "text": "${lang.nov} (CR)"},
+                                      {"index": 24, "text": "${lang.dec} (DR)"},
+                                      {"index": 25, "text": "${lang.dec} (CR)"},
+                                      {
+                                        "index": 26,
+                                        "text": "${lang.total} (DR)"
+                                      },
+                                      {
+                                        "index": 27,
+                                        "text": "${lang.total} (CR)"
+                                      },
+                                      {"index": 28, "text": lang.ending},
+                                    ]
+                                        .map((e) => MultiSelectItem(
+                                            e["index"], e["text"] as String))
+                                        .toList(),
+                                    initialValue: state.columnSelected,
+                                    listType: MultiSelectListType.CHIP,
+                                    checkColor: appColorScheme.error,
+                                    buttonText:
+                                        const Text("Tap to select one or more"),
+                                    chipDisplay: MultiSelectChipDisplay(
+                                      chipColor: appColorScheme.success,
+                                      textStyle:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                    itemsTextStyle: TextStyle(
+                                      color: textColor,
+                                    ),
+                                    selectedItemsTextStyle: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                    selectedColor: appColorScheme.secondary,
+                                    title: const Text("Select one or more"),
+                                    onConfirm: (value) => context
                                         .read<
                                             ReportFinancialStatementListBloc>()
                                         .add(
                                             ReportFinancialStatementListAccountBalanceColumnSelected(
-                                                value));
-                                  },
+                                                value)),
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: kDefaultPadding * 2.0),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        final double dataTableWidth = max(
-                                            kScreenWidthSm,
-                                            constraints.maxWidth);
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        bottom: kDefaultPadding * 2.0),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      child: LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          final double dataTableWidth = max(
+                                              kScreenWidthSm,
+                                              constraints.maxWidth);
 
-                                        return Scrollbar(
-                                          controller:
-                                              dataTableHorizontalScrollController2,
-                                          thumbVisibility: true,
-                                          trackVisibility: true,
-                                          child: SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
+                                          return Scrollbar(
                                             controller:
                                                 dataTableHorizontalScrollController2,
-                                            child: SizedBox(
-                                              width: dataTableWidth,
-                                              child: Theme(
-                                                  data: themeData.copyWith(
-                                                    cardTheme: appDataTableTheme
-                                                        .cardTheme,
-                                                    dataTableTheme:
-                                                        appDataTableTheme
-                                                            .dataTableThemeData,
-                                                  ),
-                                                  child: PaginatedDataTable(
-                                                    key: tableKey2,
-                                                    // rowsPerPage: 5,
-                                                    showFirstLastButtons: false,
-                                                    columns: [
-                                                      DataColumn(
-                                                          label: Text(lang
-                                                              .accountGroup)),
-                                                      if (state
-                                                          .isForwardDrShow) ...[
-                                                        const DataColumn(
-                                                          label: Text(
-                                                              "ยอดยกมา (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isForwardCrShow) ...[
-                                                        const DataColumn(
-                                                          label: Text(
-                                                              "ยอดยกมา (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isJanDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("มค (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isJanCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("มค (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isFebDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("กพ (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isFebCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("กพ (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isMarDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("มีค (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isMarCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("มีค (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isAprDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("เมย (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isAprCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("เมย (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isMayDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("พค (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isMayCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("พค (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isJunDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("มิย (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isJunCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("มิย (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isJulDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("กค (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isJulCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("กค (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isAugDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("สค (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isAugCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("สค (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isSepDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("กย (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isSepCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("กย (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isOctDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("ตค (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isOctCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("ตค (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isNovDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("พศ (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isNovCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("พศ (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isDecDrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("ธค (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isDecCrShow) ...[
-                                                        const DataColumn(
-                                                          label:
-                                                              Text("ธค (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isTotalDrShow) ...[
-                                                        const DataColumn(
-                                                          label: Text(
-                                                              "Total (DR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isTotalCrShow) ...[
-                                                        const DataColumn(
-                                                          label: Text(
-                                                              "Total (CR)"),
-                                                        ),
-                                                      ],
-                                                      if (state
-                                                          .isBalanceShow) ...[
-                                                        const DataColumn(
-                                                          label: Text("Ending"),
-                                                        ),
-                                                      ],
-                                                      const DataColumn(
-                                                          label: Text('...')),
-                                                    ],
-                                                    source:
-                                                        AccountBalanceDataSource(
-                                                      state: state,
-                                                      data:
-                                                          state.accountBalances,
-                                                      context: context,
-                                                      onDetailButtonPressed:
-                                                          (data) => context
-                                                              .read<
-                                                                  ReportFinancialStatementListBloc>()
-                                                              .add(ReportFinancialStatementListPreviewAccountBalance(
-                                                                  data.accountGroup)),
+                                            thumbVisibility: true,
+                                            trackVisibility: true,
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              controller:
+                                                  dataTableHorizontalScrollController2,
+                                              child: SizedBox(
+                                                width: dataTableWidth,
+                                                child: Theme(
+                                                    data: themeData.copyWith(
+                                                      cardTheme:
+                                                          appDataTableTheme
+                                                              .cardTheme,
+                                                      dataTableTheme:
+                                                          appDataTableTheme
+                                                              .dataTableThemeData,
                                                     ),
-                                                  )),
+                                                    child: PaginatedDataTable(
+                                                      key: tableKey2,
+                                                      // rowsPerPage: 5,
+                                                      showFirstLastButtons:
+                                                          false,
+                                                      columns: [
+                                                        DataColumn(
+                                                            label: Text(lang
+                                                                .accountGroup)),
+                                                        if (state
+                                                            .isForwardDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.forward} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isForwardCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.forward} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isJanDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.jan} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isJanCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.jan} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isFebDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.feb} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isFebCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.feb} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isMarDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.mar} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isMarCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.mar} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isAprDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.apr} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isAprCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.apr} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isMayDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.may} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isMayCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.may} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isJunDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.jun} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isJunCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.jun} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isJulDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.jul} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isJulCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.jul} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isAugDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.aug} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isAugCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.aug} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isSepDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.sep} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isSepCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.sep} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isOctDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.oct} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isOctCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.oct} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isNovDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.nov} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isNovCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.nov} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isDecDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.dec} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isDecCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.dec} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isTotalDrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.total} (DR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isTotalCrShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                "${lang.total} (CR)"),
+                                                          ),
+                                                        ],
+                                                        if (state
+                                                            .isBalanceShow) ...[
+                                                          DataColumn(
+                                                            label: Text(
+                                                                lang.ending),
+                                                          ),
+                                                        ],
+                                                        const DataColumn(
+                                                            label: Text('...')),
+                                                      ],
+                                                      source:
+                                                          AccountBalanceDataSource(
+                                                        state: state,
+                                                        data: state
+                                                            .accountBalances,
+                                                        context: context,
+                                                        onDetailButtonPressed:
+                                                            (data) => context
+                                                                .read<
+                                                                    ReportFinancialStatementListBloc>()
+                                                                .add(ReportFinancialStatementListPreviewAccountBalance(
+                                                                    data.accountGroup)),
+                                                      ),
+                                                    )),
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                           // Container(),
                         ],
@@ -1053,7 +1107,7 @@ class AccountBalanceDataSource extends DataTableSource {
     AccountBalance row = data[index];
     return DataRow(
       cells: [
-        DataCell(Text(lang.getAccoutGroup(row.accountGroup))),
+        DataCell(Text(lang.getAccountGroup(row.accountGroup))),
         if (state.isForwardDrShow) ...[
           DataCell(Align(
               alignment: Alignment.centerRight,
@@ -1248,6 +1302,7 @@ class PreviewAccountBalance extends StatelessWidget {
     final themeData = Theme.of(context);
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
     final dataTableHorizontalScrollController = ScrollController();
+    final lang = Lang.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -1284,155 +1339,155 @@ class PreviewAccountBalance extends StatelessWidget {
                                 data.child.length > 10 ? 10 : data.child.length,
                             showFirstLastButtons: true,
                             columns: [
-                              const DataColumn(
-                                label: Text("Account No"),
+                              DataColumn(
+                                label: Text(lang.accountNo),
                               ),
-                              const DataColumn(
-                                label: Text("Account Name"),
+                              DataColumn(
+                                label: Text(lang.accountName),
                               ),
                               if (state.isForwardDrShow) ...[
-                                const DataColumn(
-                                  label: Text("ยอดยกมา (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.forward} (DR)"),
                                 ),
                               ],
                               if (state.isForwardCrShow) ...[
-                                const DataColumn(
-                                  label: Text("ยอดยกมา (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.forward} (CR)"),
                                 ),
                               ],
                               if (state.isJanDrShow) ...[
-                                const DataColumn(
-                                  label: Text("มค (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.jan} (DR)"),
                                 ),
                               ],
                               if (state.isJanCrShow) ...[
-                                const DataColumn(
-                                  label: Text("มค (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.jan} (CR)"),
                                 ),
                               ],
                               if (state.isFebDrShow) ...[
-                                const DataColumn(
-                                  label: Text("กพ (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.feb} (DR)"),
                                 ),
                               ],
                               if (state.isFebCrShow) ...[
-                                const DataColumn(
-                                  label: Text("กพ (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.feb} (CR)"),
                                 ),
                               ],
                               if (state.isMarDrShow) ...[
-                                const DataColumn(
-                                  label: Text("มีค (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.mar} (DR)"),
                                 ),
                               ],
                               if (state.isMarCrShow) ...[
-                                const DataColumn(
-                                  label: Text("มีค (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.mar} (CR)"),
                                 ),
                               ],
                               if (state.isAprDrShow) ...[
-                                const DataColumn(
-                                  label: Text("เมย (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.apr} (DR)"),
                                 ),
                               ],
                               if (state.isAprCrShow) ...[
-                                const DataColumn(
-                                  label: Text("เมย (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.apr} (CR)"),
                                 ),
                               ],
                               if (state.isMayDrShow) ...[
-                                const DataColumn(
-                                  label: Text("พค (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.may} (DR)"),
                                 ),
                               ],
                               if (state.isMayCrShow) ...[
-                                const DataColumn(
-                                  label: Text("พค (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.may} (CR)"),
                                 ),
                               ],
                               if (state.isJunDrShow) ...[
-                                const DataColumn(
-                                  label: Text("มิย (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.jun} (DR)"),
                                 ),
                               ],
                               if (state.isJunCrShow) ...[
-                                const DataColumn(
-                                  label: Text("มิย (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.jun} (CR)"),
                                 ),
                               ],
                               if (state.isJulDrShow) ...[
-                                const DataColumn(
-                                  label: Text("กค (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.jul} (DR)"),
                                 ),
                               ],
                               if (state.isJulCrShow) ...[
-                                const DataColumn(
-                                  label: Text("กค (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.jul} (CR)"),
                                 ),
                               ],
                               if (state.isAugDrShow) ...[
-                                const DataColumn(
-                                  label: Text("สค (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.aug} (DR)"),
                                 ),
                               ],
                               if (state.isAugCrShow) ...[
-                                const DataColumn(
-                                  label: Text("สค (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.aug} (CR)"),
                                 ),
                               ],
                               if (state.isSepDrShow) ...[
-                                const DataColumn(
-                                  label: Text("กย (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.sep} (DR)"),
                                 ),
                               ],
                               if (state.isSepCrShow) ...[
-                                const DataColumn(
-                                  label: Text("กย (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.sep} (CR)"),
                                 ),
                               ],
                               if (state.isOctDrShow) ...[
-                                const DataColumn(
-                                  label: Text("ตค (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.oct} (DR)"),
                                 ),
                               ],
                               if (state.isOctCrShow) ...[
-                                const DataColumn(
-                                  label: Text("ตค (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.oct} (CR)"),
                                 ),
                               ],
                               if (state.isNovDrShow) ...[
-                                const DataColumn(
-                                  label: Text("พศ (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.nov} (DR)"),
                                 ),
                               ],
                               if (state.isNovCrShow) ...[
-                                const DataColumn(
-                                  label: Text("พศ (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.nov} (CR)"),
                                 ),
                               ],
                               if (state.isDecDrShow) ...[
-                                const DataColumn(
-                                  label: Text("ธค (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.dec} (DR)"),
                                 ),
                               ],
                               if (state.isDecCrShow) ...[
-                                const DataColumn(
-                                  label: Text("ธค (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.dec} (CR)"),
                                 ),
                               ],
                               if (state.isTotalDrShow) ...[
-                                const DataColumn(
-                                  label: Text("Total (DR)"),
+                                DataColumn(
+                                  label: Text("${lang.total} (DR)"),
                                 ),
                               ],
                               if (state.isTotalCrShow) ...[
-                                const DataColumn(
-                                  label: Text("Total (CR)"),
+                                DataColumn(
+                                  label: Text("${lang.total} (CR)"),
                                 ),
                               ],
                               if (state.isBalanceShow) ...[
-                                const DataColumn(
-                                  label: Text("Ending"),
+                                DataColumn(
+                                  label: Text(lang.ending),
                                 ),
                               ],
                             ],

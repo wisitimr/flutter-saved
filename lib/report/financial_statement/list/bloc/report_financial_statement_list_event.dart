@@ -74,3 +74,22 @@ final class ReportFinancialStatementListAccountBalanceColumnSelected
   @override
   List<Object> get props => [columns];
 }
+
+final class ReportFinancialStatementListAccountBalanceColumnSelectedAll
+    extends ReportFinancialStatementListEvent {
+  const ReportFinancialStatementListAccountBalanceColumnSelectedAll(
+      this.isSelectAll);
+
+  final bool isSelectAll;
+
+  @override
+  List<Object> get props => [isSelectAll];
+}
+
+final class ReportFinancialStatementListAccountBalanceColumnSelectedDefault
+    extends ReportFinancialStatementListEvent {
+  const ReportFinancialStatementListAccountBalanceColumnSelectedDefault();
+
+  @override
+  List<Object> get props => [];
+}

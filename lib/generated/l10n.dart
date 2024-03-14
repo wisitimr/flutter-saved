@@ -50,7 +50,7 @@ class Lang {
     return Localizations.of<Lang>(context, Lang);
   }
 
-  String getAccoutGroup(String type) {
+  String getAccountGroup(String type) {
     return Intl.message(
       '',
       name: type,
@@ -78,6 +78,15 @@ class Lang {
     );
   }
 
+  String get accountNo {
+    return Intl.message(
+      'Account No',
+      name: 'accountNo',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get accountName {
     return Intl.message(
       'Account Name',
@@ -91,6 +100,141 @@ class Lang {
     return Intl.message(
       'Account Group',
       name: 'accountGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get forward {
+    return Intl.message(
+      'Forward',
+      name: 'forward',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get jan {
+    return Intl.message(
+      'Jan',
+      name: 'jan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get feb {
+    return Intl.message(
+      'Fec',
+      name: 'feb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mar {
+    return Intl.message(
+      'Mar',
+      name: 'mar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get apr {
+    return Intl.message(
+      'Apr',
+      name: 'apr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get may {
+    return Intl.message(
+      'May',
+      name: 'may',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get jun {
+    return Intl.message(
+      'Jun',
+      name: 'jun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get jul {
+    return Intl.message(
+      'Jul',
+      name: 'jul',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get aug {
+    return Intl.message(
+      'Aug',
+      name: 'aug',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get sep {
+    return Intl.message(
+      'Sep',
+      name: 'sep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get oct {
+    return Intl.message(
+      'Oct',
+      name: 'oct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get nov {
+    return Intl.message(
+      'Nov',
+      name: 'nov',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get dec {
+    return Intl.message(
+      'Dec',
+      name: 'dec',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get total {
+    return Intl.message(
+      'Total',
+      name: 'total',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get ending {
+    return Intl.message(
+      'Ending',
+      name: 'ending',
       desc: '',
       args: [],
     );
@@ -1451,6 +1595,33 @@ class Lang {
     return Intl.message(
       'Enable',
       name: 'enable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get selectAll {
+    return Intl.message(
+      'Select All',
+      name: 'selectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get selectDefault {
+    return Intl.message(
+      'Select Default',
+      name: 'selectDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get unSelectAll {
+    return Intl.message(
+      'Un Select All',
+      name: 'unSelectAll',
       desc: '',
       args: [],
     );

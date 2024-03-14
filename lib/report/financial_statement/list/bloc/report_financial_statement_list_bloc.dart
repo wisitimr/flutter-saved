@@ -23,6 +23,10 @@ class ReportFinancialStatementListBloc extends Bloc<
     on<ReportFinancialStatementListSearchChanged>(_onSearchChanged);
     on<ReportFinancialStatementListAccountBalanceColumnSelected>(
         _onColumnSelected);
+    on<ReportFinancialStatementListAccountBalanceColumnSelectedAll>(
+        _onColumnSelectedAll);
+    on<ReportFinancialStatementListAccountBalanceColumnSelectedDefault>(
+        _onColumnSelectedDefault);
     on<ReportFinancialStatementListDownload>(_onDownloadFinancialStatement);
   }
 
@@ -601,6 +605,186 @@ class ReportFinancialStatementListBloc extends Bloc<
         isTotalDrShow: isTotalDrShow,
         isTotalCrShow: isTotalCrShow,
         isBalanceShow: isBalanceShow,
+      ),
+    );
+  }
+
+  void _onColumnSelectedAll(
+    ReportFinancialStatementListAccountBalanceColumnSelectedAll event,
+    Emitter<ReportFinancialStatementListState> emit,
+  ) {
+    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    bool isForwardDrShow = false;
+    bool isForwardCrShow = false;
+    bool isJanDrShow = false;
+    bool isJanCrShow = false;
+    bool isFebDrShow = false;
+    bool isFebCrShow = false;
+    bool isMarDrShow = false;
+    bool isMarCrShow = false;
+    bool isAprDrShow = false;
+    bool isAprCrShow = false;
+    bool isMayDrShow = false;
+    bool isMayCrShow = false;
+    bool isJunDrShow = false;
+    bool isJunCrShow = false;
+    bool isJulDrShow = false;
+    bool isJulCrShow = false;
+    bool isAugDrShow = false;
+    bool isAugCrShow = false;
+    bool isSepDrShow = false;
+    bool isSepCrShow = false;
+    bool isOctDrShow = false;
+    bool isOctCrShow = false;
+    bool isNovDrShow = false;
+    bool isNovCrShow = false;
+    bool isDecDrShow = false;
+    bool isDecCrShow = false;
+    bool isTotalDrShow = false;
+    bool isTotalCrShow = false;
+    bool isBalanceShow = false;
+    List columns = [];
+    if (event.isSelectAll) {
+      for (var i = 0; i <= 28; i++) {
+        columns.add(i);
+      }
+      isForwardDrShow = true;
+      isForwardCrShow = true;
+      isJanDrShow = true;
+      isJanCrShow = true;
+      isFebDrShow = true;
+      isFebCrShow = true;
+      isMarDrShow = true;
+      isMarCrShow = true;
+      isAprDrShow = true;
+      isAprCrShow = true;
+      isMayDrShow = true;
+      isMayCrShow = true;
+      isJunDrShow = true;
+      isJunCrShow = true;
+      isJulDrShow = true;
+      isJulCrShow = true;
+      isAugDrShow = true;
+      isAugCrShow = true;
+      isSepDrShow = true;
+      isSepCrShow = true;
+      isOctDrShow = true;
+      isOctCrShow = true;
+      isNovDrShow = true;
+      isNovCrShow = true;
+      isDecDrShow = true;
+      isDecCrShow = true;
+      isTotalDrShow = true;
+      isTotalCrShow = true;
+      isBalanceShow = true;
+    } else {
+      isForwardDrShow = false;
+      isForwardCrShow = false;
+      isJanDrShow = false;
+      isJanCrShow = false;
+      isFebDrShow = false;
+      isFebCrShow = false;
+      isMarDrShow = false;
+      isMarCrShow = false;
+      isAprDrShow = false;
+      isAprCrShow = false;
+      isMayDrShow = false;
+      isMayCrShow = false;
+      isJunDrShow = false;
+      isJunCrShow = false;
+      isJulDrShow = false;
+      isJulCrShow = false;
+      isAugDrShow = false;
+      isAugCrShow = false;
+      isSepDrShow = false;
+      isSepCrShow = false;
+      isOctDrShow = false;
+      isOctCrShow = false;
+      isNovDrShow = false;
+      isNovCrShow = false;
+      isDecDrShow = false;
+      isDecCrShow = false;
+      isTotalDrShow = false;
+      isTotalCrShow = false;
+      isBalanceShow = false;
+    }
+    emit(
+      state.copyWith(
+        status: ReportFinancialStatementListStatus.success,
+        isSelectAll: event.isSelectAll,
+        columnSelected: columns,
+        isForwardDrShow: isForwardDrShow,
+        isForwardCrShow: isForwardCrShow,
+        isJanDrShow: isJanDrShow,
+        isJanCrShow: isJanCrShow,
+        isFebDrShow: isFebDrShow,
+        isFebCrShow: isFebCrShow,
+        isMarDrShow: isMarDrShow,
+        isMarCrShow: isMarCrShow,
+        isAprDrShow: isAprDrShow,
+        isAprCrShow: isAprCrShow,
+        isMayDrShow: isMayDrShow,
+        isMayCrShow: isMayCrShow,
+        isJunDrShow: isJunDrShow,
+        isJunCrShow: isJunCrShow,
+        isJulDrShow: isJulDrShow,
+        isJulCrShow: isJulCrShow,
+        isAugDrShow: isAugDrShow,
+        isAugCrShow: isAugCrShow,
+        isSepDrShow: isSepDrShow,
+        isSepCrShow: isSepCrShow,
+        isOctDrShow: isOctDrShow,
+        isOctCrShow: isOctCrShow,
+        isNovDrShow: isNovDrShow,
+        isNovCrShow: isNovCrShow,
+        isDecDrShow: isDecDrShow,
+        isDecCrShow: isDecCrShow,
+        isTotalDrShow: isTotalDrShow,
+        isTotalCrShow: isTotalCrShow,
+        isBalanceShow: isBalanceShow,
+      ),
+    );
+  }
+
+  void _onColumnSelectedDefault(
+    ReportFinancialStatementListAccountBalanceColumnSelectedDefault event,
+    Emitter<ReportFinancialStatementListState> emit,
+  ) {
+    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    emit(
+      state.copyWith(
+        status: ReportFinancialStatementListStatus.success,
+        isSelectAll: false,
+        columnSelected: [0, 1, 26, 27, 28],
+        isForwardDrShow: true,
+        isForwardCrShow: true,
+        isJanDrShow: false,
+        isJanCrShow: false,
+        isFebDrShow: false,
+        isFebCrShow: false,
+        isMarDrShow: false,
+        isMarCrShow: false,
+        isAprDrShow: false,
+        isAprCrShow: false,
+        isMayDrShow: false,
+        isMayCrShow: false,
+        isJunDrShow: false,
+        isJunCrShow: false,
+        isJulDrShow: false,
+        isJulCrShow: false,
+        isAugDrShow: false,
+        isAugCrShow: false,
+        isSepDrShow: false,
+        isSepCrShow: false,
+        isOctDrShow: false,
+        isOctCrShow: false,
+        isNovDrShow: false,
+        isNovCrShow: false,
+        isDecDrShow: false,
+        isDecCrShow: false,
+        isTotalDrShow: true,
+        isTotalCrShow: true,
+        isBalanceShow: true,
       ),
     );
   }

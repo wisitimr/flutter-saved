@@ -105,6 +105,7 @@ final class ReportFinancialStatementListState extends Equatable {
     this.isTotalDrShow = true,
     this.isTotalCrShow = true,
     this.isBalanceShow = true,
+    this.isSelectAll = false,
   });
 
   final List<ReportFinancialStatementListModel> ledgers;
@@ -151,6 +152,7 @@ final class ReportFinancialStatementListState extends Equatable {
   final bool isTotalDrShow;
   final bool isTotalCrShow;
   final bool isBalanceShow;
+  final bool isSelectAll;
 
   ReportFinancialStatementListState copyWith({
     ReportFinancialStatementListStatus? status,
@@ -197,6 +199,7 @@ final class ReportFinancialStatementListState extends Equatable {
     bool? isTotalDrShow,
     bool? isTotalCrShow,
     bool? isBalanceShow,
+    bool? isSelectAll,
   }) {
     return ReportFinancialStatementListState(
       status: status ?? this.status,
@@ -243,6 +246,7 @@ final class ReportFinancialStatementListState extends Equatable {
       isTotalDrShow: isTotalDrShow ?? this.isTotalDrShow,
       isTotalCrShow: isTotalCrShow ?? this.isTotalCrShow,
       isBalanceShow: isBalanceShow ?? this.isBalanceShow,
+      isSelectAll: isSelectAll ?? this.isSelectAll,
     );
   }
 
@@ -292,6 +296,7 @@ final class ReportFinancialStatementListState extends Equatable {
         isTotalDrShow,
         isTotalCrShow,
         isBalanceShow,
+        isSelectAll,
       ];
 }
 

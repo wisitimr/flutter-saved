@@ -123,7 +123,7 @@ class _ReportFinancialStatementListPageState
                       case ReportFinancialStatementListStatus.ledgerDialog:
                         return const ReportFinancialStatementList();
                       case ReportFinancialStatementListStatus
-                            .accountBlanceDialog:
+                            .accountBalanceDialog:
                         return const ReportFinancialStatementList();
                       case ReportFinancialStatementListStatus.success:
                         return const ReportFinancialStatementList();
@@ -156,18 +156,18 @@ class ReportFinancialStatementList extends StatelessWidget {
     final tableKey2 = GlobalKey<PaginatedDataTableState>();
     final fieldText = TextEditingController();
 
-    Color tabColor;
+    // Color tabColor;
     Color borderColor;
     Color textColor;
     switch (Theme.of(context).brightness) {
       case Brightness.light:
         borderColor = Colors.grey.shade700;
         textColor = Colors.black;
-        tabColor = Colors.black12;
+      // tabColor = Colors.black12;
       case Brightness.dark:
         borderColor = Colors.white70;
         textColor = Colors.white;
-        tabColor = Colors.white12;
+      // tabColor = Colors.white12;
     }
     return BlocBuilder<ReportFinancialStatementListBloc,
         ReportFinancialStatementListState>(
@@ -928,6 +928,7 @@ class PreviewLedgerAccount extends StatelessWidget {
     final themeData = Theme.of(context);
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
     final dataTableHorizontalScrollController = ScrollController();
+    final oCcy = NumberFormat("#,##0.00", "en_US");
 
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -979,12 +980,12 @@ class PreviewLedgerAccount extends StatelessWidget {
                               dataTableTheme:
                                   appDataTableTheme.dataTableThemeData,
                             ),
-                            child: PaginatedDataTable(
+                            child: DataTable(
                               key: key,
-                              rowsPerPage: data.accountDetail.length > 10
-                                  ? 10
-                                  : data.accountDetail.length,
-                              showFirstLastButtons: true,
+                              // rowsPerPage: data.accountDetail.length > 10
+                              //     ? 10
+                              //     : data.accountDetail.length,
+                              // showFirstLastButtons: true,
                               columns: [
                                 DataColumn(
                                   label: Text(lang.month),
@@ -1014,10 +1015,60 @@ class PreviewLedgerAccount extends StatelessWidget {
                                   textAlign: TextAlign.right,
                                 )),
                               ],
-                              source: LedgerAccountDataSource(
-                                data: data.accountDetail,
-                                context: context,
-                                onDetailButtonPressed: (data) {},
+                              rows: List.generate(
+                                data.accountDetail.length,
+                                (index) {
+                                  AccountDetail row = data.accountDetail[index];
+
+                                  double balance = 0;
+                                  if (index == 0 || row.detail == "รวม") {
+                                    balance = row.amountDr - row.amountCr;
+                                  } else {
+                                    if (row.date > 0) {
+                                      double preBalance = 0;
+                                      for (var i = 0; i < index; i++) {
+                                        AccountDetail p = data.accountDetail[i];
+                                        if (i == 0) {
+                                          preBalance =
+                                              (p.amountDr - p.amountCr);
+                                        } else {
+                                          preBalance = (preBalance +
+                                              p.amountDr -
+                                              p.amountCr);
+                                        }
+                                      }
+                                      balance = preBalance +
+                                          row.amountDr -
+                                          row.amountCr;
+                                    }
+                                  }
+                                  return DataRow(
+                                    cells: [
+                                      DataCell(Text(index > 0 &&
+                                              data.accountDetail[index - 1]
+                                                      .month ==
+                                                  row.month
+                                          ? ""
+                                          : row.month)),
+                                      DataCell(Text(row.date > 0
+                                          ? row.date.toString()
+                                          : '')),
+                                      DataCell(Text(row.detail)),
+                                      DataCell(Text(row.number)),
+                                      DataCell(Align(
+                                          alignment: Alignment.centerRight,
+                                          child:
+                                              Text(oCcy.format(row.amountDr)))),
+                                      DataCell(Align(
+                                          alignment: Alignment.centerRight,
+                                          child:
+                                              Text(oCcy.format(row.amountCr)))),
+                                      DataCell(Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Text(oCcy.format(balance)))),
+                                    ],
+                                  );
+                                },
                               ),
                             )),
                       ),
@@ -1031,71 +1082,6 @@ class PreviewLedgerAccount extends StatelessWidget {
       ),
     );
   }
-}
-
-class LedgerAccountDataSource extends DataTableSource {
-  final List<AccountDetail> data;
-  final BuildContext context;
-  final void Function(AccountDetail data) onDetailButtonPressed;
-  final oCcy = NumberFormat("#,##0.00", "en_US");
-
-  LedgerAccountDataSource({
-    required this.data,
-    required this.context,
-    required this.onDetailButtonPressed,
-  });
-
-  @override
-  DataRow? getRow(int index) {
-    if (index >= data.length) {
-      return null;
-    }
-    AccountDetail row = data[index];
-    double balance = 0;
-    if (index == 0 || row.detail == "รวม") {
-      balance = row.amountDr - row.amountCr;
-    } else {
-      if (row.date > 0) {
-        double preBalance = 0;
-        for (var i = 0; i < index; i++) {
-          AccountDetail p = data[i];
-          if (i == 0) {
-            preBalance = (p.amountDr - p.amountCr);
-          } else {
-            preBalance = (preBalance + p.amountDr - p.amountCr);
-          }
-        }
-        balance = preBalance + row.amountDr - row.amountCr;
-      }
-    }
-    return DataRow(
-      cells: [
-        DataCell(Text(
-            index > 0 && data[index - 1].month == row.month ? "" : row.month)),
-        DataCell(Text(row.date > 0 ? row.date.toString() : '')),
-        DataCell(Text(row.detail)),
-        DataCell(Text(row.number)),
-        DataCell(Align(
-            alignment: Alignment.centerRight,
-            child: Text(oCcy.format(row.amountDr)))),
-        DataCell(Align(
-            alignment: Alignment.centerRight,
-            child: Text(oCcy.format(row.amountCr)))),
-        DataCell(Align(
-            alignment: Alignment.centerRight,
-            child: Text(balance != 0 ? oCcy.format(balance) : ''))),
-      ],
-    );
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => data.length;
-
-  @override
-  int get selectedRowCount => 0;
 }
 
 class AccountBalanceDataSource extends DataTableSource {
@@ -1319,6 +1305,7 @@ class PreviewAccountBalance extends StatelessWidget {
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
     final dataTableHorizontalScrollController = ScrollController();
     final lang = Lang.of(context);
+    final oCcy = NumberFormat("#,##0.00", "en_US");
 
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -1349,11 +1336,11 @@ class PreviewAccountBalance extends StatelessWidget {
                             dataTableTheme:
                                 appDataTableTheme.dataTableThemeData,
                           ),
-                          child: PaginatedDataTable(
+                          child: DataTable(
                             key: key,
-                            rowsPerPage:
-                                data.child.length > 10 ? 10 : data.child.length,
-                            showFirstLastButtons: true,
+                            // rowsPerPage:
+                            //     data.child.length > 10 ? 10 : data.child.length,
+                            // showFirstLastButtons: true,
                             columns: [
                               DataColumn(
                                 label: Text(lang.accountNo),
@@ -1507,12 +1494,163 @@ class PreviewAccountBalance extends StatelessWidget {
                                 ),
                               ],
                             ],
-                            source: ChildAccountBalanceDataSource(
-                              state: state,
-                              data: data.child,
-                              context: context,
-                              onDetailButtonPressed: (data) {},
-                            ),
+                            rows: List.generate(data.child.length, (index) {
+                              ChildAccountBalance row = data.child[index];
+
+                              return DataRow(
+                                cells: [
+                                  DataCell(Text(row.accountCode)),
+                                  DataCell(Text(row.accountName)),
+                                  if (state.isForwardDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child:
+                                            Text(oCcy.format(row.forwardDr)))),
+                                  ],
+                                  if (state.isForwardCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child:
+                                            Text(oCcy.format(row.forwardCr)))),
+                                  ],
+                                  if (state.isJanDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.janDr)))),
+                                  ],
+                                  if (state.isJanCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.janCr)))),
+                                  ],
+                                  if (state.isFebDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.febDr)))),
+                                  ],
+                                  if (state.isFebCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.febCr)))),
+                                  ],
+                                  if (state.isMarDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.marDr)))),
+                                  ],
+                                  if (state.isMarCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.marCr)))),
+                                  ],
+                                  if (state.isAprDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.aprDr)))),
+                                  ],
+                                  if (state.isAprCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.aprCr)))),
+                                  ],
+                                  if (state.isMayDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.mayDr)))),
+                                  ],
+                                  if (state.isMayCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.mayCr)))),
+                                  ],
+                                  if (state.isJunDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.junDr)))),
+                                  ],
+                                  if (state.isJunCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.junCr)))),
+                                  ],
+                                  if (state.isJulDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.julDr)))),
+                                  ],
+                                  if (state.isJulCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.julCr)))),
+                                  ],
+                                  if (state.isAugDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.augDr)))),
+                                  ],
+                                  if (state.isAugCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.augCr)))),
+                                  ],
+                                  if (state.isSepDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.sepDr)))),
+                                  ],
+                                  if (state.isSepCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.sepCr)))),
+                                  ],
+                                  if (state.isOctDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.octDr)))),
+                                  ],
+                                  if (state.isOctCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.octCr)))),
+                                  ],
+                                  if (state.isNovDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.novDr)))),
+                                  ],
+                                  if (state.isNovCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.novCr)))),
+                                  ],
+                                  if (state.isDecDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.decDr)))),
+                                  ],
+                                  if (state.isDecCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.decCr)))),
+                                  ],
+                                  if (state.isTotalDrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.totalDr)))),
+                                  ],
+                                  if (state.isTotalCrShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.totalCr)))),
+                                  ],
+                                  if (state.isBalanceShow) ...[
+                                    DataCell(Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(oCcy.format(row.balance)))),
+                                  ],
+                                ],
+                              );
+                            }),
                           ),
                         ),
                       ),
@@ -1526,188 +1664,4 @@ class PreviewAccountBalance extends StatelessWidget {
       ),
     );
   }
-}
-
-class ChildAccountBalanceDataSource extends DataTableSource {
-  final ReportFinancialStatementListState state;
-  final List<ChildAccountBalance> data;
-  final BuildContext context;
-  final void Function(AccountDetail data) onDetailButtonPressed;
-  final oCcy = NumberFormat("#,##0.00", "en_US");
-
-  ChildAccountBalanceDataSource({
-    required this.state,
-    required this.data,
-    required this.context,
-    required this.onDetailButtonPressed,
-  });
-
-  @override
-  DataRow? getRow(int index) {
-    if (index >= data.length) {
-      return null;
-    }
-
-    ChildAccountBalance row = data[index];
-    return DataRow(
-      cells: [
-        DataCell(Text(row.accountCode)),
-        DataCell(Text(row.accountName)),
-        if (state.isForwardDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.forwardDr)))),
-        ],
-        if (state.isForwardCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.forwardCr)))),
-        ],
-        if (state.isJanDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.janDr)))),
-        ],
-        if (state.isJanCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.janCr)))),
-        ],
-        if (state.isFebDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.febDr)))),
-        ],
-        if (state.isFebCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.febCr)))),
-        ],
-        if (state.isMarDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.marDr)))),
-        ],
-        if (state.isMarCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.marCr)))),
-        ],
-        if (state.isAprDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.aprDr)))),
-        ],
-        if (state.isAprCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.aprCr)))),
-        ],
-        if (state.isMayDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.mayDr)))),
-        ],
-        if (state.isMayCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.mayCr)))),
-        ],
-        if (state.isJunDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.junDr)))),
-        ],
-        if (state.isJunCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.junCr)))),
-        ],
-        if (state.isJulDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.julDr)))),
-        ],
-        if (state.isJulCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.julCr)))),
-        ],
-        if (state.isAugDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.augDr)))),
-        ],
-        if (state.isAugCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.augCr)))),
-        ],
-        if (state.isSepDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.sepDr)))),
-        ],
-        if (state.isSepCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.sepCr)))),
-        ],
-        if (state.isOctDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.octDr)))),
-        ],
-        if (state.isOctCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.octCr)))),
-        ],
-        if (state.isNovDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.novDr)))),
-        ],
-        if (state.isNovCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.novCr)))),
-        ],
-        if (state.isDecDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.decDr)))),
-        ],
-        if (state.isDecCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.decCr)))),
-        ],
-        if (state.isTotalDrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.totalDr)))),
-        ],
-        if (state.isTotalCrShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.totalCr)))),
-        ],
-        if (state.isBalanceShow) ...[
-          DataCell(Align(
-              alignment: Alignment.centerRight,
-              child: Text(oCcy.format(row.balance)))),
-        ],
-      ],
-    );
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => data.length;
-
-  @override
-  int get selectedRowCount => 0;
 }

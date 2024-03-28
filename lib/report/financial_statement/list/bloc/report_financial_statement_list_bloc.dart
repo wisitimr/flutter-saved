@@ -813,7 +813,7 @@ class ReportFinancialStatementListBloc extends Bloc<
     // print(a.accountGroup);
     emit(
       state.copyWith(
-        status: ReportFinancialStatementListStatus.accountBlanceDialog,
+        status: ReportFinancialStatementListStatus.accountBalanceDialog,
         accountBalance: state.accountBalances.firstWhere(
             (element) => element.accountGroup == event.accountGroup),
       ),

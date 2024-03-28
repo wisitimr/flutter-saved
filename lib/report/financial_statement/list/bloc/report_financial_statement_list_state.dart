@@ -6,7 +6,7 @@ enum ReportFinancialStatementListStatus {
   failure,
   downloaded,
   ledgerDialog,
-  accountBlanceDialog,
+  accountBalanceDialog,
 }
 
 extension ReportFinancialStatementListStatusX
@@ -19,7 +19,7 @@ extension ReportFinancialStatementListStatusX
   bool get isShowLedgerDialog =>
       this == ReportFinancialStatementListStatus.ledgerDialog;
   bool get isShowAccountBlance =>
-      this == ReportFinancialStatementListStatus.accountBlanceDialog;
+      this == ReportFinancialStatementListStatus.accountBalanceDialog;
 }
 
 @immutable

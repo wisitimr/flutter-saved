@@ -1,4 +1,5 @@
-import 'package:findigitalservice/report/financial_statement/list/view/view.dart';
+import 'package:findigitalservice/report/ledger_account/ledger_account.dart';
+import 'package:findigitalservice/report/tb12/tb12.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:findigitalservice/account/form/view/account_form_page.dart';
@@ -36,9 +37,7 @@ class RouteUri {
   static const String daybookDetailForm = '/daybook-detail-from';
   static const String report = '/report';
   static const String ledgerAccount = '/ledger';
-  static const String ledgerAccountForn = '/ledger-form';
-  static const String financialStatement = '/financial/statement';
-  static const String financialStatementForn = '/financial/statement-form';
+  static const String tb12 = '/tb12';
   static const String user = '/user';
   static const String userForm = '/user-form';
   static const String userCompanyForn = '/user-company-form';
@@ -274,21 +273,23 @@ GoRouter appRouter(AppProvider provider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.report + RouteUri.financialStatement,
+        path: RouteUri.report + RouteUri.ledgerAccount,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: ReportFinancialStatementListPage(
+          child: ReportLedgerAccountPage(
             year: state.queryParameters['year'] ?? '0',
           ),
         ),
       ),
-      // GoRoute(
-      //   path: RouteUri.report + RouteUri.financialStatementForn,
-      //   pageBuilder: (context, state) => NoTransitionPage<void>(
-      //     key: state.pageKey,
-      //     child: const FinancialStatementPage(),
-      //   ),
-      // ),
+      GoRoute(
+        path: RouteUri.report + RouteUri.tb12,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: ReportTB12Page(
+            year: state.queryParameters['year'] ?? '0',
+          ),
+        ),
+      ),
     ],
     redirect: (context, state) async {
       final provider = context.read<AppProvider>();

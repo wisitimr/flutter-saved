@@ -1,44 +1,40 @@
 import 'package:equatable/equatable.dart';
 import 'package:findigitalservice/core/core.dart';
 import 'package:findigitalservice/core/report.dart';
+import 'package:findigitalservice/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:findigitalservice/app_provider.dart';
-import 'package:findigitalservice/report/financial_statement/list/models/models.dart';
+import 'package:findigitalservice/report/tb12/models/models.dart';
 
-part 'report_financial_statement_list_event.dart';
-part 'report_financial_statement_list_state.dart';
+part 'tb12_event.dart';
+part 'tb12_state.dart';
 
-class ReportFinancialStatementListBloc extends Bloc<
-    ReportFinancialStatementListEvent, ReportFinancialStatementListState> {
-  ReportFinancialStatementListBloc(AppProvider provider)
+class ReportTB12Bloc extends Bloc<ReportTB12Event, ReportTB12State> {
+  ReportTB12Bloc(AppProvider provider, Lang lang)
       : _provider = provider,
-        super(ReportFinancialStatementListLoading()) {
-    on<ReportFinancialStatementListStarted>(_onStarted);
-    on<ReportFinancialStatementListYearSelected>(_onYearSelected);
-    on<ReportFinancialStatementListPreviewLedgerAccount>(
-        _onPreviewLedgerAccount);
-    on<ReportFinancialStatementListPreviewAccountBalance>(
-        _onPreviewAccountBalance);
-    on<ReportFinancialStatementListSearchChanged>(_onSearchChanged);
-    on<ReportFinancialStatementListAccountBalanceColumnSelected>(
-        _onColumnSelected);
-    on<ReportFinancialStatementListAccountBalanceColumnSelectedAll>(
-        _onColumnSelectedAll);
-    on<ReportFinancialStatementListAccountBalanceColumnSelectedDefault>(
-        _onColumnSelectedDefault);
-    on<ReportFinancialStatementListDownload>(_onDownloadFinancialStatement);
+        _lang = lang,
+        super(ReportTB12Loading()) {
+    on<ReportTB12Started>(_onStarted);
+    on<ReportTB12YearSelected>(_onYearSelected);
+    on<ReportTB12PreviewAccountBalance>(_onPreviewAccountBalance);
+    on<ReportTB12SearchChanged>(_onSearchChanged);
+    on<ReportTB12AccountBalanceColumnSelected>(_onColumnSelected);
+    on<ReportTB12AccountBalanceColumnSelectedAll>(_onColumnSelectedAll);
+    on<ReportTB12AccountBalanceColumnSelectedDefault>(_onColumnSelectedDefault);
+    on<ReportTB12Download>(_onDownloadFinancialStatement);
   }
 
   final AppProvider _provider;
+  final Lang _lang;
   final DaybookService _daybookService = DaybookService();
   final ReportService _reportService = ReportService();
 
   Future<void> _onStarted(
-    ReportFinancialStatementListStarted event,
-    Emitter<ReportFinancialStatementListState> emit,
+    ReportTB12Started event,
+    Emitter<ReportTB12State> emit,
   ) async {
-    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    emit(state.copyWith(status: ReportTB12Status.loading));
     try {
       final company = _provider.companyId;
       DateTime now = DateTime.now();
@@ -66,55 +62,9 @@ class ReportFinancialStatementListBloc extends Bloc<
           daybookCount = res['data']['count'];
         }
       }
-      final [ledgerRes, accountBalanceRes] = await Future.wait([
-        _reportService.findLedgerAccount(
-            _provider, company, yearSelected.toString()),
-        _reportService.findAccountBalance(
-            _provider, company, yearSelected.toString()),
-      ]);
-      List<ReportFinancialStatementListModel> ledgers = [];
+      final accountBalanceRes = await _reportService.findAccountBalance(
+          _provider, company, yearSelected.toString());
       List<AccountBalance> accountBalances = [];
-      if (ledgerRes['statusCode'] == 200) {
-        var data = ledgerRes['data'] != null ? ledgerRes['data'] as List : [];
-        if (data.isNotEmpty) {
-          ledgers = data
-              .map((item) => ReportFinancialStatementListModel.fromJson(item))
-              .toList();
-
-          double drBalance = 0;
-          double crBalance = 0;
-          for (var element in ledgers) {
-            for (var element2 in element.accountDetail) {
-              drBalance += element2.amountDr;
-              crBalance += element2.amountCr;
-            }
-            Map<String, dynamic> acc = {};
-            acc['code'] = element.code;
-            acc['name'] = "${element.code} - ${element.name}";
-            accounts.add(acc);
-            element.accountDetail.add(
-              const AccountDetail(
-                month: '',
-                date: 0,
-                detail: '',
-                number: '',
-                amountDr: 0,
-                amountCr: 0,
-              ),
-            );
-            element.accountDetail.add(
-              AccountDetail(
-                month: '',
-                date: 0,
-                detail: 'รวม',
-                number: '',
-                amountDr: drBalance,
-                amountCr: crBalance,
-              ),
-            );
-          }
-        }
-      }
       if (accountBalanceRes['statusCode'] == 200) {
         var data = accountBalanceRes['data'] != null
             ? accountBalanceRes['data'] as List
@@ -214,34 +164,32 @@ class ReportFinancialStatementListBloc extends Bloc<
       }
       emit(
         state.copyWith(
-          status: ReportFinancialStatementListStatus.success,
-          ledgers: ledgers,
-          ledgetFilter: ledgers,
+          status: ReportTB12Status.success,
           isHistory: false,
           yearList: y,
           year: yearSelected,
           accounts: accounts,
           count: daybookCount,
           accountBalances: accountBalances,
+          accountBalancesFilter: accountBalances,
           columnSelected: columns,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: ReportFinancialStatementListStatus.failure,
+        status: ReportTB12Status.failure,
         message: e.toString(),
       ));
     }
   }
 
   Future<void> _onYearSelected(
-    ReportFinancialStatementListYearSelected event,
-    Emitter<ReportFinancialStatementListState> emit,
+    ReportTB12YearSelected event,
+    Emitter<ReportTB12State> emit,
   ) async {
     try {
       // DateTime now = DateTime.now();
       final company = _provider.companyId;
-      List<ReportFinancialStatementListModel> ledgers = [];
       List<AccountBalance> accountBalances = [];
       List accounts = [];
       int daybookCount = 0;
@@ -256,53 +204,8 @@ class ReportFinancialStatementListBloc extends Bloc<
         if (count['statusCode'] == 200) {
           daybookCount = count['data']['count'];
         }
-        final [ledgerRes, accountBalanceRes] = await Future.wait([
-          _reportService.findLedgerAccount(
-              _provider, company, event.year.toString()),
-          _reportService.findAccountBalance(
-              _provider, company, event.year.toString()),
-        ]);
-        if (ledgerRes['statusCode'] == 200) {
-          var data = ledgerRes['data'] != null ? ledgerRes['data'] as List : [];
-          if (data.isNotEmpty) {
-            ledgers = data
-                .map((item) => ReportFinancialStatementListModel.fromJson(item))
-                .toList();
-
-            for (var element in ledgers) {
-              double drBalance = 0;
-              double crBalance = 0;
-              for (var element2 in element.accountDetail) {
-                drBalance += element2.amountDr;
-                crBalance += element2.amountCr;
-              }
-              Map<String, dynamic> acc = {};
-              acc['code'] = element.code;
-              acc['name'] = "${element.code} - ${element.name}";
-              accounts.add(acc);
-              element.accountDetail.add(
-                const AccountDetail(
-                  month: '',
-                  date: 0,
-                  detail: '',
-                  number: '',
-                  amountDr: 0,
-                  amountCr: 0,
-                ),
-              );
-              element.accountDetail.add(
-                AccountDetail(
-                  month: '',
-                  date: 0,
-                  detail: 'รวม',
-                  number: '',
-                  amountDr: drBalance,
-                  amountCr: crBalance,
-                ),
-              );
-            }
-          }
-        }
+        final accountBalanceRes = await _reportService.findAccountBalance(
+            _provider, company, event.year.toString());
         if (accountBalanceRes['statusCode'] == 200) {
           var data = accountBalanceRes['data'] != null
               ? accountBalanceRes['data'] as List
@@ -403,55 +306,53 @@ class ReportFinancialStatementListBloc extends Bloc<
       }
       emit(
         state.copyWith(
-          status: ReportFinancialStatementListStatus.success,
-          ledgers: ledgers,
-          ledgetFilter: ledgers,
+          status: ReportTB12Status.success,
           isHistory: false,
           year: event.year,
           count: daybookCount,
           accounts: accounts,
           accountBalances: accountBalances,
+          accountBalancesFilter: accountBalances,
           columnSelected: columns,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: ReportFinancialStatementListStatus.failure,
+        status: ReportTB12Status.failure,
         message: e.toString(),
       ));
     }
   }
 
   void _onSearchChanged(
-    ReportFinancialStatementListSearchChanged event,
-    Emitter<ReportFinancialStatementListState> emit,
+    ReportTB12SearchChanged event,
+    Emitter<ReportTB12State> emit,
   ) {
-    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    emit(state.copyWith(status: ReportTB12Status.loading));
     var filter = event.text.isNotEmpty
-        ? state.ledgers
-            .where(
-              (item) =>
-                  item.code.toLowerCase().contains(event.text.toLowerCase()) ||
-                  item.name.toLowerCase().contains(event.text.toLowerCase()),
-            )
+        ? state.accountBalances
+            .where((item) => _lang
+                .getAccountGroup(item.accountGroup)
+                .toLowerCase()
+                .contains(event.text.toLowerCase()))
             .toList()
-        : state.ledgers;
+        : state.accountBalances;
 
     emit(
       state.copyWith(
-        status: ReportFinancialStatementListStatus.success,
-        ledgers: state.ledgers,
-        ledgetFilter: filter,
+        status: ReportTB12Status.success,
+        accountBalances: state.accountBalances,
+        accountBalancesFilter: filter,
         searchText: event.text,
       ),
     );
   }
 
   void _onColumnSelected(
-    ReportFinancialStatementListAccountBalanceColumnSelected event,
-    Emitter<ReportFinancialStatementListState> emit,
+    ReportTB12AccountBalanceColumnSelected event,
+    Emitter<ReportTB12State> emit,
   ) {
-    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    emit(state.copyWith(status: ReportTB12Status.loading));
     bool isForwardDrShow = false;
     bool isForwardCrShow = false;
     bool isJanDrShow = false;
@@ -574,7 +475,7 @@ class ReportFinancialStatementListBloc extends Bloc<
     }
     emit(
       state.copyWith(
-        status: ReportFinancialStatementListStatus.success,
+        status: ReportTB12Status.success,
         columnSelected: event.columns,
         isForwardDrShow: isForwardDrShow,
         isForwardCrShow: isForwardCrShow,
@@ -610,10 +511,10 @@ class ReportFinancialStatementListBloc extends Bloc<
   }
 
   void _onColumnSelectedAll(
-    ReportFinancialStatementListAccountBalanceColumnSelectedAll event,
-    Emitter<ReportFinancialStatementListState> emit,
+    ReportTB12AccountBalanceColumnSelectedAll event,
+    Emitter<ReportTB12State> emit,
   ) {
-    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    emit(state.copyWith(status: ReportTB12Status.loading));
     bool isForwardDrShow = false;
     bool isForwardCrShow = false;
     bool isJanDrShow = false;
@@ -710,7 +611,7 @@ class ReportFinancialStatementListBloc extends Bloc<
     }
     emit(
       state.copyWith(
-        status: ReportFinancialStatementListStatus.success,
+        status: ReportTB12Status.success,
         isSelectAll: event.isSelectAll,
         columnSelected: columns,
         isForwardDrShow: isForwardDrShow,
@@ -747,13 +648,13 @@ class ReportFinancialStatementListBloc extends Bloc<
   }
 
   void _onColumnSelectedDefault(
-    ReportFinancialStatementListAccountBalanceColumnSelectedDefault event,
-    Emitter<ReportFinancialStatementListState> emit,
+    ReportTB12AccountBalanceColumnSelectedDefault event,
+    Emitter<ReportTB12State> emit,
   ) {
-    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    emit(state.copyWith(status: ReportTB12Status.loading));
     emit(
       state.copyWith(
-        status: ReportFinancialStatementListStatus.success,
+        status: ReportTB12Status.success,
         isSelectAll: false,
         columnSelected: [0, 1, 26, 27, 28],
         isForwardDrShow: true,
@@ -789,31 +690,17 @@ class ReportFinancialStatementListBloc extends Bloc<
     );
   }
 
-  void _onPreviewLedgerAccount(
-    ReportFinancialStatementListPreviewLedgerAccount event,
-    Emitter<ReportFinancialStatementListState> emit,
-  ) {
-    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
-    emit(
-      state.copyWith(
-        status: ReportFinancialStatementListStatus.ledgerDialog,
-        ledger:
-            state.ledgers.firstWhere((element) => element.code == event.code),
-      ),
-    );
-  }
-
   void _onPreviewAccountBalance(
-    ReportFinancialStatementListPreviewAccountBalance event,
-    Emitter<ReportFinancialStatementListState> emit,
+    ReportTB12PreviewAccountBalance event,
+    Emitter<ReportTB12State> emit,
   ) {
-    emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    emit(state.copyWith(status: ReportTB12Status.loading));
     // var a = state.accountBalances
     //     .firstWhere((element) => element.accountGroup == event.accountGroup);
     // print(a.accountGroup);
     emit(
       state.copyWith(
-        status: ReportFinancialStatementListStatus.accountBalanceDialog,
+        status: ReportTB12Status.accountBalanceDialog,
         accountBalance: state.accountBalances.firstWhere(
             (element) => element.accountGroup == event.accountGroup),
       ),
@@ -821,21 +708,21 @@ class ReportFinancialStatementListBloc extends Bloc<
   }
 
   Future<void> _onDownloadFinancialStatement(
-    ReportFinancialStatementListDownload event,
-    Emitter<ReportFinancialStatementListState> emit,
+    ReportTB12Download event,
+    Emitter<ReportTB12State> emit,
   ) async {
-    // emit(state.copyWith(status: ReportFinancialStatementListStatus.loading));
+    // emit(state.copyWith(status: ReportTB12Status.loading));
     try {
       await _reportService.downloadFinancialStatement(
           _provider, _provider.companyId, event.year.toString(), 'test.xlsx');
       emit(
         state.copyWith(
-          status: ReportFinancialStatementListStatus.downloaded,
+          status: ReportTB12Status.downloaded,
         ),
       );
     } catch (e) {
       emit(state.copyWith(
-        status: ReportFinancialStatementListStatus.failure,
+        status: ReportTB12Status.failure,
         message: e.toString(),
       ));
     }

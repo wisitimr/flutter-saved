@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:findigitalservice/report/financial_statement/list/models/account_detail.dart';
+import 'package:findigitalservice/report/ledger_account/models/models.dart';
 
-class ReportFinancialStatementListModel extends Equatable {
-  const ReportFinancialStatementListModel({
+class ReportLedgerAccountModel extends Equatable {
+  const ReportLedgerAccountModel({
     required this.code,
     required this.name,
     required this.accountDetail,
@@ -12,11 +12,10 @@ class ReportFinancialStatementListModel extends Equatable {
   final String name;
   final List<AccountDetail> accountDetail;
 
-  factory ReportFinancialStatementListModel.fromJson(
-      Map<String, dynamic> json) {
+  factory ReportLedgerAccountModel.fromJson(Map<String, dynamic> json) {
     var accountDetail =
         json['accountDetail'] != null ? json['accountDetail'] as List : [];
-    return ReportFinancialStatementListModel(
+    return ReportLedgerAccountModel(
       code: json['code'] ?? '',
       name: json['name'] ?? '',
       accountDetail: accountDetail.isNotEmpty

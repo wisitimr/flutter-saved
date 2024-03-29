@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:findigitalservice/report/financial_statement/list/models/child_account_balance.dart';
+import 'package:findigitalservice/report/tb12/models/child_account_balance.dart';
 
 class AccountBalance extends Equatable {
   const AccountBalance({

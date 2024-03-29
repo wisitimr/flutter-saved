@@ -1,40 +1,28 @@
-part of 'report_financial_statement_list_bloc.dart';
+part of 'tb12_bloc.dart';
 
-enum ReportFinancialStatementListStatus {
+enum ReportTB12Status {
   loading,
   success,
   failure,
   downloaded,
-  ledgerDialog,
   accountBalanceDialog,
 }
 
-extension ReportFinancialStatementListStatusX
-    on ReportFinancialStatementListStatus {
-  bool get isLoading => this == ReportFinancialStatementListStatus.loading;
-  bool get isSuccess => this == ReportFinancialStatementListStatus.success;
-  bool get isDownloaded =>
-      this == ReportFinancialStatementListStatus.downloaded;
-  bool get isFailure => this == ReportFinancialStatementListStatus.failure;
-  bool get isShowLedgerDialog =>
-      this == ReportFinancialStatementListStatus.ledgerDialog;
-  bool get isShowAccountBlance =>
-      this == ReportFinancialStatementListStatus.accountBalanceDialog;
+extension ReportTB12StatusX on ReportTB12Status {
+  bool get isLoading => this == ReportTB12Status.loading;
+  bool get isSuccess => this == ReportTB12Status.success;
+  bool get isDownloaded => this == ReportTB12Status.downloaded;
+  bool get isFailure => this == ReportTB12Status.failure;
+  bool get isShowAccountBlance => this == ReportTB12Status.accountBalanceDialog;
 }
 
 @immutable
-final class ReportFinancialStatementListState extends Equatable {
-  const ReportFinancialStatementListState({
-    this.status = ReportFinancialStatementListStatus.loading,
+final class ReportTB12State extends Equatable {
+  const ReportTB12State({
+    this.status = ReportTB12Status.loading,
     this.message = '',
-    this.ledgers = const <ReportFinancialStatementListModel>[],
-    this.ledger = const ReportFinancialStatementListModel(
-      code: '',
-      name: '',
-      accountDetail: <AccountDetail>[],
-    ),
-    this.ledgetFilter = const <ReportFinancialStatementListModel>[],
     this.accountBalances = const <AccountBalance>[],
+    this.accountBalancesFilter = const <AccountBalance>[],
     this.accountBalance = const AccountBalance(
       accountGroup: '',
       sumForwardDr: 0,
@@ -108,12 +96,10 @@ final class ReportFinancialStatementListState extends Equatable {
     this.isSelectAll = false,
   });
 
-  final List<ReportFinancialStatementListModel> ledgers;
-  final ReportFinancialStatementListModel ledger;
-  final List<ReportFinancialStatementListModel> ledgetFilter;
   final List<AccountBalance> accountBalances;
+  final List<AccountBalance> accountBalancesFilter;
   final AccountBalance accountBalance;
-  final ReportFinancialStatementListStatus status;
+  final ReportTB12Status status;
   final String message;
   final String selectedDeleteRowId;
   final bool isHistory;
@@ -154,13 +140,11 @@ final class ReportFinancialStatementListState extends Equatable {
   final bool isBalanceShow;
   final bool isSelectAll;
 
-  ReportFinancialStatementListState copyWith({
-    ReportFinancialStatementListStatus? status,
+  ReportTB12State copyWith({
+    ReportTB12Status? status,
     String? message,
-    List<ReportFinancialStatementListModel>? ledgers,
-    ReportFinancialStatementListModel? ledger,
-    List<ReportFinancialStatementListModel>? ledgetFilter,
     List<AccountBalance>? accountBalances,
+    List<AccountBalance>? accountBalancesFilter,
     AccountBalance? accountBalance,
     String? selectedDeleteRowId,
     bool? isHistory,
@@ -201,13 +185,12 @@ final class ReportFinancialStatementListState extends Equatable {
     bool? isBalanceShow,
     bool? isSelectAll,
   }) {
-    return ReportFinancialStatementListState(
+    return ReportTB12State(
       status: status ?? this.status,
       message: message ?? this.message,
-      ledgers: ledgers ?? this.ledgers,
-      ledger: ledger ?? this.ledger,
-      ledgetFilter: ledgetFilter ?? this.ledgetFilter,
       accountBalances: accountBalances ?? this.accountBalances,
+      accountBalancesFilter:
+          accountBalancesFilter ?? this.accountBalancesFilter,
       accountBalance: accountBalance ?? this.accountBalance,
       selectedDeleteRowId: selectedDeleteRowId ?? this.selectedDeleteRowId,
       isHistory: isHistory ?? this.isHistory,
@@ -254,10 +237,8 @@ final class ReportFinancialStatementListState extends Equatable {
   List<Object> get props => [
         message,
         status,
-        ledgers,
-        ledger,
-        ledgetFilter,
         accountBalances,
+        accountBalancesFilter,
         accountBalance,
         selectedDeleteRowId,
         isHistory,
@@ -300,14 +281,12 @@ final class ReportFinancialStatementListState extends Equatable {
       ];
 }
 
-final class ReportFinancialStatementListLoading
-    extends ReportFinancialStatementListState {
+final class ReportTB12Loading extends ReportTB12State {
   @override
   List<Object> get props => [];
 }
 
-final class ReportFinancialStatementListError
-    extends ReportFinancialStatementListState {
+final class ReportTB12Error extends ReportTB12State {
   @override
   List<Object> get props => [];
 }

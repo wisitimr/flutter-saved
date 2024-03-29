@@ -16,16 +16,22 @@ final sidebarMenuConfigs = [
     title: (context) => Lang.of(context).daybook,
   ),
   SidebarMenuConfig(
-      uri: '',
-      icon: Icons.bar_chart_rounded,
-      title: (context) => Lang.of(context).report,
-      children: [
-        SidebarChildMenuConfig(
-          uri: RouteUri.report + RouteUri.financialStatement,
-          icon: Icons.splitscreen_rounded,
-          title: (context) => Lang.of(context).financialStatement,
-        ),
-      ]),
+    uri: '',
+    icon: Icons.bar_chart_rounded,
+    title: (context) => Lang.of(context).report,
+    children: [
+      SidebarChildMenuConfig(
+        uri: RouteUri.report + RouteUri.ledgerAccount,
+        icon: Icons.splitscreen_rounded,
+        title: (context) => Lang.of(context).ledgerAccount,
+      ),
+      SidebarChildMenuConfig(
+        uri: RouteUri.report + RouteUri.tb12,
+        icon: Icons.splitscreen_rounded,
+        title: (context) => Lang.of(context).tb12,
+      ),
+    ],
+  ),
   SidebarMenuConfig(
     uri: '',
     icon: Icons.storage_rounded,
